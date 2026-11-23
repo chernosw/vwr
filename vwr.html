@@ -1,0 +1,3415 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>KlausurFit – Verwaltungsrecht (Modul 1)</title>
+
+  <!-- iOS & Mobile PWA Meta-Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="VWR Modul 1" />
+  <meta name="theme-color" content="#f8fafc" id="meta-theme-color" />
+
+  <style>
+    /* =========================================================================
+       1. DESIGN TOKENS (LIGHT MODE DEFAULT & DARK MODE VIA CSS VARIABLES)
+       ========================================================================= */
+    :root,
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --surface-hover: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --text: #0f172a;
+      --text-sec: #334155;
+      --text-muted: #64748b;
+
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: #eff6ff;
+      --accent-border: #bfdbfe;
+      --accent-text: #1d4ed8;
+
+      --success-bg: #ecfdf5;
+      --success-border: #a7f3d0;
+      --success-text: #065f46;
+
+      --warn-bg: #fffbeb;
+      --warn-border: #fde68a;
+      --warn-text: #92400e;
+
+      --danger-bg: #fff1f2;
+      --danger-border: #fecdd3;
+      --danger-text: #9f1239;
+
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --shadow-lg: 0 18px 44px rgba(15, 23, 42, 0.18);
+      --backdrop: rgba(15, 23, 42, 0.56);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-alt: #1e293b;
+      --surface-hover: #172033;
+      --border: #263244;
+      --border-strong: #394860;
+
+      --text: #f1f5f9;
+      --text-sec: #cbd5e1;
+      --text-muted: #94a3b8;
+
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --accent-border: rgba(96, 165, 250, 0.35);
+      --accent-text: #60a5fa;
+
+      --success-bg: rgba(16, 185, 129, 0.14);
+      --success-border: rgba(52, 211, 153, 0.35);
+      --success-text: #6ee7b7;
+
+      --warn-bg: rgba(245, 158, 11, 0.14);
+      --warn-border: rgba(251, 191, 36, 0.35);
+      --warn-text: #fcd34d;
+
+      --danger-bg: rgba(244, 63, 94, 0.15);
+      --danger-border: rgba(251, 113, 133, 0.35);
+      --danger-text: #fda4af;
+
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.32);
+      --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 22px 54px rgba(0, 0, 0, 0.72);
+      --backdrop: rgba(2, 6, 23, 0.74);
+    }
+
+    /* =========================================================================
+       2. RESET, TYPOGRAPHY & BASE LAYOUT
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    h1, h2, h3, h4, p, ul {
+      margin: 0;
+    }
+
+    /* =========================================================================
+       3. STICKY HEADER & GLOBAL VWR PROGRESS BAR
+       ========================================================================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .header-inner {
+      padding: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background-color: var(--accent);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.25;
+    }
+
+    /* Strict flex-wrap utility for ALL toolbars, pills, and filter groups */
+    .wrap-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wrap-between {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Global VWR Progress Bar */
+    .vwr-bar {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .vwr-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 280px;
+      min-width: 0;
+    }
+
+    .vwr-slider-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 170px;
+      max-width: 300px;
+      min-width: 150px;
+    }
+
+    input[type="range"].vwr-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--border-strong);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"].vwr-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surface);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    input[type="range"].vwr-range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surface);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    /* =========================================================================
+       4. MAIN 2-COLUMN RESPONSIVE GRID (330px LEFT, minmax(0,1fr) RIGHT)
+       ========================================================================= */
+    .main-shell {
+      padding-top: 18px;
+      padding-bottom: 36px;
+    }
+
+    .mobile-guide-toggle-wrap {
+      display: none;
+      margin-bottom: 14px;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      width: 100%;
+    }
+
+    .left-guide {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-xs);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 132px;
+      max-height: calc(100vh - 150px);
+    }
+
+    .right-panel {
+      min-width: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (max-width: 959px) {
+      .workspace-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+      }
+      .mobile-guide-toggle-wrap {
+        display: block;
+      }
+      .left-guide {
+        position: static;
+        max-height: none;
+      }
+      .left-guide.mobile-hidden {
+        display: none;
+      }
+    }
+
+    /* =========================================================================
+       5. BUTTONS, PILLS, BADGES, INPUTS & SURFACES
+       ========================================================================= */
+    .card-box {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-xs);
+      padding: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 36px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background-color: var(--surface);
+      color: var(--text-sec);
+      transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease, opacity 0.14s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:hover:not(:disabled) {
+      background-color: var(--surface-alt);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-sm {
+      min-height: 32px;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      border-color: transparent;
+      color: #ffffff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-hover);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .btn-danger {
+      background-color: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+    .btn-danger:hover:not(:disabled) {
+      opacity: 0.88;
+      background-color: var(--danger-bg);
+      color: var(--danger-text);
+    }
+
+    .btn-success {
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .btn-warn {
+      background-color: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-text);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 32px;
+      padding: 5px 11px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background-color: var(--surface);
+      color: var(--text-sec);
+      transition: all 0.14s ease;
+    }
+    .pill:hover {
+      background-color: var(--surface-alt);
+      color: var(--text);
+    }
+    .pill.active {
+      background-color: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: var(--accent-text);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background-color: var(--surface-alt);
+      color: var(--text-sec);
+      white-space: nowrap;
+    }
+    .badge-accent {
+      background-color: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: var(--accent-text);
+    }
+    .badge-success {
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+    .badge-warn {
+      background-color: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-text);
+    }
+    .badge-danger {
+      background-color: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .input:focus, .select:focus, .textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .input::placeholder, .textarea::placeholder {
+      color: var(--text-muted);
+    }
+    .textarea {
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    /* =========================================================================
+       6. LEFT COLUMN: VORLESUNGS-GUIDE ACCORDION
+       ========================================================================= */
+    .guide-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .guide-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .guide-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .guide-item:last-child {
+      border-bottom: none;
+    }
+
+    .guide-trigger {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: background-color 0.14s ease;
+    }
+    .guide-trigger:hover {
+      background-color: var(--surface-hover);
+    }
+    .guide-trigger.open {
+      background-color: var(--surface-alt);
+    }
+
+    .guide-body {
+      padding: 12px 14px 14px;
+      background-color: var(--surface-hover);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--text-sec);
+      line-height: 1.48;
+    }
+
+    .bullet-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+
+    .guide-footer {
+      padding: 12px 14px;
+      background-color: var(--surface-alt);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================================
+       7. RIGHT COLUMN: MAIN 4 TABS NAVIGATION
+       ========================================================================= */
+    .main-tabs {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      flex: 1 1 140px;
+      min-height: 42px;
+      padding: 8px 12px;
+      border-radius: 11px;
+      border: 1px solid transparent;
+      background-color: transparent;
+      color: var(--text-sec);
+      font-size: 13.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+      text-align: center;
+    }
+    .tab-btn:hover {
+      background-color: var(--surface-alt);
+      color: var(--text);
+    }
+    .tab-btn.active {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .tab-count {
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background-color: var(--surface-alt);
+      color: var(--text-muted);
+    }
+    .tab-btn.active .tab-count {
+      background-color: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+    }
+
+    /* =========================================================================
+       8. TAB 1: 3D FLASHCARD & RATING CONTROLS
+       ========================================================================= */
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background-color: var(--surface-alt);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background-color: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .flip-scene {
+      perspective: 1100px;
+      width: 100%;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .flip-card {
+      position: relative;
+      width: 100%;
+      min-height: 270px;
+      transform-style: preserve-3d;
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .flip-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    .flip-face-back {
+      transform: rotateY(180deg);
+      border: 2px solid var(--accent-border);
+    }
+
+    .flip-question {
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.38;
+      text-align: center;
+      color: var(--text);
+      margin: auto;
+      max-width: 640px;
+    }
+
+    .flip-answer {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text-sec);
+      margin: auto 0;
+    }
+
+    .rating-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 520px) {
+      .rating-grid {
+        grid-template-columns: 1fr;
+      }
+      .flip-question {
+        font-size: 16.5px;
+      }
+    }
+
+    /* =========================================================================
+       9. TAB 2: NORMS, TAB 3: FORMULIERUNGSHILFEN (CLOZE), TAB 4: DRILLS
+       ========================================================================= */
+    .norm-row {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-xs);
+    }
+    .norm-row.clickable {
+      cursor: pointer;
+    }
+    .norm-row.clickable:hover {
+      border-color: var(--accent-border);
+    }
+
+    .norm-left {
+      flex: 0 1 215px;
+      min-width: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .norm-mid {
+      flex: 1 1 260px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .norm-mask {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background-color: var(--accent-soft);
+      border: 1px dashed var(--accent);
+      color: var(--accent-text);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Cloze / Lücken-Test */
+    .cloze-gap {
+      display: inline-block;
+      padding: 0 6px;
+      margin: 1px 1px;
+      border-radius: 6px;
+      background-color: var(--accent-soft);
+      border: 1px dashed var(--accent);
+      color: transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.14s ease;
+    }
+    .cloze-gap:hover {
+      border-style: solid;
+    }
+    .cloze-gap.revealed {
+      color: var(--accent-text);
+      border-style: solid;
+      font-weight: 700;
+      user-select: auto;
+    }
+
+    .phrase-block {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Compact comparison table inside Rücknahme/Widerruf */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      min-width: 520px;
+    }
+    .data-table th, .data-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .data-table th {
+      background-color: var(--surface-alt);
+      color: var(--text);
+      font-weight: 700;
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Drill Option Button */
+    .drill-opt {
+      width: 100%;
+      text-align: left;
+      padding: 11px 13px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background-color: var(--surface-alt);
+      color: var(--text-sec);
+      font-size: 13.5px;
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .drill-opt:hover {
+      border-color: var(--accent-border);
+    }
+    .drill-opt.opt-correct {
+      background-color: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+      font-weight: 600;
+    }
+    .drill-opt.opt-wrong {
+      background-color: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+    .drill-opt.opt-dim {
+      opacity: 0.65;
+      background-color: var(--surface);
+    }
+    .opt-letter {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* =========================================================================
+       10. MODALS & TOASTS (ZERO alert() / confirm())
+       ========================================================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background-color: var(--backdrop);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-box {
+      width: 100%;
+      max-width: 600px;
+      max-height: 88vh;
+      overflow-y: auto;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 540px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sec);
+      margin-bottom: 5px;
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 320px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      padding: 10px 14px;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: var(--accent);
+      box-shadow: var(--shadow-sm);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .toast.info {
+      background-color: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+    .toast.warn {
+      background-color: #d97706;
+    }
+    .toast.danger {
+      background-color: #e11d48;
+    }
+
+    /* Subtle text helpers */
+    .text-xs { font-size: 12px; }
+    .text-sm { font-size: 13.5px; }
+    .text-muted { color: var(--text-muted); }
+    .text-sec { color: var(--text-sec); }
+    .text-accent { color: var(--accent-text); }
+    .fw-bold { font-weight: 700; }
+    .divider { border-top: 1px solid var(--border); padding-top: 12px; }
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .stack-sm { display: flex; flex-direction: column; gap: 8px; }
+    .empty-box { text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 13.5px; }
+  </style>
+</head>
+<body>
+
+  <!-- =======================================================================
+       STICKY HEADER + GLOBAL VORLESUNGSSTAND-REGLER
+       ======================================================================= -->
+  <header class="app-header">
+    <div class="container">
+      <div class="header-inner">
+
+        <!-- Row 1: Brand & Quick Action Buttons -->
+        <div class="header-top">
+          <div class="brand">
+            <div class="brand-icon">VWR</div>
+            <div>
+              <h1 class="brand-title">KlausurFit – Verwaltungsrecht (Modul 1)</h1>
+              <p class="brand-sub">HS Bund (Zoll) · Bestehens-Fokus (50/100 BP = 4,0) · 100 % Offline</p>
+            </div>
+          </div>
+
+          <div class="wrap-bar">
+            <span class="badge badge-accent" id="hdr-mastery">0 / 0 sitzen</span>
+            <button type="button" class="btn btn-sm" id="btn-tips">Bestehens-Tipps</button>
+            <button type="button" class="btn btn-sm" id="btn-backup">Backup / Import</button>
+            <button type="button" class="btn btn-sm" id="btn-theme" aria-label="Theme wechseln">Dark Mode</button>
+          </div>
+        </div>
+
+        <!-- Row 2: Global Vorlesungsstand-Regler (Default: 7 / 15) -->
+        <div class="vwr-bar">
+          <div class="vwr-controls">
+            <span class="badge badge-accent" id="hdr-vwr-badge" style="font-size:12px; padding:4px 10px;">Stand: bis VWR 7/15</span>
+            <div class="vwr-slider-group">
+              <button type="button" class="btn btn-icon" id="btn-vwr-minus" aria-label="Vorlesungsstand verringern">−</button>
+              <input type="range" class="vwr-range" id="vwr-slider" min="1" max="15" value="7" aria-label="Vorlesungsstand bis VWR" />
+              <button type="button" class="btn btn-icon" id="btn-vwr-plus" aria-label="Vorlesungsstand erhöhen">+</button>
+            </div>
+          </div>
+
+          <div class="wrap-bar">
+            <span class="text-xs text-muted" id="hdr-scope-counts">Aktiv: 0 Karten · 0 Normen · 0 Drills</span>
+            <button type="button" class="btn btn-sm" id="btn-vwr-all">Alle (15)</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       MAIN WORKSPACE
+       ======================================================================= -->
+  <div class="container main-shell">
+
+    <!-- Mobile Expandable Toggle for Left Vorlesungs-Guide -->
+    <div class="mobile-guide-toggle-wrap">
+      <button type="button" class="btn" id="btn-mobile-guide" style="width:100%; justify-content:space-between; min-height:42px;">
+        <span id="mobile-guide-label">Vorlesungs-Guide einblenden (VWR 1–7)</span>
+        <span id="mobile-guide-arrow">▾</span>
+      </button>
+    </div>
+
+    <div class="workspace-grid">
+      <!-- LEFT COLUMN: VORLESUNGS-GUIDE (VWR 1–15) -->
+      <aside class="left-guide mobile-hidden" id="left-guide" aria-label="Vorlesungs-Guide"></aside>
+
+      <!-- RIGHT COLUMN: 4 MAIN TABS + ACTIVE CONTENT -->
+      <main class="right-panel">
+        <nav class="main-tabs" aria-label="Lernbereiche">
+          <button type="button" class="tab-btn active" data-tab="cards">
+            <span>Karteikarten</span>
+            <span class="tab-count" id="tc-cards">0</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="norms">
+            <span>Paragrafen</span>
+            <span class="tab-count" id="tc-norms">0</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="phrases">
+            <span>Formulierungshilfen</span>
+            <span class="tab-count" id="tc-phrases">0</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="drills">
+            <span>Klausur-Drills</span>
+            <span class="tab-count" id="tc-drills">0</span>
+          </button>
+        </nav>
+
+        <section id="tab-stage" class="stack"></section>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- MODAL & TOAST CONTAINERS -->
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-box" id="modal-box"></div>
+  </div>
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <!-- =======================================================================
+       STANDALONE APPLICATION SCRIPT (100 % LOCALSTORAGE, ZERO DEPENDENCIES)
+       ======================================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'klausurfit_vwr_modul1_v2';
+
+      // =======================================================================
+      // 1. DEFAULT CONTENT DATASETS (HS BUND ZOLL – KLAUSURFOKUS)
+      // =======================================================================
+
+      const DEFAULT_LECTURES = [
+        {
+          id: 'vwr-1', vwr: 1, relevance: 'Basis',
+          title: 'Einführung & Rechtsquellen',
+          bullets: [
+            '**Öffentliches Recht vs. Privatrecht**: Abgrenzung nach der **modifizierten Subjektstheorie** – berechtigt/verpflichtet die Norm ausschließlich einen Träger hoheitlicher Gewalt, liegt öffentliches Recht vor.',
+            '**Normenhierarchie**: EU-Recht > GG > Formelles Gesetz > Rechtsverordnung > Satzung; **Verwaltungsvorschriften** wirken nur behördenintern.',
+            '**Art. 20 Abs. 3 GG**: **Vorrang des Gesetzes** (kein Handeln gegen Gesetz) und **Vorbehalt des Gesetzes** (keine belastende Maßnahme ohne EGL).',
+            '**Klammerprinzip**: Das VwVfG (Allgemeines VWR) gilt subsidiär für alle Fachgesetze (GewO, StVZO, ApoG, GastG), soweit diese keine Sonderregel enthalten.'
+          ]
+        },
+        {
+          id: 'vwr-2', vwr: 2, relevance: 'Kernstoff',
+          title: 'Gutachtenstil & Normstruktur',
+          bullets: [
+            '**4 Schritte des Gutachtenstils**: 1. Obersatz (Konjunktiv II) → 2. Definition/Maßstab → 3. Subsumtion am Sachverhalt → 4. Ergebnis (Indikativ).',
+            '**Normstruktur**: Strenge Trennung zwischen **Tatbestand** („Wenn“-Teil) und **Rechtsfolge** („Dann“-Teil).',
+            '**Rechtsfolgentypen**: **Gebundene Entscheidung** („ist zu / muss“) lässt keine Wahl; **Ermessen** („kann / darf“) eröffnet Handlungsspielraum.',
+            '**Unbestimmte Rechtsbegriffe** (z. B. „Zuverlässigkeit“): Stehen im Tatbestand, bedürfen der Auslegung und sind **voll gerichtlich überprüfbar** (kein Beurteilungsspielraum!).'
+          ]
+        },
+        {
+          id: 'vwr-3', vwr: 3, relevance: 'Basis',
+          title: 'Verwaltungsorganisation & Handlungsformen',
+          bullets: [
+            '**Behörde (§ 1 Abs. 4 VwVfG)**: Funktionaler Begriff – jede Stelle, die Aufgaben der öffentlichen Verwaltung wahrnimmt.',
+            '**Verwaltungsträger**: Unmittelbare Staatsverwaltung (Bund/Länder) vs. mittelbare (Körperschaft, Anstalt, Stiftung, Beliehene).',
+            '**Handlungsformen**: Einzelfallregelung (**VA**, § 35 S. 1), tatsächliches Handeln ohne Regelung (**Realakt**), zweiseitig (**öff.-rechtl. Vertrag**, §§ 54 ff.), abstrakt-generell (**RVO & Satzung**).'
+          ]
+        },
+        {
+          id: 'vwr-4', vwr: 4, relevance: 'Kernstoff',
+          title: 'Verwaltungsverfahren & Beteiligte',
+          bullets: [
+            '**Verwaltungsverfahren (§ 9 VwVfG)**: Nach außen wirkende Tätigkeit der Behörde auf Prüfung, Vorbereitung & Erlass eines VA oder Abschluss eines ÖR-Vertrags.',
+            '**Untersuchungsgrundsatz (§ 24 VwVfG)**: Behörde ermittelt Sachverhalt von Amts wegen (auch günstige Umstände, Abs. 2).',
+            '**Beteiligte (§ 13 Abs. 1 Nr. 2 VwVfG)**: Adressat eines VA ist stets Beteiligter – immer zusammen mit § 28 VwVfG zitieren!',
+            '**Anhörung (§ 28 Abs. 1 VwVfG)**: Gelegenheit zur Stellungnahme genügt (auch wenn Bürger schweigt). Ausnahmen nach **§ 28 Abs. 2 Nr. 1** (Gefahr im Verzug / öff. Interesse) sind **streng auszulegen**!',
+            '**Akteneinsicht (§ 29 VwVfG)**: Recht der Beteiligten, soweit zur Geltendmachung rechtlicher Interessen erforderlich.'
+          ]
+        },
+        {
+          id: 'vwr-5', vwr: 5, relevance: 'Kernstoff',
+          title: 'Der Verwaltungsakt (§ 35 S. 1 VwVfG)',
+          bullets: [
+            '**Alle 6 Merkmale exakt definieren**: 1. Hoheitliche Maßnahme, 2. Behörde (§ 1 IV), 3. Öffentliches Recht (mod. Subjektstheorie), 4. Regelung, 5. Einzelfall, 6. Außenwirkung.',
+            '**Regelung**: Einseitiges und unmittelbares Herbeiführen einer Rechtsfolge (Begründung, Änderung, Aufhebung oder verbindliche Feststellung).',
+            '**Einzelfall vs. Allgemeinverfügung (§ 35 S. 2 VwVfG)**: Konkret-individuell (S. 1) vs. konkret-generell (S. 2, z. B. Verkehrszeichen).',
+            '**Begünstigend (§ 48 Abs. 1 S. 2 VwVfG)** (begründet/bestätigt Recht oder rechtlich erheblichen Vorteil) vs. **belastend** (greift in Rechte ein, insb. Art. 2 I / 12 I / 14 GG).'
+          ]
+        },
+        {
+          id: 'vwr-6', vwr: 6, relevance: 'Kernstoff',
+          title: 'Formelle Anforderungen, Wirksamkeit & Fehlerfolgen',
+          bullets: [
+            '**Formfreiheit (§ 37 Abs. 2 S. 1)**, **inhaltliche Bestimmtheit (§ 37 Abs. 1)** und **Begründung (§ 39 Abs. 1)** – lapidare Floskeln ohne Einzelfallbezug genügen nicht!',
+            '**Klausurfalle RBB (§ 37 VI VwVfG, § 58 VwGO)**: Fehlende oder unrichtige Rechtsbehelfsbelehrung macht den VA **NICHT formell rechtswidrig**, sondern verlängert nur die Frist auf **1 Jahr (§ 58 Abs. 2 VwGO)**!',
+            '**Wirksamkeit (§ 43 VwVfG)**: Tritt mit Bekanntgabe ein; auch rechtswidrige VA sind wirksam – unwirksam nur bei **Nichtigkeit (§ 44 VwVfG)**.',
+            '**Heilung (§ 45 Abs. 1 Nr. 2/3, Abs. 2 VwVfG)**: Fehlende Begründung (Nr. 2) oder Anhörung (Nr. 3) heilbar bis Abschluss der **letzten Tatsacheninstanz** (insb. im Widerspruchsbescheid!).'
+          ]
+        },
+        {
+          id: 'vwr-7', vwr: 7, relevance: 'Kernstoff',
+          title: 'Bekanntgabe & Fristberechnung (4-Tages-Fiktion!)',
+          bullets: [
+            '**4-Tages-Fiktion (§ 41 Abs. 2 S. 1 VwVfG ab 2025)**: Einfacher Brief im Inland gilt am **4. Tag** nach Aufgabe zur Post als bekanntgegeben. **BVerwG (Fiktionslehre)**: **§ 31 Abs. 3 gilt NICHT** (auch Sonntag bleibt Bekanntgabetag!) – anders nur BFH im Steuerrecht.',
+            '**Abwandlungen Zugang**: **Früherer Zugang** ist unbeachtlich (bleibt bei Tag 4); **späterer Zugang** zählt tatsächlich (**§ 41 Abs. 2 S. 3** – auch wenn Sa/So!).',
+            '**Einschreiben mit Rückschein (§ 41 Abs. 5 i.V.m. § 4 Abs. 1 Alt. 2 VwZG)**: Quittierter Übergabetag ist der Bekanntgabetag.',
+            '**Widerspruchsfrist (§ 70 Abs. 1 S. 1 VwGO = 1 Monat)**: Berechnung über **§§ 79, 31 Abs. 1 VwVfG i.V.m. §§ 187 I, 188 II BGB**. Verschiebung wegen Sa/So/Feiertag (**§ 31 Abs. 3 S. 1 VwVfG / § 193 BGB**) gilt **NUR fürs FristENDE, nie für den FristBEGINN**!'
+          ]
+        },
+        {
+          id: 'vwr-8', vwr: 8, relevance: 'Kernstoff',
+          title: 'Nebenbestimmungen (§ 36 VwVfG)',
+          bullets: [
+            '**5 Arten (§ 36 Abs. 2 Nr. 1–5)**: Nr. 1 **Befristung** (fester Termin), Nr. 2 **Bedingung** (ungewisses Ereignis), Nr. 3 **Widerrufsvorbehalt**, Nr. 4 **Auflage** (zusätzliches Tun/Dulden/Unterlassen), Nr. 5 **Auflagenvorbehalt**.',
+            '**Zulässigkeit**: Bei **gebundenem VA (§ 36 Abs. 1)** nur durch Rechtsvorschrift zugelassen oder zur Sicherstellung gesetzlicher Voraussetzungen; bei **Ermessens-VA (§ 36 Abs. 2)** nach pflichtgemäßem Ermessen.',
+            '**Merke Auflage vs. Bedingung**: Auflage ist eigenständig vollstreckbar (Haupt-VA sofort wirksam); Bedingung suspendiert/beendet die Wirksamkeit des Haupt-VA selbst.'
+          ]
+        },
+        {
+          id: 'vwr-9', vwr: 9, relevance: 'Kernstoff',
+          title: 'Rechtmäßigkeitsaufbau (Eingriffs-VA)',
+          bullets: [
+            '**I. Ermächtigungsgrundlage**: Vorbehalt des Gesetzes (Art. 20 Abs. 3 GG), Belastung feststellen, Norm benennen.',
+            '**II. Formelle Rechtmäßigkeit (6 Schritte)**: 1. Zuständigkeit, 2. Verfahren (§ 28), 3. Form (§ 37 II), 4. Begründung (§ 39 I), 5. Bekanntgabe (§ 41), 6. RBB (§ 37 VI, § 58 VwGO).',
+            '**III. Materielle Rechtmäßigkeit**: 1. Tatbestandsvoraussetzungen der EGL (z. B. Gewerbe, Zuverlässigkeit), 2. Ordnungsgemäße Rechtsfolge (gebunden vs. Ermessen).',
+            '**Wichtige Aufbauregel**: Das Merkmal „zuständige Behörde“ aus dem Spezialgesetz gehört in die **formelle Rechtmäßigkeit**, nicht in den materiellen Tatbestand!'
+          ]
+        },
+        {
+          id: 'vwr-10', vwr: 10, relevance: 'Kernstoff',
+          title: 'Ermessen (§ 40 VwVfG) & Verhältnismäßigkeit',
+          bullets: [
+            '**Ermessensarten**: **Entschließungsermessen** („Ob“ gehandelt wird) und **Auswahlermessen** („Wie“ / welches Mittel / welcher Adressat).',
+            '**3 Ermessensfehler (§ 40 VwVfG)**: **Ermessensunterschreitung/-nichtgebrauch** (Spielraum verkannt), **Ermessensfehlgebrauch** (zweckwidrig/sachfremd), **Ermessensüberschreitung** (außerhalb Gesetz / unverhältnismäßig).',
+            '**Verhältnismäßigkeit (4 Stufen)**: 1. Legitimer Zweck → 2. **Geeignetheit** (Zweck zumindest gefördert) → 3. **Erforderlichkeit** (kein milderes, gleich geeignetes Mittel) → 4. **Angemessenheit** (Abwägung Nachteil vs. Erfolg).'
+          ]
+        },
+        {
+          id: 'vwr-11', vwr: 11, relevance: 'Kernstoff',
+          title: 'Anspruchsaufbau & Gewerberecht-Klassiker',
+          bullets: [
+            '**I. Anspruchsgrundlage (AGL)**: Häufig im **Umkehrschluss** (z. B. § 34a I 1 i.V.m. S. 3 GewO: Erlaubnis ist zu erteilen, wenn kein Versagungsgrund vorliegt).',
+            '**II. Formelle Anspruchsvoraussetzungen**: 1. Antrag, 2. Zuständige Behörde.',
+            '**III. Materielle Anspruchsvoraussetzungen**: 1. Tatbestand (positive Merkmale + kein Versagungsgrund), 2. Rechtsfolge (gebunden → Anspruch auf VA).',
+            '**Standarddefinition Gewerbe**: Jede erlaubte, auf Gewinnerzielung gerichtete, auf Dauer angelegte, selbstständige Tätigkeit, die kein freier Beruf (§ 18 EStG) ist.',
+            '**Standarddefinition Unzuverlässigkeit**: Tatsachen + **Gewerbebezug** + **negative Zukunftsprognose** (keine Gewähr für künftige ordnungsgemäße Ausübung – **kein Schuldvorwurf**!).'
+          ]
+        },
+        {
+          id: 'vwr-12', vwr: 12, relevance: 'Kernstoff',
+          title: 'Aufhebung von VA (§§ 48, 49 VwVfG & Spezialgesetze)',
+          bullets: [
+            '**IMMER Vorprüfung Spezialgesetz**: Fachgesetzliche Aufhebungsnormen (z. B. **§ 4 Abs. 1/2 ApoG**) verdrängen §§ 48, 49 VwVfG (**lex specialis**)!',
+            '**Kehrseitentheorie**: Zuständigkeit, Form und VA-Qualität der Aufhebung richten sich nach dem Ausgangs-VA.',
+            '**Rücknahme (§ 48 – rw VA)**: **Abs. 1 S. 1** belastend (Wesentlichkeitstheorie, keine Anhörung/RBB, keine Frist); **Abs. 2** Geldleistung (erst S. 3 Nr. 1–3, dann S. 2/S. 1, Jahresfrist Abs. 4 h.M. Sachbearbeiter, S. 4 i.d.R. ex tunc); **Abs. 3** sonst. begünstigend (kein Vertrauensschutz im TB, Jahresfrist).',
+            '**Widerruf (§ 49 – rm VA)**: **Abs. 1** belastend (nur ex nunc, keine Frist); **Abs. 2** begünstigend Nr. 1–5 (nur ex nunc, Jahresfrist); **Abs. 3** Zweckverfehlung (lex specialis zu Abs. 2, ex tunc/ex nunc, Jahresfrist).'
+          ]
+        },
+        {
+          id: 'vwr-13', vwr: 13, relevance: 'Basis',
+          title: 'Widerspruchsverfahren & Rechtsschutz (Überblick)',
+          bullets: [
+            '**Statthaftigkeit (§ 68 VwGO)**: Vor Anfechtungs- und Verpflichtungsklage ist grds. das Widerspruchsverfahren durchzuführen.',
+            '**Widerspruchsfrist**: 1 Monat ab Bekanntgabe (**§ 70 Abs. 1 S. 1 VwGO**) bzw. 1 Jahr bei fehlender/fehlerhafter RBB (**§ 58 Abs. 2 VwGO**).',
+            '**Ablauf (§§ 72, 73 VwGO)**: Abhilfeprüfung durch Ausgangsbehörde (§ 72); bei Nichtabhilfe erlässt die Widerspruchsbehörde den **Widerspruchsbescheid (§ 73)** – dort ist Heilung nach **§ 45 VwVfG** noch möglich!'
+          ]
+        },
+        {
+          id: 'vwr-14', vwr: 14, relevance: 'Basis',
+          title: 'Verwaltungsvollstreckung & Realakt (Überblick)',
+          bullets: [
+            '**3 Zwangsmittel**: **Ersatzvornahme** (vertretbare Handlung), **Zwangsgeld** (unvertretbare Handlung / Unterlassen) und **unmittelbarer Zwang** (ultima ratio).',
+            '**Verfahrensarten**: **Gestrecktes Verfahren** (wirksamer, vollstreckbarer Grund-VA erforderlich) vs. **Sofortvollzug** (ohne vorausgehenden Grund-VA bei gegenwärtiger Gefahr).',
+            '**Abgrenzung VA vs. Realakt**: Realakt ist tatsächliches Handeln ohne Regelungswirkung (z. B. Auskunft, Streifenfahrt, schlichte Warnung).'
+          ]
+        },
+        {
+          id: 'vwr-15', vwr: 15, relevance: 'Basis',
+          title: 'Wiederholung & Klausurtaktik',
+          bullets: [
+            '**Unbekannte Spezialgesetze meistern**: Abgedruckte Norm im Sachverhalt Satz für Satz in Tatbestandsmerkmale zerlegen und sauber subsumieren.',
+            '**Bearbeitungsvermerke & Anmerkungen**: Immer zuerst lesen! Sie ersparen unnötige Prüfungen (z. B. „VA ist anzunehmen“, „formelle Rm-keit nicht prüfen“).',
+            '**50-Punkte-Priorität**: EGL + komplette Formelle Rechtmäßigkeit (bis zu 48/100 BP!) + Fristberechnung + Standarddefinitionen sichern fast allein das Bestehen (4,0).'
+          ]
+        }
+      ];
+
+      function mkCard(id, vwr, tag, front, back) {
+        return { id, vwr, tag, front, back, status: 'new' };
+      }
+
+      // 52 concise, exam-tested flashcards (28 in VWR 1–7, 24 in VWR 8–15)
+      const DEFAULT_CARDS = [
+        // --- VWR 1 (3) ---
+        mkCard('c01', 1, 'Definition', 'Wie grenzt die modifizierte Subjektstheorie öffentliches Recht vom Privatrecht ab?', 'Öffentliches Recht liegt vor, wenn die streitentscheidende Norm **ausschließlich einen Träger hoheitlicher Gewalt** zum Handeln berechtigt oder verpflichtet (z. B. „zuständige Behörde“ in § 35 I 1 GewO).'),
+        mkCard('c02', 1, 'Schema', 'Nenne die Normenhierarchie im Verwaltungsrecht (und den Status von Verwaltungsvorschriften).', '**EU-Recht > Verfassung (GG) > Formelles Gesetz > Rechtsverordnung > Satzung**. Verwaltungsvorschriften sind kein Außenrecht, sondern wirken nur **behördenintern**.'),
+        mkCard('c03', 1, 'Definition', 'Unterschied zwischen Vorrang und Vorbehalt des Gesetzes (Art. 20 Abs. 3 GG) – und was ist das Klammerprinzip?', '**Vorrang**: Kein Handeln *gegen* Gesetz. **Vorbehalt**: Kein belastendes Handeln *ohne* gesetzliche EGL. **Klammerprinzip**: Das VwVfG gilt subsidiär für alle Fachgesetze ohne Sonderregelung.'),
+
+        // --- VWR 2 (4) ---
+        mkCard('c04', 2, 'Schema', 'Nenne die 4 Schritte des Gutachtenstils.', '1. **Obersatz** (Hypothese im Konjunktiv II: „könnte/müsste“) → 2. **Definition / Maßstab** → 3. **Subsumtion** (Sachverhalt an Definition messen) → 4. **Ergebnis** (Indikativ).'),
+        mkCard('c05', 2, 'Schema', 'Was unterscheidet Tatbestand und Rechtsfolge einer Rechtsnorm?', '**Tatbestand** („Wenn“-Teil): Voraussetzungen, die im Sachverhalt vorliegen müssen. **Rechtsfolge** („Dann“-Teil): Maßnahme, die die Behörde ergreifen muss oder darf.'),
+        mkCard('c06', 2, 'Definition', 'Woran erkennst du gebundene Entscheidung vs. Ermessen im Gesetzestext?', '**Gebundene Entscheidung**: „ist zu …“, „muss“, „hat zu …“ (keine Wahl). **Ermessen**: „kann“, „darf“, „ist befugt“ (Spielraum nach § 40 VwVfG).'),
+        mkCard('c07', 2, 'Falle', 'Unbestimmter Rechtsbegriff (z. B. „Zuverlässigkeit“): Wo steht er und wie weit prüfen Gerichte ihn?', 'Steht immer auf der **Tatbestandsseite** (KEIN Ermessen!). Seine Auslegung und Anwendung unterliegt **vollständiger gerichtlicher Überprüfung** (kein Beurteilungsspielraum).'),
+
+        // --- VWR 3 (2) ---
+        mkCard('c08', 3, 'Definition', 'Wie definiert § 1 Abs. 4 VwVfG den Begriff „Behörde“?', 'Jede Stelle, die **Aufgaben der öffentlichen Verwaltung** wahrnimmt (funktionaler Behördenbegriff – immer beim VA-Merkmal „Behörde“ zitieren!).'),
+        mkCard('c09', 3, 'Definition', 'Nenne die 5 wichtigsten Handlungsformen der Verwaltung und ihr Hauptmerkmal.', '**VA** (§ 35 S. 1: einseitige Einzelfallregelung), **Realakt** (tatsächlich, keine Regelung), **ÖR-Vertrag** (§§ 54 ff.: zweiseitig), **RVO & Satzung** (abstrakt-generelle Normen).'),
+
+        // --- VWR 4 (5) ---
+        mkCard('c10', 4, 'Definition', 'Was regeln § 9 VwVfG und § 24 VwVfG?', '**§ 9 VwVfG**: Nach außen wirkende Tätigkeit auf Erlass eines VA oder Abschluss eines ÖR-Vertrags. **§ 24 VwVfG (Untersuchungsgrundsatz)**: Behörde ermittelt Sachverhalt von Amts wegen (inkl. günstiger Umstände, Abs. 2).'),
+        mkCard('c11', 4, 'Definition', 'Welche Rolle haben § 13 Abs. 1 Nr. 2 VwVfG und § 29 VwVfG in der Klausur?', '**§ 13 Abs. 1 Nr. 2**: Adressat eines VA ist **Beteiligter** (bei § 28 I immer mitzitieren!). **§ 29 VwVfG**: Recht der Beteiligten auf **Akteneinsicht**.'),
+        mkCard('c12', 4, 'Falle', 'Anhörung (§ 28 Abs. 1 VwVfG): Reicht es aus, wenn die Behörde Gelegenheit gibt, der Bürger aber schweigt?', '**Ja!** Nach § 28 Abs. 1 VwVfG genügt es, dem Beteiligten **Gelegenheit zur Stellungnahme** zu geben. Äußert er sich nicht, war die Anhörung trotzdem ordnungsgemäß.'),
+        mkCard('c13', 4, 'Falle', 'Wann liegt „Gefahr im Verzug“ (§ 28 Abs. 2 Nr. 1 Alt. 1 VwVfG) vor – und woran scheitert sie oft?', 'Nur wenn selbst bei kürzester Anhörungsfrist ein Zeitverlust einträte, durch den die Maßnahme **zu spät käme** (strenger Maßstab!). Wurde die **Postlaufzeit abgewartet**, hätte ein vorheriger **Telefonanruf** gereicht → keine Gefahr im Verzug!'),
+        mkCard('c14', 4, 'Falle', 'Wann ist eine sofortige Entscheidung „im öffentlichen Interesse“ (§ 28 Abs. 2 Nr. 1 Alt. 2 VwVfG) zulässig?', 'Restriktiv auszulegen! Nur wenn der Zweck sonst vereitelt würde (z. B. **Überraschungseffekt** bei Sicherstellung) oder überragende **Schutzgüter** (Leib/Leben) eine sofortige Entscheidung ohne Anhörung zwingend erfordern.'),
+
+        // --- VWR 5 (5) ---
+        mkCard('c15', 5, 'Schema', 'Nenne alle 6 Tatbestandsmerkmale des Verwaltungsakts (§ 35 S. 1 VwVfG).', '1. **Hoheitliche Maßnahme** • 2. **Behörde (§ 1 IV)** • 3. **Auf dem Gebiet des öffentlichen Rechts** • 4. **Regelung** • 5. **Einzelfall** • 6. **Außenwirkung**.'),
+        mkCard('c16', 5, 'Definition', 'Wie definierst du „hoheitliche Maßnahme“ und „Außenwirkung“ in § 35 S. 1 VwVfG?', '**Hoheitliche Maßnahme**: Jedes zweckgerichtete hoheitliche Handeln mit **Erklärungswert**. **Außenwirkung**: Regelung kommt **außerhalb der Verwaltung** (z. B. bei Privatperson) zum Tragen.'),
+        mkCard('c17', 5, 'Definition', 'Wie lautet die exakte Klausur-Definition der „Regelung“ (§ 35 S. 1 VwVfG)?', 'Das **einseitige und unmittelbare Herbeiführen einer Rechtsfolge** (Begründung, Änderung, Aufhebung oder verbindliche Feststellung von Rechten/Pflichten).'),
+        mkCard('c18', 5, 'Definition', 'Unterschied zwischen Einzelfall (§ 35 S. 1) und Allgemeinverfügung (§ 35 S. 2 VwVfG)?', '**Einzelfall (S. 1)**: Konkret-individuelle Regelung (konkreter Sachverhalt für bestimmte Person). **Allgemeinverfügung (S. 2)**: Konkret-generelle Regelung (bestimmbarer Personenkreis oder Sacheigenschaft, z. B. Verkehrszeichen).'),
+        mkCard('c19', 5, 'Definition', 'Wie wird der begünstigende VA (§ 48 Abs. 1 S. 2 VwVfG) vom belastenden VA abgegrenzt?', '**Begünstigend**: Begründet oder bestätigt ein Recht oder einen rechtlich erheblichen Vorteil. **Belastend (nicht begünstigend)**: Greift in Rechte ein (insb. Art. 2 I, Art. 12 I oder Art. 14 GG).'),
+
+        // --- VWR 6 (5) ---
+        mkCard('c20', 6, 'Definition', 'Was regeln § 37 Abs. 1 und § 37 Abs. 2 S. 1 VwVfG?', '**§ 37 Abs. 1**: Inhaltliche **Bestimmtheit** (materiell!). **§ 37 Abs. 2 S. 1**: Grundsatz der **Formfreiheit** (schriftlich, elektronisch, mündlich oder konkludent, soweit Spezialgesetz nichts anderes verlangt).'),
+        mkCard('c21', 6, 'Falle', 'Begründung (§ 39 Abs. 1 VwVfG): Reicht eine allgemeine Floskel wie „Nach eingehender Prüfung bleibt nur die Aufhebung“?', '**Nein!** Nach § 39 Abs. 1 S. 2 müssen die **wesentlichen tatsächlichen und rechtlichen Gründe** des Einzelfalls (z. B. zur Zuverlässigkeit) mitgeteilt werden. Lapidare Floskeln = Begründungsfehler!'),
+        mkCard('c22', 6, 'Falle', 'Wie und bis wann können fehlende Begründung oder Anhörung geheilt werden (§ 45 VwVfG)?', 'Nach **§ 45 Abs. 1 Nr. 2** (Begründung) und **Nr. 3** (Anhörung) heilbar **bis zum Abschluss der letzten Tatsacheninstanz** eines Gerichtsverfahrens (§ 45 Abs. 2) – insbesondere durch ausführlichen **Widerspruchsbescheid**!'),
+        mkCard('c23', 6, 'Falle', 'Klausurfalle: Welche Rechtsfolge hat eine fehlende oder fehlerhafte Rechtsbehelfsbelehrung (§ 37 VI VwVfG, § 58 VwGO)?', 'Führt **NICHT zur formellen Rechtswidrigkeit** des VA! Einzige Fehlerfolge: Die Rechtsbehelfsfrist verlängert sich von 1 Monat auf **1 Jahr (§ 58 Abs. 2 VwGO)**.'),
+        mkCard('c24', 6, 'Definition', 'Wann wird ein fehlerhafter VA wirksam (§ 43) und wann ist er nichtig (§ 44 VwVfG)?', 'Mit **Bekanntgabe (§ 43 I)** – auch rechtswidrige VA sind wirksam! Unwirksam ist nur ein **nichtiger VA (§ 43 III)**. Prüfreihenfolge **§ 44**: Abs. 2 (Positiv) → Abs. 3 (Negativ) → Abs. 1 (besonders schwer + offensichtlich).'),
+
+        // --- VWR 7 (4) ---
+        mkCard('c25', 7, 'Frist', '4-Tages-Fiktion (§ 41 Abs. 2 S. 1 VwVfG ab 2025): Was gilt, wenn der 4. Tag auf einen Sonntag fällt?', 'Nach **BVerwG (Fiktionslehre)** ist § 41 II 1 eine **Fiktion**, keine echte Frist → **§ 31 Abs. 3 VwVfG gilt NICHT** (auch analog nicht)! Bekanntgabe bleibt am Sonntag. *(BFH im Steuerrecht sieht das anders – im VWR BVerwG folgen!)*'),
+        mkCard('c26', 7, 'Frist', '4-Tages-Fiktion: Was passiert bei (a) früherem und (b) späterem tatsächlichen Zugang?', '(a) **Früherer Zugang**: **Unbeachtlich** – gesetzliche Fiktion bleibt bei Tag 4! (b) **Späterer Zugang (§ 41 Abs. 2 S. 3)**: Fiktion gilt nicht; der **tatsächliche Zugangstag** zählt (auch wenn Samstag/Sonntag!).'),
+        mkCard('c27', 7, 'Frist', 'Wann ist Bekanntgabe bei förmlicher Zustellung per Einschreiben mit Rückschein?', 'Gemäß **§ 41 Abs. 5 VwVfG i.V.m. § 4 Abs. 1 Alt. 2 VwZG** gilt der auf dem Rückschein **quittierte Übergabetag** als dokumentierter Bekanntgabetag (keine 4-Tages-Fiktion!).'),
+        mkCard('c28', 7, 'Frist', 'Schema Widerspruchsfrist (§ 70 I 1 VwGO) – und wann greift § 31 Abs. 3 S. 1 VwVfG?', '**Beginn**: Folgetag nach Bekanntgabe 0:00 Uhr (**§§ 79, 31 I VwVfG, § 187 I BGB**). **Ende**: Zahlengleicher Tag im Folgemonat 24:00 Uhr (**§ 188 II BGB**). **§ 31 III 1 / § 193 BGB** (Sa/So/Feiertag → Werktag) gilt **NUR fürs ENDE, nie für den Beginn!**'),
+
+        // --- VWR 8 (2) ---
+        mkCard('c29', 8, 'Schema', 'Nenne alle 5 Nebenbestimmungen (§ 36 Abs. 2 Nr. 1–5 VwVfG) mit den Kalle-Kaleu-Beispielen.', 'Nr. 1 **Befristung** („bis 31.10.“) • Nr. 2 **Bedingung** („bei Bauarbeiten erlischt“) • Nr. 3 **Widerrufsvorbehalt** („widerruflich“) • Nr. 4 **Auflage** („Reinigung Gehweg“) • Nr. 5 **Auflagenvorbehalt** („weitere Maßgaben“).'),
+        mkCard('c30', 8, 'Definition', 'Wann sind Nebenbestimmungen bei gebundenem VA (§ 36 I) vs. Ermessens-VA (§ 36 II) zulässig?', '**Gebundener VA (§ 36 I)**: Nur wenn durch Rechtsvorschrift zugelassen ODER um die gesetzlichen Voraussetzungen des VA sicherzustellen. **Ermessens-VA (§ 36 II)**: Nach pflichtgemäßem Ermessen.'),
+
+        // --- VWR 9 (3) ---
+        mkCard('c31', 9, 'Schema', 'Wie lautet der 3-stufige Rechtmäßigkeitsaufbau für Eingriffs-Verwaltungsakte?', '**I. Ermächtigungsgrundlage** (Art. 20 III GG + Norm) → **II. Formelle Rechtmäßigkeit** (6 Punkte) → **III. Materielle Rechtmäßigkeit** (1. Tatbestand, 2. Rechtsfolge).'),
+        mkCard('c32', 9, 'Schema', 'Nenne alle 6 Prüfungspunkte der formellen Rechtmäßigkeit (Punktegarant!).', '1. **Zuständigkeit** • 2. **Verfahren (§ 28)** • 3. **Form (§ 37 II)** • 4. **Begründung (§ 39 I)** • 5. **Bekanntgabe (§ 41)** • 6. **Rechtsbehelfsbelehrung (§ 37 VI, § 58 VwGO)**.'),
+        mkCard('c33', 9, 'Falle', 'Im Spezialgesetz steht „die zuständige Behörde kann …“. Wo prüfst du „zuständige Behörde“?', 'Ausschließlich in der **formellen Rechtmäßigkeit (Punkt 1: Zuständigkeit)** – **nicht** als materielles Tatbestandsmerkmal der Norm!'),
+
+        // --- VWR 10 (3) ---
+        mkCard('c34', 10, 'Definition', 'Unterschied zwischen Entschließungs- und Auswahlermessen?', '**Entschließungsermessen**: „Ob“ die Behörde überhaupt einschreitet. **Auswahlermessen**: „Wie“ (welches Mittel / welcher Umfang) und „Gegenüber wem“ (Adressat) gehandelt wird.'),
+        mkCard('c35', 10, 'Schema', 'Nenne alle 3 Ermessensfehler nach § 40 VwVfG.', '1. **Ermessensunterschreitung/-nichtgebrauch** (Spielraum verkannt) • 2. **Ermessensfehlgebrauch** (sachfremde/zweckwidrige Motive) • 3. **Ermessensüberschreitung** (gesetzlich unzulässige oder unverhältnismäßige Rechtsfolge).'),
+        mkCard('c36', 10, 'Schema', 'Nenne alle 4 Prüfungsstufen der Verhältnismäßigkeit (Ermessensgrenze).', '1. **Legitimer Zweck** • 2. **Geeignetheit** (Zweck zumindest gefördert) • 3. **Erforderlichkeit** (kein milderes, gleich effektives Mittel) • 4. **Angemessenheit** (Nachteil nicht erkennbar außer Verhältnis zum Ziel).'),
+
+        // --- VWR 11 (5) ---
+        mkCard('c37', 11, 'Schema', 'Wie lautet der Anspruchsaufbau (und was bedeutet „Umkehrschluss“ bei der AGL)?', '**I. Anspruchsgrundlage (AGL)** (oft im **Umkehrschluss**: „Erlaubnis ist zu erteilen, wenn kein Versagungsgrund vorliegt“) → **II. Formell** (Antrag + zust. Behörde) → **III. Materiell** (TB + RF).'),
+        mkCard('c38', 11, 'Definition', 'Wie lautet die 5-teilige Standarddefinition von „Gewerbe“?', 'Jede (1) **erlaubte**, (2) **auf Gewinnerzielung gerichtete**, (3) **auf Dauer angelegte**, (4) **selbstständige** Tätigkeit, die (5) **kein freier Beruf** (§ 18 EStG) ist.'),
+        mkCard('c39', 11, 'Definition', 'Wie lautet die Standarddefinition der gewerberechtlichen „Unzuverlässigkeit“?', 'Person bietet aufgrund von **Tatsachen** (mit **Gewerbebezug**) nach dem Gesamteindruck **nicht die Gewähr**, das Gewerbe künftig **ordnungsgemäß auszuüben** (negative Zukunftsprognose – **kein Schuldvorwurf**!).'),
+        mkCard('c40', 11, 'Falle', 'Müssen für „Tatsachen“ bei der Gewerbeuntersagung strafgerichtliche Urteile abgewartet werden?', '**Nein!** Strafverfahren können Jahre dauern – für eine effektive **Gefahrenabwehr** genügt es, dass die Verstöße als dem Beweis zugängliche Erkenntnisse feststehen.'),
+        mkCard('c41', 11, 'Falle', 'Unzuverlässigkeit: Was genügt NICHT – und zählt der Einfluss einer vorbestraften Geschäftsführerin?', '**Kein Grund**: Private Erbschaftssteuer, punktuelle private Ebay-Streitigkeiten oder 12 J. alte Trunkenheitsfahrt (kein Gewerbebezug!), 20 J. alte Jugendbagatelle (keine Prognose). **Zählt aber**: Maßgeblicher Einfluss unzuverlässiger Dritter (Aufsichtspflicht, *Kalle Kaleu*)!'),
+
+        // --- VWR 12 (8) ---
+        mkCard('c42', 12, 'Aufhebung', 'Was prüfst du bei jeder Aufhebung eines Verwaltungsakts als ALLERERSTES?', '**Vorprüfung Spezialgesetz (lex specialis)**: Greift eine fachgesetzliche Aufhebungsnorm (z. B. **§ 4 Abs. 1/2 ApoG**)? Erst wenn **nein**, sind §§ 48, 49 VwVfG anwendbar!'),
+        mkCard('c43', 12, 'Aufhebung', 'Was besagt die Kehrseitentheorie (actus contrarius) bei Aufhebungsbescheiden?', '1. Die **Ausgangsbehörde** ist auch für die Aufhebung zuständig. 2. Es gelten dieselben **Formvorschriften** wie für den Ausgangs-VA. 3. Die Aufhebung eines VA ist selbst wieder ein **VA**.'),
+        mkCard('c44', 12, 'Aufhebung', 'Besonderheiten bei § 48 Abs. 1 S. 1 VwVfG (Rücknahme eines belastenden rw VA)?', 'EGL über **Wesentlichkeitstheorie** (Art. 20 III GG); **keine Anhörung (§ 28)** & **keine RBB (§ 37 VI)** nötig (begünstigt Bürger); **KEINE Jahresfrist**; Ermessen (ex tunc oder ex nunc, ganz oder teilweise).'),
+        mkCard('c45', 12, 'Aufhebung', 'Prüfungsreihenfolge & Rechtsfolge bei § 48 Abs. 1 S. 2, Abs. 2 VwVfG (Geldleistungs-VA)?', 'Vertrauensschutz: **IMMER zuerst S. 3 Nr. 1–3** (Ausschlussgründe) prüfen! Nur wenn keiner greift → S. 2 (Verbrauch) & S. 1 (Abwägung). **Rechtsfolge bei S. 3**: Gem. **§ 48 Abs. 2 S. 4** i.d.R. Rücknahme **ex tunc** (im Regelfall gebunden!).'),
+        mkCard('c46', 12, 'Aufhebung', 'Wann liegt grob fahrlässige Unkenntnis nach § 48 Abs. 2 S. 3 Nr. 3 VwVfG vor (Fall Beihilfe)?', 'Wenn der Begünstigte **hinreichend rechtskundig** ist, um ohne Weiteres zu erkennen, dass der VA rechtswidrig ist/sein kann (z. B. **Doppelzahlung ohne zweiten Antrag** bei vorhandenem Problembewusstsein).'),
+        mkCard('c47', 12, 'Aufhebung', 'Jahresfrist (§ 48 Abs. 4 VwVfG): Wann beginnt sie (Streitstand) und wann gilt sie NICHT?', '**h.M.**: Volle Kenntnis des **zuständigen Sachbearbeiters** von ALLEN Tatsachen (inkl. Anhörung!). *a.A.*: Kenntnis der Behörde (§ 1 IV). **Gilt NICHT** bei belastenden VA (§ 48 I 1, § 49 I) und bei Arglist/Drohung/Bestechung (**§ 48 IV 2**).'),
+        mkCard('c48', 12, 'Aufhebung', 'Besonderheit bei § 48 Abs. 3 VwVfG (Rücknahme sonstiger begünstigender rw VA)?', 'Im Tatbestand sind **KEINE Vertrauensschutzüberlegungen** anzustellen (nur für den Vermögensausgleich relevant)! **Jahresfrist (§ 48 IV)** gilt; Rechtsfolge = **Ermessen** (ex tunc oder ex nunc).'),
+        mkCard('c49', 12, 'Aufhebung', 'Widerruf (§ 49 VwVfG – rm VA): Unterschiede zwischen Abs. 1, Abs. 2 und Abs. 3?', '**Abs. 1** (belastend): Ausschlussgründe, keine Frist, **nur ex nunc**. **Abs. 2** (begünstigend, Nr. 1–5; Nr. 5 = überragende Gemeinwohlinteressen): Jahresfrist, **nur ex nunc**. **Abs. 3** (Zweckverfehlung Geldleistung): **lex specialis zu Abs. 2**, Jahresfrist, **ex tunc UND ex nunc** möglich!'),
+
+        // --- VWR 13 (1) ---
+        mkCard('c50', 13, 'Schema', 'Ablauf des Widerspruchsverfahrens (§§ 68, 70, 72, 73 VwGO) & Bezug zu § 45 VwVfG?', 'Widerspruch binnen 1 Monat (§ 70; 1 Jahr bei falscher RBB § 58 II) → **Abhilfeprüfung (§ 72)** Ausgangsbehörde → bei Nichtabhilfe **Widerspruchsbescheid (§ 73)** (dort **Heilung** nach § 45 I Nr. 2/3 möglich!).'),
+
+        // --- VWR 14 (1) ---
+        mkCard('c51', 14, 'Definition', 'Nenne die 3 Zwangsmittel der Vollstreckung sowie den Unterschied gestrecktes Verfahren vs. Sofortvollzug.', '**3 Zwangsmittel**: Ersatzvornahme, Zwangsgeld, unmittelbarer Zwang. **Gestrecktes Verfahren**: Setzt wirksamen Grund-VA voraus. **Sofortvollzug**: Ohne vorherigen Grund-VA bei gegenwärtiger Gefahr.'),
+
+        // --- VWR 15 (1) ---
+        mkCard('c52', 15, 'Schema', 'Bestehens-Regel Modul 1: Wie viele Bewertungspunkte brauchst du für 4,0 – und wo liegen die sichersten Punkte?', '**50 / 100 BP = 4,0** (§ 40 GntZollDVDV). **EGL + Formelle Rechtmäßigkeit** bringen oft bis zu **48/100 BP**! Zusammen mit Fristberechnung & Standarddefinitionen ist das Bestehen gesichert.')
+      ];
+
+      // 36 exact exam norms across VWR 1–15
+      const DEFAULT_NORMS = [
+        { id: 'n01', vwr: 1, cat: 'Grundlagen/VA', norm: 'Art. 20 Abs. 3 GG', meaning: 'Gesetzmäßigkeit der Verwaltung: Vorrang und Vorbehalt des Gesetzes (und Verhältnismäßigkeit).', usage: 'Pflicht-Einstieg bei I. EGL: Jede belastende Maßnahme bedarf einer gesetzlichen Grundlage.' },
+        { id: 'n02', vwr: 1, cat: 'Grundlagen/VA', norm: 'Art. 2 Abs. 1 / Art. 12 Abs. 1 GG', meaning: 'Allgemeine Handlungsfreiheit (Art. 2 I) und Berufsfreiheit (Art. 12 I).', usage: 'Begründung des Grundrechtseingriffs (= belastender VA) bei I. EGL und § 28 I VwVfG.' },
+        { id: 'n03', vwr: 3, cat: 'Grundlagen/VA', norm: '§ 1 Abs. 4 VwVfG', meaning: 'Funktionaler Behördenbegriff: Jede Stelle, die Aufgaben öffentlicher Verwaltung wahrnimmt.', usage: 'Immer zitieren beim VA-Merkmal „Behörde“ (§ 35 S. 1) und beim Streitstand zu § 48 IV.' },
+        { id: 'n04', vwr: 4, cat: 'Grundlagen/VA', norm: '§ 9 VwVfG', meaning: 'Legaldefinition des Verwaltungsverfahrens (nach außen wirkend auf VA oder ÖR-Vertrag).', usage: 'Eröffnung des Anwendungsbereichs für Verfahrensvorschriften (§§ 9 ff. VwVfG).' },
+        { id: 'n05', vwr: 4, cat: 'Formell/Fehler', norm: '§ 13 Abs. 1 Nr. 2 VwVfG', meaning: 'Beteiligter ist u. a. derjenige, an den die Behörde den Verwaltungsakt richten will oder gerichtet hat.', usage: 'Bei der Anhörung (§ 28 Abs. 1) immer mitzitieren, um die Beteiligtenstellung zu belegen.' },
+        { id: 'n06', vwr: 4, cat: 'Formell/Fehler', norm: '§ 24 VwVfG', meaning: 'Untersuchungsgrundsatz: Sachverhaltsermittlung von Amts wegen inkl. günstiger Umstände (Abs. 2).', usage: 'Verfahrensmaßstab bei unzureichender behördlicher Sachverhaltsaufklärung.' },
+        { id: 'n07', vwr: 4, cat: 'Formell/Fehler', norm: '§ 28 Abs. 1 VwVfG', meaning: 'Anhörungspflicht vor Erlass eines VA, der in Rechte eines Beteiligten eingreift.', usage: 'Kernpunkt II. 2. Verfahren – Gelegenheit zur Äußerung reicht, Schweigen schadet nicht.' },
+        { id: 'n08', vwr: 4, cat: 'Formell/Fehler', norm: '§ 28 Abs. 2 Nr. 1 VwVfG', meaning: 'Entbehrlichkeit der Anhörung bei Gefahr im Verzug (Alt. 1) oder im öffentlichen Interesse (Alt. 2).', usage: 'Strenger Maßstab! Wenn Postlaufzeit abgewartet wurde, wäre telefonische Anhörung möglich gewesen.' },
+        { id: 'n09', vwr: 4, cat: 'Formell/Fehler', norm: '§ 29 VwVfG', meaning: 'Akteneinsichtsrecht der Beteiligten im laufenden Verwaltungsverfahren.', usage: 'Wichtiges Verfahrensrecht neben Anhörung und Untersuchungsgrundsatz.' },
+        { id: 'n10', vwr: 5, cat: 'Grundlagen/VA', norm: '§ 35 S. 1 VwVfG', meaning: 'Legaldefinition des Verwaltungsakts (6 Tatbestandsmerkmale).', usage: 'Aufgabe „Liegt ein VA vor?“ – alle 6 Merkmale einzeln definieren und subsumieren.' },
+        { id: 'n11', vwr: 5, cat: 'Grundlagen/VA', norm: '§ 35 S. 2 VwVfG', meaning: 'Allgemeinverfügung: Konkret-generelle Regelung (bestimmbarer Personenkreis / Sacheigenschaft).', usage: 'Abgrenzung Einzelfall-VA (S. 1) vs. Allgemeinverfügung (S. 2) vs. Rechtsnorm.' },
+        { id: 'n12', vwr: 6, cat: 'Formell/Fehler', norm: '§ 37 Abs. 1, Abs. 2 S. 1 & Abs. 6 VwVfG', meaning: 'Inhaltliche Bestimmtheit (Abs. 1), Formfreiheit (Abs. 2 S. 1) und Rechtsbehelfsbelehrung (Abs. 6).', usage: 'Abs. 2 & 6 in der formellen Rm-keit; Abs. 1 in der materiellen Rm-keit.' },
+        { id: 'n13', vwr: 6, cat: 'Formell/Fehler', norm: '§ 39 Abs. 1 VwVfG', meaning: 'Begründungspflicht für schriftliche/elektronische VA: wesentliche tatsächliche & rechtliche Gründe.', usage: 'Formelle Rm-keit Punkt 4 – lapidare Standardfloskeln reichen nicht!' },
+        { id: 'n14', vwr: 6, cat: 'Formell/Fehler', norm: '§ 43 Abs. 1–3 VwVfG', meaning: 'Wirksamkeit mit Bekanntgabe (Abs. 1), Fortbestand (Abs. 2), Nichtigkeit = unwirksam (Abs. 3).', usage: 'Klarstellung, dass auch ein rechtswidriger VA wirksam ist, solange er nicht nichtig ist.' },
+        { id: 'n15', vwr: 6, cat: 'Formell/Fehler', norm: '§ 44 VwVfG', meaning: 'Nichtigkeit eines VA: Abs. 2 (Positivkatalog) → Abs. 3 (Negativkatalog) → Abs. 1 (schwer & offensichtlich).', usage: 'Prüfung bei besonders krassen Fehlern sowie Vorprüfung vor Heilung nach § 45.' },
+        { id: 'n16', vwr: 6, cat: 'Formell/Fehler', norm: '§ 45 Abs. 1 Nr. 2/3 & Abs. 2 VwVfG', meaning: 'Heilung fehlender Begründung (Nr. 2) oder Anhörung (Nr. 3) bis Abschluss letzte Tatsacheninstanz (Abs. 2).', usage: 'Unverzichtbar bei Form-/Verfahrensfehlern, z. B. Nachholung im Widerspruchsbescheid.' },
+        { id: 'n17', vwr: 6, cat: 'Fristen', norm: '§ 58 Abs. 1 & 2 VwGO', meaning: 'RBB-Pflicht (Abs. 1); bei fehlender/fehlerhafter RBB gilt 1-Jahres-Frist statt 1 Monat (Abs. 2).', usage: 'Klausurfalle: Fehlerhafte RBB macht den VA NICHT formell rechtswidrig!' },
+        { id: 'n18', vwr: 7, cat: 'Fristen', norm: '§ 41 Abs. 1, II 1, II 3 & V VwVfG', meaning: 'Bekanntgabe (I), 4-Tages-Fiktion Post Inland (II 1), späterer Zugang zählt (II 3), Verweis VwZG (V).', usage: 'Basis jeder Fristberechnung (BVerwG: Fiktion → § 31 III gilt nicht!).' },
+        { id: 'n19', vwr: 7, cat: 'Fristen', norm: '§ 31 Abs. 1 & Abs. 3 S. 1 VwVfG', meaning: 'Verweis auf §§ 187 ff. BGB (Abs. 1); Fristende an Sa/So/Feiertag → nächster Werktag (Abs. 3 S. 1).', usage: 'Lex specialis zu § 193 BGB – gilt nur fürs FristENDE, nie für Fristbeginn oder Fiktion!' },
+        { id: 'n20', vwr: 7, cat: 'Fristen', norm: '§ 79 VwVfG', meaning: 'Anwendbarkeit des VwVfG im förmlichen Rechtsbehelfsverfahren (Widerspruchsverfahren).', usage: 'Brückennorm in der Zitierkette: §§ 79, 31 Abs. 1 VwVfG i.V.m. §§ 187 ff. BGB.' },
+        { id: 'n21', vwr: 7, cat: 'Fristen', norm: '§ 70 Abs. 1 S. 1 VwGO', meaning: 'Widerspruchsfrist beträgt 1 Monat nach Bekanntgabe (schriftlich oder zur Niederschrift).', usage: 'Einstiegsnorm und Fristdauer jeder Widerspruchsfrist-Prüfung.' },
+        { id: 'n22', vwr: 7, cat: 'Fristen', norm: '§§ 187 Abs. 1, 188 Abs. 2, 193 BGB', meaning: 'Ereignistag zählt nicht (§ 187 I), Ende zahlengleicher Tag (§ 188 II), Sa/So/Feiertag (§ 193).', usage: 'Rechnerische Bestimmung von Beginn (0:00) und Ende (24:00) der Monats- und Jahresfrist.' },
+        { id: 'n23', vwr: 7, cat: 'Fristen', norm: '§ 4 Abs. 1 Alt. 2 VwZG', meaning: 'Förmliche Zustellung durch die Post mittels Einschreiben mit Rückschein.', usage: 'Dokumentierter Bekanntgabetag = quittierter Übergabetag auf dem Rückschein.' },
+        { id: 'n24', vwr: 8, cat: 'Ermessen/NB', norm: '§ 36 Abs. 1 & Abs. 2 Nr. 1–5 VwVfG', meaning: 'Nebenbestimmungen: gebundener VA (Abs. 1) vs. 5 Arten beim Ermessens-VA (Abs. 2 Nr. 1–5).', usage: 'Zuordnung von Befristung, Bedingung, Widerrufsvorbehalt, Auflage und Auflagenvorbehalt.' },
+        { id: 'n25', vwr: 9, cat: 'Rechtsschutz/Spezial', norm: '§ 35 Abs. 1 S. 1 GewO', meaning: 'Gewerbeuntersagung bei Unzuverlässigkeit zum Schutz der Allgemeinheit/Beschäftigten (gebunden: „ist“).', usage: 'Klassiker-EGL für Eingriffs-VA im Rechtmäßigkeitsaufbau (Fall Gewerbeuntersagung).' },
+        { id: 'n26', vwr: 10, cat: 'Ermessen/NB', norm: '§ 40 VwVfG', meaning: 'Ermessensausübung entsprechend Zweck der Ermächtigung und innerhalb gesetzlicher Grenzen.', usage: 'Prüfmaßstab für Ermessensunterschreitung, -fehlgebrauch und -überschreitung (VHM).' },
+        { id: 'n27', vwr: 10, cat: 'Rechtsschutz/Spezial', norm: '§ 31a Abs. 1 S. 1 StVZO', meaning: 'Fahrtenbuchanordnung gegenüber Halter nach unaufgeklärtem Verkehrsverstoß („kann“ = Ermessen).', usage: 'Klassiker-EGL für Ermessens- & Verhältnismäßigkeitsprüfung (Fall Fahrtenbuch).' },
+        { id: 'n28', vwr: 11, cat: 'Rechtsschutz/Spezial', norm: '§ 34a Abs. 1 S. 1 & S. 3 GewO', meaning: 'Bewachungserlaubnis ist im Umkehrschluss zu erteilen, wenn kein Versagungsgrund (Nr. 1–4) vorliegt.', usage: 'Anspruchsgrundlage im Anspruchsaufbau (Altklausur Bewachungserlaubnis).' },
+        { id: 'n29', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 48 Abs. 1 S. 1 VwVfG', meaning: 'Rücknahme eines rechtswidrigen, belastenden VA (auch nach Unanfechtbarkeit, keine Frist, Ermessen).', usage: 'EGL über Wesentlichkeitstheorie; keine Anhörung & keine RBB erforderlich.' },
+        { id: 'n30', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 48 Abs. 1 S. 2 & Abs. 2 S. 1–4 VwVfG', meaning: 'Rücknahme eines rw begünstigenden Geld-/Sachleistungs-VA (Vertrauensschutz S. 3→2→1; S. 4 ex tunc).', usage: 'Fall Beihilfe: erst S. 3 Nr. 1–3 prüfen; bei grober Fahrlässigkeit S. 4 = Regelfall ex tunc!' },
+        { id: 'n31', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 48 Abs. 3 VwVfG', meaning: 'Rücknahme sonstiger rw begünstigender VA – Vermögensausgleich, kein Vertrauensschutz im TB.', usage: 'Rücknahme von Erlaubnissen/Genehmigungen ohne Spezialgesetz (Ermessen + Jahresfrist).' },
+        { id: 'n32', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 48 Abs. 4 VwVfG', meaning: 'Jahresfrist ab Kenntnis der Tatsachen für begünstigende VA (S. 2: Ausnahme bei § 48 II 3 Nr. 1).', usage: 'Streitstand h.M. zuständiger Sachbearbeiter vs. a.A. Behörde (§ 1 IV); gilt auch über § 49 II/III.' },
+        { id: 'n33', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 49 Abs. 1 VwVfG', meaning: 'Widerruf eines rechtmäßigen, belastenden VA nur mit Wirkung ex nunc (Ausschlussgründe, keine Frist).', usage: 'EGL über Wesentlichkeitstheorie; kein Widerruf, wenn gleicher VA erneut erlassen werden müsste.' },
+        { id: 'n34', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 49 Abs. 2 Nr. 1–5 VwVfG', meaning: 'Widerruf eines rm begünstigenden VA nur ex nunc bei Widerrufsgrund Nr. 1–5 + Jahresfrist (S. 2).', usage: 'Nr. 5 „schwere Nachteile für das Gemeinwohl“ = überragende Interessen (hohe Hürde!).' },
+        { id: 'n35', vwr: 12, cat: 'Aufhebung §§ 48/49', norm: '§ 49 Abs. 3 VwVfG', meaning: 'Widerruf zweckgebundener Geld-/Sachleistung bei Zweckverfehlung/Auflagenverstoß (ex tunc/ex nunc).', usage: 'Lex specialis zu § 49 Abs. 2; einziger Widerruf mit möglicher Rückwirkung (ex tunc)!' },
+        { id: 'n36', vwr: 12, cat: 'Rechtsschutz/Spezial', norm: '§ 4 Abs. 1 & Abs. 2 ApoG', meaning: 'Spezialgesetzliche Rücknahme (Abs. 1: Mangel bei Erteilung) und Widerruf (Abs. 2: nachträglicher Wegfall).', usage: 'Musterbeispiel für Vorprüfung lex specialis vor §§ 48, 49 VwVfG (Altklausur SoSe 2024).' },
+        { id: 'n37', vwr: 13, cat: 'Rechtsschutz/Spezial', norm: '§ 68 VwGO', meaning: 'Erforderlichkeit des Vorverfahrens (Widerspruch) vor Anfechtungs- und Verpflichtungsklage.', usage: 'Einordnung der Statthaftigkeit des Widerspruchs im Überblick (VWR 13).' }
+      ];
+
+      // 8 complete Gutachten-Baukästen from official HS-Bund solutions (with {{cloze}} markers)
+      const DEFAULT_PHRASES = [
+        {
+          id: 'ph-1', vwr: 2,
+          title: '1. Gutachtenstil & Obersätze',
+          subtitle: 'Saubere 4-Schritt-Struktur für jeden einzelnen Prüfungspunkt',
+          blocks: [
+            {
+              label: 'Obersatz (Hypothese im Konjunktiv II)',
+              text: 'Fraglich ist, ob {{[Maßnahme]}} rechtmäßig ist. Dies ist der Fall, wenn sie auf einer {{Ermächtigungsgrundlage}} beruht sowie {{formell}} und {{materiell rechtmäßig}} ist. [Anspruch:] {{[Name]}} könnte einen Anspruch auf Erteilung von {{[VA]}} haben.'
+            },
+            {
+              label: 'Definition → Subsumtion → Zwischenergebnis',
+              text: 'Unter {{[Merkmal]}} versteht man {{[Definition]}}. Vorliegend {{[konkreten Sachverhalt einfügen]}}. Damit erfüllt {{[Name]}} die genannten Voraussetzungen. Folglich / Mithin {{liegt das Merkmal vor / ist der Bescheid rechtmäßig}}.'
+            }
+          ]
+        },
+        {
+          id: 'ph-2', vwr: 5,
+          title: '2. VA-Prüfung (§ 35 S. 1 VwVfG – alle 6 Merkmale)',
+          subtitle: 'Original-Definitionen aus der HS-Bund-Lösung „Gewerbeuntersagung“',
+          blocks: [
+            {
+              label: 'Obersatz + 1. Hoheitliche Maßnahme + 2. Behörde',
+              text: 'Bei der Verfügung könnte es sich um einen Verwaltungsakt gem. {{§ 35 S. 1 VwVfG}} handeln. Unter einer {{hoheitlichen Maßnahme}} versteht man jedes zweckgerichtete hoheitliche Handeln mit {{Erklärungswert}} (+). Eine {{Behörde}} ist gemäß {{§ 1 Abs. 4 VwVfG}} jede Stelle, die Aufgaben der {{öffentlichen Verwaltung}} wahrnimmt (+).'
+            },
+            {
+              label: '3. Öffentliches Recht + 4. Regelung',
+              text: 'Nach der {{modifizierten Subjektstheorie}} liegt eine Maßnahme auf dem Gebiet des {{öffentlichen Rechts}} vor, wenn die streitentscheidende Norm ausschließlich einen {{Träger hoheitlicher Gewalt}} zum Handeln berechtigt oder verpflichtet (+). Unter einer {{Regelung}} ist das einseitige und unmittelbare Herbeiführen einer {{Rechtsfolge}} zu verstehen (+).'
+            },
+            {
+              label: '5. Einzelfall + 6. Außenwirkung + Ergebnis',
+              text: 'Ein {{Einzelfall}} ist anzunehmen, wenn ein {{konkreter Sachverhalt}} individuell für eine bestimmte Person geregelt wird ({{konkret-individuelle Regelung}}) (+). {{Außenwirkung}} entfaltet die Maßnahme, wenn die Regelung {{außerhalb der Verwaltung}} zum Tragen kommt (+). Folglich liegt ein Verwaltungsakt gem. {{§ 35 S. 1 VwVfG}} vor.'
+            }
+          ]
+        },
+        {
+          id: 'ph-3', vwr: 6,
+          title: '3. Formelle Rechtmäßigkeit (Punktegarant: 6 Schritte + Heilung & RBB)',
+          subtitle: 'Bringt in HS-Bund-Klausuren oft 30–35/100 BP – komplett ausformuliert',
+          blocks: [
+            {
+              label: '1. Zuständigkeit (inkl. Kehrseitentheorie) & 2. Verfahren (§ 28 + § 45 I Nr. 3)',
+              text: '1. {{Zuständigkeit}}: Es müsste die sachlich, örtlich und instanziell zuständige Behörde gehandelt haben [bei Aufhebung: Nach der {{Kehrseitentheorie}} ist die zuständige Ausgangsbehörde auch für die Aufhebung zuständig]. 2. {{Verfahren}}: Gem. {{§ 28 Abs. 1 VwVfG}} ist dem Beteiligten ({{§ 13 Abs. 1 Nr. 2 VwVfG}}) vor Erlass eines belastenden VA Gelegenheit zur Äußerung zu geben [Schweigen unschädlich]. Bei fehlender Anhörung: Prüfung Entbehrlichkeit gem. {{§ 28 Abs. 2 Nr. 1 VwVfG}} (strenger Maßstab!) sowie ggf. {{Heilung}} gem. {{§ 45 Abs. 1 Nr. 3, Abs. 2 VwVfG}} bis zum Abschluss der letzten Tatsacheninstanz.'
+            },
+            {
+              label: '3. Form (§ 37 II) & 4. Begründung (§ 39 I + Heilung § 45 I Nr. 2)',
+              text: '3. {{Form}}: Nach dem Grundsatz der Formfreiheit ({{§ 37 Abs. 2 S. 1 VwVfG}}) kann der VA schriftlich, elektronisch, mündlich oder konkludent ergehen, sofern kein Spezialgesetz eine besondere Form vorschreibt [bei Aufhebung: {{Kehrseitentheorie}}]. 4. {{Begründung}}: Ein schriftlicher VA ist gem. {{§ 39 Abs. 1 S. 1, 2 VwVfG}} unter Mitteilung der wesentlichen tatsächlichen und rechtlichen Gründe zu begründen (lapidare Floskeln genügen nicht!). Ein Begründungsmangel wird gem. {{§ 45 Abs. 1 Nr. 2, Abs. 2 VwVfG}} geheilt, wenn die Begründung (z. B. im {{Widerspruchsbescheid}}) vollständig nachgeholt wird.'
+            },
+            {
+              label: '5. Bekanntgabe (§ 41 I) & 6. Rechtsbehelfsbelehrung (§ 37 VI, § 58 VwGO)',
+              text: '5. {{Bekanntgabe}}: Der Bescheid wurde dem Adressaten gem. {{§ 41 Abs. 1 S. 1 VwVfG}} ordnungsgemäß bekanntgegeben. 6. {{Rechtsbehelfsbelehrung}}: Schriftlichen VA ist gem. {{§ 37 Abs. 6 VwVfG, § 58 Abs. 1 VwGO}} eine RBB beizufügen (Rechtsbehelf, Behörde, Frist). Eine fehlende oder fehlerhafte RBB führt jedoch {{nicht zur formellen Rechtswidrigkeit}}, sondern lediglich zur Verlängerung der Frist auf {{ein Jahr (§ 58 Abs. 2 VwGO)}}.'
+            }
+          ]
+        },
+        {
+          id: 'ph-4', vwr: 7,
+          title: '4. Widerspruchsfrist & 4-Tages-Fiktion (ab 2025)',
+          subtitle: 'Nach BVerwG-Fiktionslehre + alle 4 offiziellen Abwandlungen',
+          blocks: [
+            {
+              label: 'Bekanntgabe: Einfacher Brief Inland (4-Tages-Fiktion, BVerwG)',
+              text: 'Gemäß {{§ 70 Abs. 1 S. 1 VwGO}} ist der Widerspruch innerhalb {{eines Monats}} nach Bekanntgabe einzulegen. Der per einfachem Brief im Inland versandte Bescheid gilt gem. {{§ 41 Abs. 2 S. 1 VwVfG}} am {{vierten Tag}} nach Aufgabe zur Post als bekanntgegeben (Vier-Tages-Fiktion). Nach der {{Fiktionslehre des BVerwG}} ist dies keine echte Frist, sodass {{§ 31 Abs. 3 VwVfG nicht gilt}} – auch ein Sonntag bleibt Bekanntgabetag.'
+            },
+            {
+              label: 'Abwandlungen: Früher / Später (§ 41 II 3) / Einschreiben (§ 4 VwZG)',
+              text: '[Früherer Zugang:] Ein tatsächlicher früherer Zugang lässt die gesetzliche Fiktion {{unbeachtet}} (es bleibt bei Tag 4). [Späterer Zugang:] Bei tatsächlichem späteren Zugang greift die Fiktion gem. {{§ 41 Abs. 2 S. 3 VwVfG}} nicht; maßgeblich ist der {{tatsächliche Zugangstag}} (auch wenn Sa/So). [Einschreiben mit Rückschein:] Gem. {{§ 41 Abs. 5 VwVfG i.V.m. § 4 Abs. 1 Alt. 2 VwZG}} ist der auf dem Rückschein {{quittierte Übergabetag}} der Bekanntgabetag.'
+            },
+            {
+              label: 'Monatsfrist & Wochenend-/Feiertagsverschiebung (§ 31 III 1)',
+              text: 'Die Widerspruchsfrist berechnet sich gem. {{§§ 79, 31 Abs. 1 VwVfG i.V.m. §§ 187 ff. BGB}}. Der Ereignistag (Bekanntgabe) wird gem. {{§ 187 Abs. 1 BGB}} nicht mitgerechnet; Fristbeginn ist der {{Folgetag um 0:00 Uhr}} (auch wenn Sa/So/Feiertag!). Die Monatsfrist endet gem. {{§ 188 Abs. 2 BGB}} mit Ablauf (24:00 Uhr) des zahlengleichen Tages im Folgemonat. Fällt das {{Fristende}} auf einen Samstag, Sonntag oder gesetzlichen Feiertag, endet sie gem. {{§ 31 Abs. 3 S. 1 VwVfG}} (bzw. § 193 BGB) erst am {{nächsten Werktag um 24:00 Uhr}}.'
+            }
+          ]
+        },
+        {
+          id: 'ph-5', vwr: 9,
+          title: '5. Rechtmäßigkeitsaufbau (Eingriffs-VA + Ermessen & VHM)',
+          subtitle: 'Komplettaufbau I–III inkl. 4-stufiger Verhältnismäßigkeit aus „Fahrtenbuch“',
+          blocks: [
+            {
+              label: 'I. Ermächtigungsgrundlage & II. Formelle Rechtmäßigkeit',
+              text: 'I. {{EGL}}: Nach dem {{Vorbehalt des Gesetzes (Art. 20 Abs. 3 GG)}} bedarf jedes belastende Verwaltungshandeln (Eingriff in {{Art. 2 Abs. 1 / Art. 12 Abs. 1 GG}}) einer gesetzlichen Ermächtigung. In Betracht kommt {{§ [Norm]}}. II. {{Formelle Rm-keit}}: 1. Zuständigkeit (gehört hierher, nicht in den TB!), 2. Verfahren (§ 28), 3. Form (§ 37 II), 4. Begründung (§ 39 I), 5. Bekanntgabe (§ 41), 6. RBB (§ 37 VI, § 58 VwGO).'
+            },
+            {
+              label: 'III. Materielle Rechtmäßigkeit: Tatbestand & Rechtsfolge (§ 40 VwVfG)',
+              text: 'III. 1. {{Tatbestandsvoraussetzungen}}: Einzelne Merkmale der EGL definieren und am Sachverhalt subsumieren. 2. {{Rechtsfolge}}: [Gebunden („ist zu“):] Keine Wahl der Behörde. [Ermessen („kann“):] Gem. {{§ 40 VwVfG}} muss das Ermessen entsprechend dem {{Zweck der Ermächtigung}} und innerhalb der {{gesetzlichen Grenzen}} ausgeübt werden (Prüfung: Unterschreitung, Fehlgebrauch, Überschreitung).'
+            },
+            {
+              label: 'Ermessensüberschreitung: 4 Stufen der Verhältnismäßigkeit',
+              text: '1. {{Legitimer Zweck}}: Ziel der Maßnahme benennen. 2. {{Geeignetheit}}: Maßnahme muss den Zweck zumindest {{fördern}}. 3. {{Erforderlichkeit}}: Es darf kein {{milderes, gleich geeignetes (gleich effektives) Mittel}} ersichtlich sein. 4. {{Angemessenheit}}: Der Nachteil für den Betroffenen darf zum erstrebten Ziel {{nicht erkennbar außer Verhältnis}} stehen (Rechtsgüterabwägung).'
+            }
+          ]
+        },
+        {
+          id: 'ph-6', vwr: 11,
+          title: '6. Anspruchsaufbau & Zuverlässigkeitsprüfung',
+          subtitle: 'Aus den Lösungen „Bewachungserlaubnis“ & „Kalle Kaleu“',
+          blocks: [
+            {
+              label: 'I. AGL (Umkehrschluss) & II. Formelle Anspruchsvoraussetzungen',
+              text: 'I. {{Anspruchsgrundlage}}: Ein Anspruch auf Erteilung könnte sich aus {{§ [Erlaubnisnorm] i.V.m. § [Versagungsnorm]}} ergeben. Danach ist die Erlaubnis zu erteilen, wenn kein Versagungsgrund vorliegt ({{Umkehrschluss}}). II. {{Formelle Anspruchsvoraussetzungen}}: 1. {{Antrag}} des Bürgers (+), 2. bei der {{zuständigen Behörde}} (+).'
+            },
+            {
+              label: 'III. 1. Gewerbe-Definition & 3-stufige Unzuverlässigkeitsprüfung',
+              text: '{{Gewerbe}} ist jede {{erlaubte}}, auf {{Gewinnerzielung}} gerichtete, auf {{Dauer}} angelegte, {{selbstständige}} Tätigkeit, die kein {{freier Beruf}} (§ 18 EStG) ist. Die {{Zuverlässigkeit}} (unbestimmter Rechtsbegriff, voll gerichtlich überprüfbar) fehlt, wenn aufgrund von {{Tatsachen}} (dem Beweis zugängliche Vorgänge) nach dem Gesamteindruck nicht die Gewähr für eine {{künftige ordnungsgemäße Ausübung}} geboten wird. Stets prüfen: 1. {{Tatsachen}} (Strafurteil nicht abzuwarten), 2. {{Gewerbebezug}} (Privatbereich reicht nicht!), 3. {{Negative Zukunftsprognose}} (kein Schuldvorwurf; auch Dritteinfluss/Aufsichtspflicht zählt).'
+            },
+            {
+              label: 'III. 2. Rechtsfolge & Ergebnis',
+              text: 'Liegen die Tatbestandsvoraussetzungen vor und besteht kein Versagungsgrund, {{ist}} die Erlaubnis zu erteilen ({{gebundene Entscheidung}}). Mithin hat {{[Name]}} einen {{Anspruch auf Erteilung}} [bzw. bei Versagungsgrund: keinen Anspruch].'
+            }
+          ]
+        },
+        {
+          id: 'ph-7', vwr: 12,
+          title: '7. Rücknahme (§ 48 VwVfG – alle 3 HS-Bund-Schemata)',
+          subtitle: 'Vorprüfung Spezialgesetz + Vergleichstabelle + Beihilfe-Gutachtentext',
+          tableHtml: `
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Variante</th>
+                    <th>Norm</th>
+                    <th>Besonderheiten TB / Formell</th>
+                    <th>Jahresfrist (§ 48 IV)</th>
+                    <th>Rechtsfolge</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Belastender rw VA</strong></td>
+                    <td>§ 48 Abs. 1 S. 1</td>
+                    <td>EGL über Wesentlichkeitstheorie; <strong>keine</strong> Anhörung (§ 28) &amp; <strong>keine</strong> RBB (§ 37 VI)</td>
+                    <td><strong>Nein</strong> (jederzeit!)</td>
+                    <td>Ermessen (ex tunc / ex nunc, ganz / teilweise)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Begünst. Geld-/Sachleistung</strong></td>
+                    <td>§ 48 Abs. 1 S. 1, 2, Abs. 2</td>
+                    <td>Vertrauensschutz zwingend in Folge: <strong>erst S. 3 Nr. 1–3</strong>, dann S. 2, dann S. 1</td>
+                    <td><strong>Ja</strong> (außer S. 3 Nr. 1 → Abs. 4 S. 2)</td>
+                    <td>Grds. Ermessen; aber <strong>S. 4 bei S. 3</strong>: i.d.R. ex tunc (gebunden!)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sonstiger begünst. rw VA</strong></td>
+                    <td>§ 48 Abs. 1 S. 1, 2, Abs. 3</td>
+                    <td><strong>Kein</strong> Vertrauensschutz im TB (nur Vermögensausgleich!)</td>
+                    <td><strong>Ja</strong></td>
+                    <td>Ermessen (ex tunc / ex nunc, ganz / teilweise)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          `,
+          blocks: [
+            {
+              label: 'Vorprüfung Spezialgesetz & I./II. Formelle Rm-keit (Kehrseitentheorie)',
+              text: 'Vorprüfung: Eine {{spezialgesetzliche Rücknahmenorm}} (z. B. § 4 Abs. 1 ApoG) geht § 48 VwVfG vor. Bei Fehlen kommt {{§ 48 Abs. 1 S. 1, 2, Abs. 2 [bzw. Abs. 3]}} VwVfG als EGL in Betracht (Art. 20 Abs. 3 GG; bei belastendem Ausgangs-VA über die {{Wesentlichkeitstheorie}}). Formell gilt für Zuständigkeit und Form die {{Kehrseitentheorie}}.'
+            },
+            {
+              label: 'III. 1. Tatbestand § 48 Abs. 2 (Vertrauensschutz & Jahresfrist-Streitstand)',
+              text: '1. Ausgangs-VA + {{Rechtswidrigkeit}} (ggf. inzident prüfen) + auch bei {{Unanfechtbarkeit}} + {{begünstigender VA}} (§ 48 I 2) + {{Geld-/teilbare Sachleistung}} (§ 48 II 1). 2. Vertrauensschutz: Vorrangig Ausschlussgründe {{§ 48 Abs. 2 S. 3 Nr. 1–3}} prüfen (Nr. 3: {{grob fahrlässige Unkenntnis}}, wenn hinreichend rechtskundig, um Rechtswidrigkeit ohne Weiteres zu erkennen). 3. {{Jahresfrist (§ 48 Abs. 4 S. 1)}}: Nach {{h.M.}} zählt vollständige Kenntnis des {{zuständigen Sachbearbeiters}} (inkl. Anhörung); a.A.: Kenntnis der Behörde (§ 1 IV VwVfG). Berechnung über § 31 I VwVfG, §§ 187 I, 188 II BGB, § 31 III 1 VwVfG.'
+            },
+            {
+              label: 'III. 2. Rechtsfolge § 48 Abs. 2 S. 4 (Regelfall-Modifikation)',
+              text: 'Nach {{§ 48 Abs. 2 S. 4 VwVfG}} wird der VA in den Fällen des {{§ 48 Abs. 2 S. 3}} in der Regel mit Wirkung für die Vergangenheit ({{ex tunc}}) zurückgenommen. Liegt ein Regelfall vor, wird das Ermessen aus Abs. 1 modifiziert – es liegt eine {{gebundene Entscheidung}} vor.'
+            }
+          ]
+        },
+        {
+          id: 'ph-8', vwr: 12,
+          title: '8. Widerruf (§ 49 VwVfG – alle 3 HS-Bund-Schemata)',
+          subtitle: 'Vorprüfung Spezialgesetz (§ 4 II ApoG) + Vergleichstabelle + Gutachtentext',
+          tableHtml: `
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Variante</th>
+                    <th>Norm</th>
+                    <th>Tatbestand-Kern</th>
+                    <th>Jahresfrist</th>
+                    <th>Rechtsfolge</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Belastender rm VA</strong></td>
+                    <td>§ 49 Abs. 1</td>
+                    <td>Ausschlussgründe (gleicher VA müsste neu ergehen / Selbstbindung Art. 3 I GG); keine Anhörung/RBB</td>
+                    <td><strong>Nein</strong></td>
+                    <td>Ermessen – <strong>nur ex nunc</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Begünstigender rm VA</strong></td>
+                    <td>§ 49 Abs. 2 Nr. 1–5</td>
+                    <td>Nr. 1 Vorbehalt, Nr. 2 Auflage, Nr. 3 neue Tatsachen, Nr. 4 Rechtsänderung, Nr. 5 schwere Nachteile Gemeinwohl</td>
+                    <td><strong>Ja</strong> (§ 49 II 2 i.V.m. § 48 IV)</td>
+                    <td>Ermessen – <strong>nur ex nunc</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Zweckgeb. Geld-/Sachleistung</strong></td>
+                    <td>§ 49 Abs. 3</td>
+                    <td><strong>Lex specialis zu Abs. 2!</strong> Zweckwidrige Verwendung oder Auflagenverstoß</td>
+                    <td><strong>Ja</strong> (§ 49 III 2 i.V.m. § 48 IV)</td>
+                    <td>Ermessen – <strong>ex tunc UND ex nunc</strong>!</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          `,
+          blocks: [
+            {
+              label: 'Vorprüfung Spezialgesetz & Tatbestand § 49 Abs. 2 / Abs. 3 VwVfG',
+              text: 'Vorprüfung: Eine {{spezialgesetzliche Widerrufsnorm}} (z. B. {{§ 4 Abs. 2 ApoG}} bei nachträglichem Wegfall der Zuverlässigkeit) geht § 49 VwVfG vor. Im VwVfG geht {{§ 49 Abs. 3}} dem {{§ 49 Abs. 2}} als lex specialis vor. TB: 1. {{Rechtmäßiger VA}}, 2. {{begünstigend}} (§ 48 I 2), 3. auch bei {{Unanfechtbarkeit}}, 4. Widerrufsgrund ({{§ 49 Abs. 2 Nr. 1–5}} – Nr. 5 erfordert {{überragende Interessen der Allgemeinheit}} – oder Zweckverfehlung nach {{Abs. 3}}), 5. {{Jahresfrist}} (§ 49 II 2 / III 2 i.V.m. § 48 IV).'
+            },
+            {
+              label: 'Rechtsfolge: Ex nunc (§ 49 I & II) vs. Ex tunc (§ 49 III)',
+              text: 'Die Behörde entscheidet nach pflichtgemäßem {{Ermessen}} („kann“). Bei {{§ 49 Abs. 1 und Abs. 2}} ist das Auswahlermessen eingeschränkt: Der Widerruf ist {{nur mit Wirkung für die Zukunft (ex nunc)}} zulässig. Nur in den Fällen des {{§ 49 Abs. 3 VwVfG}} ist der Widerruf auch {{mit Wirkung für die Vergangenheit (ex tunc)}} möglich.'
+            }
+          ]
+        }
+      ];
+
+      // 24 crisp mini-case drills based on official HS-Bund cases (12 in VWR 1–7, 12 in VWR 8–15)
+      const DEFAULT_DRILLS = [
+        // --- VWR 1–7 (12 Drills) ---
+        {
+          id: 'd01', vwr: 1, tag: 'Grundlagen',
+          title: 'Modifizierte Subjektstheorie (§ 35 I 1 GewO)',
+          caseText: 'Die Gewerbeaufsicht untersagt G gestützt auf § 35 Abs. 1 S. 1 GewO den Gebrauchtwagenhandel. In der Vorschrift wird ausdrücklich „die zuständige Behörde“ verpflichtet. Wie begründest du das öffentliche Recht?',
+          options: [
+            'Nach der modifizierten Subjektstheorie liegt öffentliches Recht vor, da § 35 I 1 GewO ausschließlich einen Träger hoheitlicher Gewalt berechtigt bzw. verpflichtet.',
+            'Da G Gebrauchtwagen an Privatpersonen verkauft, handelt es sich um Privatrecht.',
+            'Öffentliches Recht liegt nur vor, wenn beide Seiten Behörden sind.'
+          ],
+          correct: 0,
+          explain: 'Die modifizierte Subjektstheorie fragt, ob die streitentscheidende Norm ausschließlich einen Hoheitsträger („zuständige Behörde“) berechtigt oder verpflichtet → öffentliches Recht (+).'
+        },
+        {
+          id: 'd02', vwr: 2, tag: 'Normstruktur',
+          title: 'Unbestimmter Rechtsbegriff vs. Ermessen',
+          caseText: 'In einer Erlaubnisnorm steht: „Die Erlaubnis ist zu versagen, wenn der Antragsteller nicht die erforderliche Zuverlässigkeit besitzt.“ Ein Sachbearbeiter meint, bei „Zuverlässigkeit“ habe er weites Ermessen. Richtig?',
+          options: [
+            'Ja, jeder unbestimmte Rechtsbegriff eröffnet automatisch Behördenermessen nach § 40 VwVfG.',
+            'Nein! „Zuverlässigkeit“ ist ein unbestimmter Rechtsbegriff auf der Tatbestandsseite und voll gerichtlich überprüfbar; „ist zu versagen“ ist zudem eine gebundene Entscheidung.',
+            'Ja, aber nur ein Auswahlermessen.'
+          ],
+          correct: 1,
+          explain: 'Unbestimmte Rechtsbegriffe stehen im Tatbestand und unterliegen vollständiger gerichtlicher Überprüfung (kein Beurteilungsspielraum). Ermessen gibt es nur auf der Rechtsfolgenseite („kann“).'
+        },
+        {
+          id: 'd03', vwr: 3, tag: 'Handlungsformen',
+          title: 'Behörde (§ 1 IV) & Abgrenzung Realakt',
+          caseText: 'Ein Mitarbeiter der Stadtverwaltung gibt einem Bürger am Telefon eine unverbindliche Auskunft über Öffnungszeiten und mögliche Antragsunterlagen. Handelt es sich um einen Verwaltungsakt?',
+          options: [
+            'Ja, weil jede Handlung einer Behörde (§ 1 IV VwVfG) automatisch ein VA ist.',
+            'Nein, die unverbindliche Auskunft begründet oder ändert keine Rechte/Pflichten – es fehlt an einer Regelung; es liegt ein bloßer Realakt vor.',
+            'Ja, es ist eine Allgemeinverfügung nach § 35 S. 2 VwVfG.'
+          ],
+          correct: 1,
+          explain: 'Zwar handelt eine Behörde (§ 1 Abs. 4 VwVfG), aber eine bloße Auskunft führt nicht unmittelbar eine Rechtsfolge herbei → keine Regelung → Realakt.'
+        },
+        {
+          id: 'd04', vwr: 4, tag: 'Anhörung',
+          title: 'Fall Apothekenbetriebserlaubnis: Bürger schweigt',
+          caseText: 'Die Behörde teilt Apotheker H schriftlich die beabsichtigte Aufhebung seiner Betriebserlaubnis mit und gibt ihm Gelegenheit zur Stellungnahme. H äußert sich überhaupt nicht. Liegt ein Anhörungsfehler vor?',
+          options: [
+            'Ja, ohne tatsächliche Äußerung des Betroffenen ist § 28 Abs. 1 VwVfG verletzt.',
+            'Nein! Nach § 28 Abs. 1 VwVfG genügt es, dem Beteiligten Gelegenheit zur Äußerung zu geben – dass H schweigt, ist unerheblich.',
+            'Nur wenn H schriftlich auf die Anhörung verzichtet hat.'
+          ],
+          correct: 1,
+          explain: '§ 28 Abs. 1 VwVfG verlangt nur die Gelegenheit zur Stellungnahme. Macht der Beteiligte (§ 13 Abs. 1 Nr. 2) davon keinen Gebrauch, ist die Anhörung dennoch ordnungsgemäß.'
+        },
+        {
+          id: 'd05', vwr: 4, tag: 'Anhörung',
+          title: 'Fall Gewerbeuntersagung: Gefahr im Verzug bei Postversand?',
+          caseText: 'G verkauft verkehrsuntüchtige Gebrauchtwagen. Die Behörde verzichtet auf eine Anhörung wegen „Gefahr im Verzug“ (§ 28 II Nr. 1 Alt. 1), verschickt die Untersagung dann aber per normalem Brief. Wie ist das zu bewerten?',
+          options: [
+            'Da die Behörde die Postlaufzeit abwarten konnte, hätte sie G zuvor zumindest kurz telefonisch/mündlich anhören können → keine Gefahr im Verzug!',
+            'Gefahr im Verzug liegt immer vor, sobald Straßenverkehrsgefahren im Raum stehen.',
+            'Die Anhörung ist nur schriftlich zulässig, daher war ein Anruf unmöglich.'
+          ],
+          correct: 0,
+          explain: 'Strenger Maßstab bei § 28 Abs. 2 Nr. 1 VwVfG: Eine Anhörung ist formfrei (Telefonanruf/vor Ort möglich). Wer die Postlaufzeit abwartet, kann sich regelmäßig nicht auf Gefahr im Verzug berufen.'
+        },
+        {
+          id: 'd06', vwr: 5, tag: 'VA-Prüfung',
+          title: 'Fall Gewerbeuntersagung: Merkmal „Einzelfall“',
+          caseText: 'Die Gewerbeaufsicht untersagt dem G schriftlich den weiteren Betrieb seines Gebrauchtwagenhandels in Münster. Welcher Regelungstyp liegt beim VA-Merkmal „Einzelfall“ vor?',
+          options: [
+            'Abstrakt-generelle Regelung (Rechtsverordnung)',
+            'Konkret-generelle Regelung (Allgemeinverfügung, § 35 S. 2 VwVfG)',
+            'Konkret-individuelle Regelung (§ 35 S. 1 VwVfG): konkreter Sachverhalt für eine individuell bestimmte Person'
+          ],
+          correct: 2,
+          explain: 'Ein konkreter Sachverhalt (Betrieb des Gebrauchtwagenhandels in Münster) wird für eine bestimmte Einzelperson (G) geregelt = konkret-individuelle Einzelfallregelung (§ 35 S. 1 VwVfG).'
+        },
+        {
+          id: 'd07', vwr: 6, tag: 'Formell & Heilung',
+          title: 'Fall Apothekenbetriebserlaubnis: Lapidare Begründung & Widerspruchsbescheid',
+          caseText: 'Im Ausgangsbescheid steht nur: „Wegen der Vorwürfe bleibt nur die Aufhebung.“ Erst die Widerspruchsbehörde begründet im Widerspruchsbescheid erstmals ausführlich alle tatsächlichen und rechtlichen Punkte. Rechtsfolge?',
+          options: [
+            'Der Bescheid bleibt dauerhaft formell rechtswidrig, da die Ausgangsbehörde selbst begründen muss.',
+            'Der Begründungsmangel (§ 39 I) wurde durch die ausführliche Begründung im Widerspruchsbescheid gem. § 45 Abs. 1 Nr. 2, Abs. 2 VwVfG wirksam geheilt.',
+            'Der Bescheid ist wegen § 39 I nach § 44 VwVfG nichtig.'
+          ],
+          correct: 1,
+          explain: 'Lapidare Floskeln verletzen § 39 Abs. 1 VwVfG. Da keine Nichtigkeit (§ 44) vorliegt, heilt die vollständige Nachholung im Widerspruchsbescheid den Fehler gem. § 45 Abs. 1 Nr. 2, Abs. 2 VwVfG.'
+        },
+        {
+          id: 'd08', vwr: 6, tag: 'Klausurfalle RBB',
+          title: 'Fall Apothekenbetriebserlaubnis: Unvollständige RBB',
+          caseText: 'Im Bescheid steht als RBB nur: „Es steht Ihnen frei, die zulässigen Rechtsbehelfe einzulegen. Einzelheiten ergeben sich aus dem Gesetz.“ Welche Folge hat dieser Fehler?',
+          options: [
+            'Der Bescheid ist formell rechtswidrig und deshalb aufzuheben.',
+            'Der Bescheid bleibt formell rechtmäßig; es läuft lediglich die Jahresfrist statt der Monatsfrist (§ 58 Abs. 2 VwGO).',
+            'Die RBB ist wirksam, weil auf die Gesetze verwiesen wird.'
+          ],
+          correct: 1,
+          explain: 'Es fehlen Rechtsbehelf (Widerspruch), Frist und Einlegungsort (§ 58 I VwGO, § 37 VI VwVfG). Das macht den VA aber NICHT formell rechtswidrig, sondern löst nur die Jahresfrist des § 58 Abs. 2 VwGO aus!'
+        },
+        {
+          id: 'd09', vwr: 7, tag: 'Fristen',
+          title: '4-Tages-Fiktion endet am Sonntag (BVerwG)',
+          caseText: 'Ein Bescheid wird am Mittwoch, den 14.08. per einfachem Brief im Inland zur Post gegeben. Der 4. Tag danach ist Sonntag, der 18.08. Wann gilt der Bescheid nach der im VWR maßgeblichen BVerwG-Ansicht als bekanntgegeben?',
+          options: [
+            'Am Sonntag, den 18.08. (24:00 Uhr) – § 41 II 1 ist eine Fiktion, § 31 Abs. 3 VwVfG gilt nicht!',
+            'Erst am Montag, den 19.08., weil § 31 Abs. 3 VwVfG auf den nächsten Werktag verschiebt.',
+            'Am Samstag, den 17.08. (3-Tages-Fiktion).'
+          ],
+          correct: 0,
+          explain: 'Seit 2025 gilt die 4-Tages-Fiktion (§ 41 Abs. 2 S. 1 VwVfG). Nach BVerwG handelt es sich um eine Fiktion, keine echte Frist – § 31 Abs. 3 VwVfG darf nicht angewendet werden!'
+        },
+        {
+          id: 'd10', vwr: 7, tag: 'Fristen',
+          title: 'Fristberechnung Abwandlung 1: Früherer Zugang',
+          caseText: 'Aufgabe zur Post (einfacher Brief Inland) am Montag, den 12.08. (4. Tag = Freitag, 16.08.). Der Bürger findet den Brief aber bereits am Mittwoch, den 14.08. im Briefkasten. Wann beginnt die Widerspruchsfrist?',
+          options: [
+            'Am 15.08. um 0:00 Uhr, weil der tatsächliche Zugang immer vorgeht.',
+            'Am 17.08. um 0:00 Uhr – der frühere Zugang bleibt unbeachtlich, es bleibt bei der fingierten Bekanntgabe am 16.08. (§ 41 II 1 VwVfG).',
+            'Am 19.08. um 0:00 Uhr, weil der 17.08. ein Samstag ist.'
+          ],
+          correct: 1,
+          explain: 'Die 4-Tages-Fiktion (§ 41 II 1) lässt einen früheren Zugang unbeachtet (Bekanntgabe = 16.08.). Fristbeginn ist am Folgetag (17.08., 0:00 Uhr, § 187 I BGB) – auch wenn das ein Samstag ist!'
+        },
+        {
+          id: 'd11', vwr: 7, tag: 'Fristen',
+          title: 'Fristberechnung Abwandlung 2: Späterer Zugang am Samstag',
+          caseText: 'Aufgabe zur Post am Mo 12.08. (Fiktion wäre Fr 16.08.). Durch Postverzögerung erhält B den Brief erst am Samstag, den 17.08. Wann endet die einmonatige Widerspruchsfrist?',
+          options: [
+            'Am Montag, den 16.09. (Fiktion bleibt maßgeblich).',
+            'Am Dienstag, den 17.09. um 24:00 Uhr – bei späterem Zugang zählt gem. § 41 II 3 der tatsächliche Zugangstag (Sa 17.08.), Fristbeginn So 18.08. 0:00 Uhr.',
+            'Am Donnerstag, den 19.09., weil der 17.08. ein Samstag war und auf den 19.08. verschoben wird.'
+          ],
+          correct: 1,
+          explain: 'Bei späterem Zugang gilt gem. § 41 Abs. 2 S. 3 VwVfG der tatsächliche Zugangstag (17.08.). Dass der 17.08. ein Samstag ist, ist egal (§ 31 III gilt nicht für Bekanntgabe/Fristbeginn) → Ende Di 17.09., 24:00 Uhr.'
+        },
+        {
+          id: 'd12', vwr: 7, tag: 'Fristen',
+          title: 'Fristberechnung: Einschreiben & Fristende am Feiertag',
+          caseText: 'Fall A: Zustellung per Einschreiben mit Rückschein (quittiert am 13.08.). Fall B: Bekanntgabe am 14.04., der 14.05. ist Christi Himmelfahrt (Donnerstag). Was gilt?',
+          options: [
+            'Fall A: Bekanntgabe 13.08. (§ 41 V i.V.m. § 4 I Alt. 2 VwZG) → Fristende 13.09. | Fall B: Fristende verschiebt sich wegen Feiertag auf Fr 15.05. 24:00 Uhr (§ 31 III 1 VwVfG).',
+            'Fall A: 4-Tages-Fiktion (17.08.) | Fall B: Fristende bleibt 14.05.',
+            'In beiden Fällen gilt automatisch die 1-Jahres-Frist.'
+          ],
+          correct: 0,
+          explain: 'Beim Einschreiben mit Rückschein zählt der quittierte Übergabetag (§ 4 I Alt. 2 VwZG). Fällt das reguläre Fristende (§ 188 II BGB) auf Sa/So/Feiertag, verlängert § 31 Abs. 3 S. 1 VwVfG auf den nächsten Werktag 24:00 Uhr.'
+        },
+
+        // --- VWR 8–15 (12 Drills) ---
+        {
+          id: 'd13', vwr: 8, tag: 'Nebenbestimmungen',
+          title: 'Fall Kalle Kaleu: Reinigung vs. Bauarbeiten',
+          caseText: 'In der Sondernutzungserlaubnis stehen zwei Maßgaben: (1) „Der Gehweg ist täglich zu reinigen.“ (2) „Bei Bauarbeiten am Gehweg erlischt diese Erlaubnis.“ Wie ordnest du (1) und (2) nach § 36 Abs. 2 VwVfG ein?',
+          options: [
+            '(1) Auflage (§ 36 II Nr. 4 – zusätzliches Tun) • (2) Bedingung (§ 36 II Nr. 2 – ungewisses künftiges Ereignis).',
+            '(1) Bedingung (§ 36 II Nr. 2) • (2) Befristung (§ 36 II Nr. 1).',
+            '(1) Auflagenvorbehalt (§ 36 II Nr. 5) • (2) Widerrufsvorbehalt (§ 36 II Nr. 3).'
+          ],
+          correct: 0,
+          explain: 'Die Reinigungspflicht verlangt ein zusätzliches Tun = Auflage (§ 36 Abs. 2 Nr. 4). Ob Bauarbeiten stattfinden, ist ungewiss = auflösende Bedingung (§ 36 Abs. 2 Nr. 2).'
+        },
+        {
+          id: 'd14', vwr: 8, tag: 'Nebenbestimmungen',
+          title: 'Fall Kalle Kaleu: Die übrigen 3 Nebenbestimmungen',
+          caseText: 'Dieselbe Erlaubnis enthält: (A) „widerruflich“, (B) „bis zum 31. Oktober“, (C) „weitere Maßgaben bleiben vorbehalten“. Welche Nummern in § 36 Abs. 2 VwVfG treffen zu?',
+          options: [
+            '(A) Nr. 1 Befristung • (B) Nr. 2 Bedingung • (C) Nr. 4 Auflage',
+            '(A) Nr. 3 Widerrufsvorbehalt • (B) Nr. 1 Befristung • (C) Nr. 5 Auflagenvorbehalt',
+            '(A) Nr. 5 Auflagenvorbehalt • (B) Nr. 3 Widerrufsvorbehalt • (C) Nr. 2 Bedingung'
+          ],
+          correct: 1,
+          explain: 'Exakte Zuordnung aus Kalle Kaleu: „widerruflich“ = Nr. 3 Widerrufsvorbehalt; „bis 31. Oktober“ = Nr. 1 Befristung (fester Termin); „weitere Maßgaben“ = Nr. 5 Auflagenvorbehalt.'
+        },
+        {
+          id: 'd15', vwr: 9, tag: 'Aufbau-Falle',
+          title: 'Fall Fahrtenbuch: Wohin gehört „zuständige Behörde“?',
+          caseText: 'In § 31a Abs. 1 S. 1 StVZO heißt es: „Die nach Landesrecht zuständige Behörde kann gegenüber einem Fahrzeughalter die Führung eines Fahrtenbuchs anordnen.“ Wo prüfst du „zuständige Behörde“?',
+          options: [
+            'Ausschließlich bei II. 1. Formelle Rechtmäßigkeit (Zuständigkeit) – es ist kein materielles Tatbestandsmerkmal.',
+            'Zwingend nur unter III. 1. Materielle Tatbestandsvoraussetzungen.',
+            'Unter I. Ermächtigungsgrundlage.'
+          ],
+          correct: 0,
+          explain: 'Offizieller Lösungshinweis aus „Fahrtenbuch“: Das Merkmal „zuständige Behörde“ wird ausschließlich in der formellen Rechtmäßigkeit geprüft und gehört nicht in den materiellen Tatbestand.'
+        },
+        {
+          id: 'd16', vwr: 9, tag: 'Gewerberecht',
+          title: 'Fall Gewerbeuntersagung: Laufendes Strafverfahren ohne Urteil',
+          caseText: 'Gegen Gebrauchtwagenhändler G ermittelt die Staatsanwaltschaft wegen Betrugs mit manipulierten Unfallwagen; eine Verurteilung steht aber noch aus. Darf die Behörde diese Vorgänge schon als „Tatsachen“ für § 35 I 1 GewO nutzen?',
+          options: [
+            'Nein, wegen der Unschuldsvermutung muss erst ein rechtskräftiges Strafurteil abgewartet werden.',
+            'Ja! Im Ordnungsrecht geht es um effektive Gefahrenabwehr, nicht um Strafe – beweisbare Vorgänge genügen auch ohne abgeschlossenes Strafverfahren.',
+            'Nur wenn G ein schriftliches Geständnis unterschrieben hat.'
+          ],
+          correct: 1,
+          explain: 'Tatsachen sind dem Beweis zugängliche Erkenntnisse. Strafverfahren können Jahre dauern – für eine effektive Gefahrenabwehr muss die Gewerbeaufsicht kein Strafurteil abwarten.'
+        },
+        {
+          id: 'd17', vwr: 10, tag: 'Verhältnismäßigkeit',
+          title: 'Fall Fahrtenbuch: Warum ist eine 6-Monats-Anordnung nicht gleich geeignet?',
+          caseText: 'A erhält nach einer erheblichen Geschwindigkeitsüberschreitung (1 Punkt) mit seinem Motorrad eine 12-monatige Fahrtenbuchauflage. Er wendet ein, 6 Monate seien als milderes Mittel ausreichend. Wie prüfst du die Erforderlichkeit?',
+          options: [
+            'Nicht erforderlich – kürzere Dauer ist im Verkehrsrecht immer zwingend vorrangig.',
+            'Erforderlich (+): Bei einem Motorrad könnte eine 6-Monats-Frist komplett in die Winter-Abmeldezeit fallen und leerlaufen; zudem belastet es A bei Nichtbenutzung ohnehin nicht.',
+            'Bereits ungeeignet, da ein Fahrtenbuch keine Geschwindigkeit misst.'
+          ],
+          correct: 1,
+          explain: 'Geniale Argumentation aus der HS-Bund-Lösung „Fahrtenbuch“: Eine kürzere Laufzeit wäre beim Motorrad wegen saisonaler Abmeldung nicht gleich effektiv → milderes, gleich geeignetes Mittel (–) → erforderlich (+).'
+        },
+        {
+          id: 'd18', vwr: 11, tag: 'Anspruchsaufbau',
+          title: 'Altklausur Bewachungserlaubnis (§ 34a GewO): Zuverlässigkeit des R',
+          caseText: 'R beantragt eine Bewachungserlaubnis. Gegen ihn liegen vor: ein 20 Jahre alter Jugend-Ladendiebstahl (10 € Sonnenbrille), rückständige private Erbschaftssteuer und 2 private Ebay-Streitigkeiten. Hat R einen Anspruch?',
+          options: [
+            'Nein, jede frühere Straftat und jeder Steuerrückstand schließen die Zuverlässigkeit zwingend aus.',
+            'Ja! Die Erbschaftssteuer und Ebay-Fälle haben keinen Gewerbebezug; die 20 Jahre alte Jugend-Bagatelle trägt keine negative Zukunftsprognose → gebundener Anspruch (+)!',
+            'R hat nur einen Anspruch auf ermessensfehlerfreie Entscheidung.'
+          ],
+          correct: 1,
+          explain: 'Altklausur WiSe 24/25: Erforderlich ist stets Gewerbebezug + negative Zukunftsprognose. Private Steuer-/Zivilrechtsprobleme und 20 J. alte Jugendbagatellen genügen nicht → kein Versagungsgrund → gebundener Anspruch (+).'
+        },
+        {
+          id: 'd19', vwr: 11, tag: 'Anspruchsaufbau',
+          title: 'Fall Kalle Kaleu: Vorbestrafte Verlobte als Geschäftsführerin',
+          caseText: 'K beantragt eine Gaststättenerlaubnis (§ 2 I i.V.m. § 4 I 1 Nr. 1 GastG). Seine mehrfach (u. a. wegen Körperverletzung im Kneipenumfeld und Steuerhinterziehung) vorbestrafte Verlobte M soll als Geschäftsführerin arbeiten. Relevanz?',
+          options: [
+            'Irrelevant – es zählt ausschließlich das eigene Führungszeugnis des Antragstellers K.',
+            'Relevant! K verletzt seine Aufsichtspflicht, wenn er einer unzuverlässigen Dritten maßgeblichen Einfluss auf den Betrieb einräumt → Unzuverlässigkeit des K (+).',
+            'Relevant erst nach Eröffnung der Kneipe.'
+          ],
+          correct: 1,
+          explain: 'Nach h.M. (Lösung Kalle Kaleu) begründet der maßgebliche negative Einfluss eines Dritten (Geschäftsführerin) ernsthafte Zweifel an der ordnungsgemäßen Betriebsführung → Unzuverlässigkeit (+).'
+        },
+        {
+          id: 'd20', vwr: 12, tag: 'Aufhebung / Lex specialis',
+          title: 'Altklausur Apothekenbetriebserlaubnis: § 4 I vs. § 4 II ApoG',
+          caseText: 'Apotheker H hatte vor 12 Jahren als Student eine Trunkenheitsfahrt (§ 316 StGB, bei Erteilung unbekannt) und verletzte nach Erteilung schwerwiegend arzneimittelrechtliche Abgabevorschriften unter Ausnutzung seiner Apothekerstellung. Welche Aufhebung ist rechtmäßig?',
+          options: [
+            'Beide (Rücknahme nach § 48 VwVfG und Widerruf nach § 49 VwVfG) sind rechtmäßig.',
+            'Spezialgesetz § 4 ApoG geht vor! Rücknahme (§ 4 I ApoG) ist rechtswidrig (Trunkenheitsfahrt vor 12 J. ohne Gewerbebezug/Prognose); Widerruf (§ 4 II ApoG) ist materiell rechtmäßig (gebundene Entscheidung!).',
+            'Nur die Rücknahme nach § 4 I ApoG ist rechtmäßig.'
+          ],
+          correct: 1,
+          explain: 'Altklausur SoSe 2024: § 4 ApoG verdrängt §§ 48/49 VwVfG. Die 12 J. alte Trunkenheitsfahrt hat keinen Gewerbebezug (§ 4 I ApoG –); die berufsbezogene Verfehlung nach Erteilung + fehlende Einsicht begründet den zwingenden Widerruf nach § 4 II ApoG (+).'
+        },
+        {
+          id: 'd21', vwr: 12, tag: 'Aufhebung § 48 II',
+          title: 'Fall Beihilfe: Doppelzahlung ohne zweiten Antrag',
+          caseText: 'Ein rechtskundiger Beamter erhält ohne zweiten Antrag durch Computerfehler einen zweiten Beihilfebescheid über denselben Betrag, wundert sich und überweist das Geld aufs Sparkonto. Wie prüfst du Vertrauensschutz & Rechtsfolge (§ 48 II)?',
+          options: [
+            'Kein Vertrauensschutz wegen grob fahrlässiger Unkenntnis (§ 48 II 3 Nr. 3); gem. § 48 II 4 erfolgt die Rücknahme im Regelfall zwingend mit Wirkung für die Vergangenheit (ex tunc).',
+            'Da das Geld auf dem Sparkonto liegt, besteht voller Vertrauensschutz nach § 48 II 2.',
+            'Rücknahme ist nur für die Zukunft (ex nunc) nach Ermessen möglich.'
+          ],
+          correct: 0,
+          explain: 'Erst § 48 Abs. 2 S. 3 Nr. 1–3 prüfen! Wegen Rechtskunde + fehlendem Antrag + Verwunderung liegt grob fahrlässige Unkenntnis (Nr. 3) vor → § 48 Abs. 2 S. 4 modifiziert das Ermessen im Regelfall zur gebundenen Rücknahme ex tunc!'
+        },
+        {
+          id: 'd22', vwr: 12, tag: 'Jahresfrist § 48 IV',
+          title: 'Fall Beihilfe: Beginn der Jahresfrist & Karfreitag',
+          caseText: 'Mitarbeiter T liest die Stellungnahme am 26.03.; der für die Rücknahme zuständige Sachbearbeiter S prüft den kompletten Vorgang am 02.04. Der 03.04. ist Karfreitag. Wann startet die Jahresfrist (§ 48 IV) nach h.M.?',
+          options: [
+            'Am 27.03. (Kenntnis irgendeines Mitarbeiters genügt zwingend).',
+            'Am 03.04. um 0:00 Uhr: Nach h.M. zählt die vollständige Kenntnis des zuständigen Sachbearbeiters S am 02.04.; dass der 03.04. Karfreitag ist, hindert den FristBEGINN nicht!',
+            'Erst nach Ostern am Dienstag, den 07.04., weil Karfreitag ein Feiertag ist.'
+          ],
+          correct: 1,
+          explain: 'Nach h.M. kommt es auf die vollständige Kenntnis des zuständigen Amtsträgers (S, 02.04.) an. Fristbeginn ist am Folgetag (03.04. 0:00, § 187 I BGB) – Feiertage verschieben nur das FristENDE (§ 31 III 1), nie den Beginn!'
+        },
+        {
+          id: 'd23', vwr: 12, tag: 'Aufhebung §§ 48/49',
+          title: 'Schemata-Vergleich: § 48 III vs. § 49 II vs. § 49 III VwVfG',
+          caseText: 'Welche Aussage zu den HS-Bund-Aufhebungsschemata ist vollständig korrekt?',
+          options: [
+            'Bei § 48 Abs. 3 VwVfG gibt es keinen Vertrauensschutz im Tatbestand (nur Vermögensausgleich); ein Widerruf mit Wirkung ex tunc ist nur nach § 49 Abs. 3 VwVfG möglich.',
+            'Bei § 48 Abs. 1 S. 1 (belastender VA) und § 49 Abs. 1 (belastender VA) gilt jeweils die Jahresfrist des § 48 Abs. 4 VwVfG.',
+            'Ein Widerruf nach § 49 Abs. 2 Nr. 5 VwVfG wirkt stets ex tunc.'
+          ],
+          correct: 0,
+          explain: 'Perfekt gemerkt: § 48 III kennt im TB keinen Vertrauensschutz (nur Ausgleichsanspruch). Die Jahresfrist gilt NIE für belastende VA (§ 48 I 1, § 49 I). Widerruf ex tunc gibt es nur bei § 49 Abs. 3 VwVfG!'
+        },
+        {
+          id: 'd24', vwr: 13, tag: 'Klausurtaktik',
+          title: 'Bestehens-Strategie & Widerspruchsverfahren',
+          caseText: 'In der Modul-1-Klausur sind 100 Bewertungspunkte zu vergeben (§ 40 GntZollDVDV). Welche Strategie sichert dir am zuverlässigsten das Bestehen (4,0 = 50/100 BP)?',
+          options: [
+            'Formelle Rechtmäßigkeit kurz abhaken und 90 % der Zeit in schwierige Meinungsstreits stecken.',
+            'EGL (Art. 20 III GG), alle 6 Punkte der formellen Rechtmäßigkeit (inkl. § 28, § 39, § 45, § 58 II VwGO), Fristberechnung und Standarddefinitionen sauber im Gutachtenstil ausformulieren.',
+            'Auf den Gutachtenstil verzichten und nur Stichpunkte notieren.'
+          ],
+          correct: 1,
+          explain: 'In echten HS-Bund-Klausuren (z. B. SoSe 2024) bringen allein EGL (8+5 BP) und Formelle Rechtmäßigkeit (35 BP) zusammen 48/100 BP! Mit Fristberechnung und sauberen Standarddefinitionen ist die 4,0 (50 BP) sicher im Kasten.'
+        }
+      ];
+
+      // =======================================================================
+      // 2. STATE MANAGEMENT & 100 % LOCALSTORAGE PERSISTENCE
+      // =======================================================================
+
+      function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      const defaultPersisted = () => ({
+        maxVwr: 7,
+        theme: 'light',
+        notes: {},        // { [lectureId]: string }
+        cards: deepClone(DEFAULT_CARDS),
+        norms: deepClone(DEFAULT_NORMS),
+        drillAnswers: {}  // { [drillId]: { selected, correct } }
+      });
+
+      function loadPersisted() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return defaultPersisted();
+          const parsed = JSON.parse(raw);
+          const base = defaultPersisted();
+          return {
+            maxVwr: (typeof parsed.maxVwr === 'number' && parsed.maxVwr >= 1 && parsed.maxVwr <= 15) ? parsed.maxVwr : 7,
+            theme: (parsed.theme === 'dark' || parsed.theme === 'light') ? parsed.theme : 'light',
+            notes: (parsed.notes && typeof parsed.notes === 'object') ? parsed.notes : {},
+            cards: (Array.isArray(parsed.cards) && parsed.cards.length > 0) ? parsed.cards : base.cards,
+            norms: (Array.isArray(parsed.norms) && parsed.norms.length > 0) ? parsed.norms : base.norms,
+            drillAnswers: (parsed.drillAnswers && typeof parsed.drillAnswers === 'object') ? parsed.drillAnswers : {}
+          };
+        } catch (err) {
+          return defaultPersisted();
+        }
+      }
+
+      const saved = loadPersisted();
+
+      const state = {
+        // Persisted
+        maxVwr: saved.maxVwr,
+        theme: saved.theme,
+        notes: saved.notes,
+        cards: saved.cards,
+        norms: saved.norms,
+        drillAnswers: saved.drillAnswers,
+
+        // Static reference sets
+        lectures: DEFAULT_LECTURES,
+        phrases: DEFAULT_PHRASES,
+        drills: DEFAULT_DRILLS,
+
+        // Ephemeral UI State
+        activeTab: 'cards',         // 'cards' | 'norms' | 'phrases' | 'drills'
+        mobileGuideOpen: false,
+
+        // Left Guide UI
+        guideCoreOnly: false,
+        expandedLecId: 'vwr-7',
+
+        // Tab 1: Cards UI
+        cardMode: 'learn',          // 'learn' | 'list'
+        cardStatusFilter: 'ALL',    // 'ALL' | 'OPEN' | 'unsure' | 'known'
+        cardVwrFilter: 'ALL',       // 'ALL' | number (1..15)
+        cardSearch: '',
+        cardIdx: 0,
+        cardFlipped: false,
+
+        // Tab 2: Norms UI
+        normQuizMode: 'show',       // 'show' | 'hideMeaning' | 'hideNorm'
+        normCatFilter: 'ALL',
+        normSearch: '',
+        normRevealed: {},
+
+        // Tab 3: Phrases UI
+        phraseCloze: false,
+        phraseOpen: { 'ph-1': true, 'ph-3': true, 'ph-4': true },
+        phraseGapsRevealed: {},
+
+        // Tab 4: Drills UI
+        drillFilter: 'ALL'          // 'ALL' | 'UNSOLVED' | 'WRONG'
+      };
+
+      function saveState() {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            maxVwr: state.maxVwr,
+            theme: state.theme,
+            notes: state.notes,
+            cards: state.cards,
+            norms: state.norms,
+            drillAnswers: state.drillAnswers
+          }));
+        } catch (err) {
+          // Storage disabled / quota exceeded – silently continue in-memory
+        }
+      }
+
+      // =======================================================================
+      // 3. UTILITIES (ESCAPE, BOLD, THEME, CLIPBOARD, TOAST, MODAL)
+      // =======================================================================
+
+      function esc(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function fmt(str) {
+        return esc(str).replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text);font-weight:700;">$1</strong>');
+      }
+
+      function applyTheme() {
+        document.documentElement.setAttribute('data-theme', state.theme);
+        const btn = document.getElementById('btn-theme');
+        if (btn) btn.textContent = state.theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+        const meta = document.getElementById('meta-theme-color');
+        if (meta) meta.setAttribute('content', state.theme === 'dark' ? '#0b1120' : '#f8fafc');
+      }
+
+      function showToast(message, kind) {
+        const stack = document.getElementById('toast-stack');
+        const el = document.createElement('div');
+        el.className = 'toast' + (kind ? ' ' + kind : '');
+        el.textContent = message;
+        stack.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(4px)';
+          setTimeout(() => el.remove(), 220);
+        }, 2300);
+      }
+
+      function copyCleanText(raw) {
+        const clean = String(raw || '').replace(/\{\{(.+?)\}\}/g, '$1');
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = clean;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          ta.remove();
+          if (ok) {
+            showToast('Textbaustein kopiert!');
+          } else {
+            showToast('Kopieren nicht möglich.', 'warn');
+          }
+        } catch (err) {
+          showToast('Kopieren fehlgeschlagen.', 'danger');
+        }
+      }
+
+      function openModal(html) {
+        const bd = document.getElementById('modal-backdrop');
+        document.getElementById('modal-box').innerHTML = html;
+        bd.classList.add('open');
+      }
+
+      function closeModal() {
+        document.getElementById('modal-backdrop').classList.remove('open');
+      }
+
+      function openConfirm(title, text, okLabel, isDanger, onConfirm) {
+        openModal(`
+          <div class="modal-head">
+            <h3 style="font-size:16px;font-weight:700;">${esc(title)}</h3>
+            <button type="button" class="btn btn-icon" id="m-x">✕</button>
+          </div>
+          <p class="text-sm text-sec">${esc(text)}</p>
+          <div class="wrap-bar" style="justify-content:flex-end;">
+            <button type="button" class="btn" id="m-cancel">Abbrechen</button>
+            <button type="button" class="btn ${isDanger ? 'btn-danger' : 'btn-primary'}" id="m-ok">${esc(okLabel)}</button>
+          </div>
+        `);
+        document.getElementById('m-x').onclick = closeModal;
+        document.getElementById('m-cancel').onclick = closeModal;
+        document.getElementById('m-ok').onclick = () => {
+          closeModal();
+          onConfirm();
+        };
+      }
+
+      // =======================================================================
+      // 4. GLOBAL VWR SCOPE SELECTORS
+      // =======================================================================
+
+      const activeLectures = () => state.lectures.filter(l => l.vwr <= state.maxVwr);
+      const activeCardsAll = () => state.cards.filter(c => c.vwr <= state.maxVwr);
+      const activeNormsAll = () => state.norms.filter(n => n.vwr <= state.maxVwr);
+      const activePhrasesAll = () => state.phrases.filter(p => p.vwr <= state.maxVwr);
+      const activeDrillsAll = () => state.drills.filter(d => d.vwr <= state.maxVwr);
+
+      function setMaxVwr(val) {
+        const next = Math.max(1, Math.min(15, Number(val) || 7));
+        if (next === state.maxVwr) return;
+        state.maxVwr = next;
+        if (state.cardVwrFilter !== 'ALL' && Number(state.cardVwrFilter) > state.maxVwr) {
+          state.cardVwrFilter = 'ALL';
+        }
+        state.cardIdx = 0;
+        state.cardFlipped = false;
+        saveState();
+        renderAll();
+      }
+
+      // =======================================================================
+      // 5. MODALS: BESTEHENS-TIPPS, BACKUP/IMPORT, CARD CRUD, NORM CRUD
+      // =======================================================================
+
+      function openTipsModal() {
+        openModal(`
+          <div class="modal-head">
+            <div>
+              <h3 style="font-size:16px;font-weight:700;">Bestehens-Tipps (HS Bund · Modul 1)</h3>
+              <p class="text-xs text-muted">Pragmatische Punkte-Strategie ohne Ballast</p>
+            </div>
+            <button type="button" class="btn btn-icon" id="tips-x">✕</button>
+          </div>
+
+          <div class="phrase-block" style="background-color:var(--success-bg);border-color:var(--success-border);">
+            <p class="text-sm fw-bold" style="color:var(--success-text);">Zielmarke: 50 / 100 Bewertungspunkte = 4,0 (bestanden)</p>
+            <p class="text-xs" style="color:var(--success-text);">Gemäß § 40 Abs. 1 &amp; 2 GntZollDVDV reichen 50 BP für ein sicheres Bestehen. Du musst keine Randprobleme lösen – die Standard-Bausteine tragen die Klausur!</p>
+          </div>
+
+          <div class="stack-sm">
+            <h4 class="text-sm fw-bold">Wo liegen die sichersten Punkte? (Beispiel Altklausur SoSe 2024)</h4>
+            <ul class="bullet-list">
+              <li><span class="bullet-dot"></span><span><strong>Formelle Rechtmäßigkeit + EGL = bis zu 48 / 100 BP!</strong> In der echten Modulprüfung SoSe 2024 gaben allein A. Rücknahme EGL (8 BP) + Formelle Rm-keit (35 BP) + B. Widerruf EGL (5 BP) zusammen <strong>48 Bewertungspunkte</strong>.</span></li>
+              <li><span class="bullet-dot"></span><span><strong>Fristberechnung (§ 70 I VwGO + 4-Tages-Fiktion § 41 II 1)</strong>: Reines Schema-Handwerk – wenn die Normkette sitzt (§§ 79, 31 I VwVfG, §§ 187 I, 188 II BGB, § 31 III 1), sind das fast sichere Punkte.</span></li>
+              <li><span class="bullet-dot"></span><span><strong>Standarddefinitionen auswendig können</strong>: Alle 6 VA-Merkmale (§ 35 S. 1), Gewerbe (5 Punkte), Unzuverlässigkeit (Tatsachen + Gewerbebezug + negative Zukunftsprognose) und Verhältnismäßigkeit (4 Stufen).</span></li>
+              <li><span class="bullet-dot"></span><span><strong>Anmerkungen &amp; Spezialgesetze</strong>: Lies immer zuerst die Bearbeitungsvermerke (spart Zeit!) und prüfe bei Aufhebungen immer zuerst das abgedruckte Spezialgesetz (lex specialis vor §§ 48/49 VwVfG).</span></li>
+            </ul>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table" style="min-width:420px;">
+              <thead>
+                <tr>
+                  <th>Punkte (BP)</th><th>ab 50</th><th>ab 55</th><th>ab 60</th><th>ab 65</th><th>ab 70</th><th>ab 80</th><th>ab 95</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Note (§ 40)</strong></td><td><strong>4,0</strong></td><td>3,7</td><td>3,3</td><td>3,0</td><td>2,7</td><td>2,0</td><td>1,0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="wrap-bar" style="justify-content:flex-end;">
+            <button type="button" class="btn btn-primary" id="tips-ok">Verstanden</button>
+          </div>
+        `);
+        document.getElementById('tips-x').onclick = closeModal;
+        document.getElementById('tips-ok').onclick = closeModal;
+      }
+
+      function openBackupModal() {
+        openModal(`
+          <div class="modal-head">
+            <div>
+              <h3 style="font-size:16px;font-weight:700;">Backup, Import &amp; Reset</h3>
+              <p class="text-xs text-muted">100 % lokal im Browser (localStorage) · JSON-Sicherung für Gerätewechsel</p>
+            </div>
+            <button type="button" class="btn btn-icon" id="bk-x">✕</button>
+          </div>
+
+          <div class="phrase-block">
+            <p class="text-sm fw-bold">1. JSON-Backup exportieren</p>
+            <p class="text-xs text-muted">Sichert Lernstand, eigene Karten, Paragrafen, Notizen und Drill-Ergebnisse.</p>
+            <div class="wrap-bar">
+              <button type="button" class="btn btn-primary btn-sm" id="bk-export">JSON-Backup herunterladen</button>
+            </div>
+          </div>
+
+          <div class="phrase-block">
+            <p class="text-sm fw-bold">2. JSON-Backup importieren</p>
+            <p class="text-xs text-muted">Wähle eine exportierte <code>.json</code>-Datei oder füge den JSON-Text direkt ein.</p>
+            <div class="wrap-bar">
+              <button type="button" class="btn btn-sm" id="bk-pick-file">JSON-Datei wählen</button>
+              <input type="file" id="bk-file-input" accept=".json,application/json" style="display:none;" />
+            </div>
+            <textarea class="textarea" id="bk-json-paste" rows="3" placeholder='Optional: Exportiertes JSON hier einfügen...'></textarea>
+            <div class="wrap-bar">
+              <button type="button" class="btn btn-sm" id="bk-apply-paste">Eingefügtes JSON laden</button>
+            </div>
+          </div>
+
+          <div class="divider wrap-between">
+            <button type="button" class="btn btn-sm btn-warn" id="bk-reset-progress">Nur Lernstand zurücksetzen</button>
+            <button type="button" class="btn btn-sm btn-danger" id="bk-reset-factory">Auf Werkszustand zurücksetzen</button>
+          </div>
+        `);
+
+        document.getElementById('bk-x').onclick = closeModal;
+
+        document.getElementById('bk-export').onclick = () => {
+          const payload = {
+            app: 'KlausurFit-VWR-Modul1',
+            version: 2,
+            exportedAt: new Date().toISOString(),
+            maxVwr: state.maxVwr,
+            theme: state.theme,
+            notes: state.notes,
+            cards: state.cards,
+            norms: state.norms,
+            drillAnswers: state.drillAnswers
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `klausurfit-vwr-stand${state.maxVwr}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          showToast('JSON-Backup gespeichert!');
+        };
+
+        function handleJsonImport(text) {
+          try {
+            const obj = JSON.parse(text);
+            if (!obj || !Array.isArray(obj.cards)) {
+              showToast('Ungültiges Backup-Format.', 'danger');
+              return;
+            }
+            openConfirm(
+              'Backup wiederherstellen?',
+              `Das Backup enthält ${obj.cards.length} Karten (Stand VWR ${obj.maxVwr || 7}). Dein aktueller Stand wird überschrieben.`,
+              'Wiederherstellen',
+              false,
+              () => {
+                state.maxVwr = (typeof obj.maxVwr === 'number' && obj.maxVwr >= 1 && obj.maxVwr <= 15) ? obj.maxVwr : 7;
+                if (obj.theme === 'dark' || obj.theme === 'light') state.theme = obj.theme;
+                if (obj.notes && typeof obj.notes === 'object') state.notes = obj.notes;
+                state.cards = obj.cards;
+                if (Array.isArray(obj.norms) && obj.norms.length > 0) state.norms = obj.norms;
+                state.drillAnswers = (obj.drillAnswers && typeof obj.drillAnswers === 'object') ? obj.drillAnswers : {};
+                state.cardIdx = 0;
+                state.cardFlipped = false;
+                applyTheme();
+                saveState();
+                renderAll();
+                showToast('Backup erfolgreich geladen!');
+              }
+            );
+          } catch (err) {
+            showToast('JSON konnte nicht gelesen werden.', 'danger');
+          }
+        }
+
+        const fileInput = document.getElementById('bk-file-input');
+        document.getElementById('bk-pick-file').onclick = () => fileInput.click();
+        fileInput.onchange = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => handleJsonImport(ev.target.result);
+          reader.readAsText(file, 'UTF-8');
+        };
+
+        document.getElementById('bk-apply-paste').onclick = () => {
+          const val = document.getElementById('bk-json-paste').value.trim();
+          if (!val) {
+            showToast('Bitte zuerst JSON einfügen.', 'warn');
+            return;
+          }
+          handleJsonImport(val);
+        };
+
+        document.getElementById('bk-reset-progress').onclick = () => {
+          openConfirm(
+            'Lernstand zurücksetzen?',
+            'Alle Karten-Bewertungen und Drill-Antworten werden zurückgesetzt. Deine eigenen Karten, Paragrafen und Notizen bleiben erhalten.',
+            'Zurücksetzen',
+            true,
+            () => {
+              state.cards.forEach(c => { c.status = 'new'; });
+              state.drillAnswers = {};
+              saveState();
+              renderAll();
+              showToast('Lernstand zurückgesetzt.', 'info');
+            }
+          );
+        };
+
+        document.getElementById('bk-reset-factory').onclick = () => {
+          openConfirm(
+            'Komplett auf Werkszustand zurücksetzen?',
+            'Alle eigenen Karten, geänderten Paragrafen, Notizen und dein Lernstand werden gelöscht und durch die Standard-Daten ersetzt.',
+            'Werkszustand laden',
+            true,
+            () => {
+              const fresh = defaultPersisted();
+              state.maxVwr = fresh.maxVwr;
+              state.theme = fresh.theme;
+              state.notes = fresh.notes;
+              state.cards = fresh.cards;
+              state.norms = fresh.norms;
+              state.drillAnswers = fresh.drillAnswers;
+              state.cardVwrFilter = 'ALL';
+              state.cardIdx = 0;
+              state.cardFlipped = false;
+              applyTheme();
+              saveState();
+              renderAll();
+              showToast('Werkszustand wiederhergestellt.', 'info');
+            }
+          );
+        };
+      }
+
+      function openCardModal(card) {
+        const isEdit = !!card;
+        const defaultVwr = isEdit ? card.vwr : (state.cardVwrFilter !== 'ALL' ? Number(state.cardVwrFilter) : state.maxVwr);
+        const defaultTag = isEdit ? card.tag : 'Definition';
+
+        openModal(`
+          <form id="card-form" class="stack">
+            <div class="modal-head">
+              <h3 style="font-size:16px;font-weight:700;">${isEdit ? 'Karteikarte bearbeiten' : 'Neue Karteikarte anlegen'}</h3>
+              <button type="button" class="btn btn-icon" id="cf-x">✕</button>
+            </div>
+
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label" for="cf-vwr">Vorlesung (VWR 1–15)</label>
+                <select id="cf-vwr" class="select">
+                  ${state.lectures.map(l => `<option value="${l.vwr}" ${l.vwr === defaultVwr ? 'selected' : ''}>VWR ${l.vwr}: ${esc(l.title)}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="field-label" for="cf-tag">Tag</label>
+                <select id="cf-tag" class="select">
+                  ${['Definition', 'Schema', 'Falle', 'Frist', 'Aufhebung'].map(t => `<option value="${t}" ${t === defaultTag ? 'selected' : ''}>${t}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="field-label" for="cf-front">Vorderseite (präzise Frage) *</label>
+              <input id="cf-front" class="input" type="text" required value="${esc(isEdit ? card.front : '')}" placeholder="z. B. Welche Fehlerfolge hat eine fehlende RBB?" />
+            </div>
+
+            <div>
+              <label class="field-label" for="cf-back">Rückseite (knappe Klausur-Antwort, **fett** möglich) *</label>
+              <textarea id="cf-back" class="textarea" rows="4" required placeholder="Führt **nicht** zur formellen Rechtswidrigkeit, sondern nur zur Jahresfrist (§ 58 II VwGO).">${esc(isEdit ? card.back : '')}</textarea>
+            </div>
+
+            <div class="wrap-bar" style="justify-content:flex-end;">
+              <button type="button" class="btn" id="cf-cancel">Abbrechen</button>
+              <button type="submit" class="btn btn-primary">${isEdit ? 'Speichern' : 'Karte anlegen'}</button>
+            </div>
+          </form>
+        `);
+
+        document.getElementById('cf-x').onclick = closeModal;
+        document.getElementById('cf-cancel').onclick = closeModal;
+        document.getElementById('card-form').onsubmit = (e) => {
+          e.preventDefault();
+          const vwr = Math.max(1, Math.min(15, Number(document.getElementById('cf-vwr').value) || 1));
+          const tag = document.getElementById('cf-tag').value;
+          const front = document.getElementById('cf-front').value.trim();
+          const back = document.getElementById('cf-back').value.trim();
+          if (!front || !back) return;
+
+          if (isEdit) {
+            card.vwr = vwr;
+            card.tag = tag;
+            card.front = front;
+            card.back = back;
+            showToast('Karte gespeichert!');
+          } else {
+            state.cards.push(mkCard('c-' + Date.now().toString(36), vwr, tag, front, back));
+            if (vwr > state.maxVwr) state.maxVwr = vwr;
+            showToast('Neue Karte erstellt!');
+          }
+          closeModal();
+          saveState();
+          renderAll();
+        };
+      }
+
+      function openNormModal(normObj) {
+        const isEdit = !!normObj;
+        const defaultVwr = isEdit ? normObj.vwr : state.maxVwr;
+        const defaultCat = isEdit ? normObj.cat : 'Formell/Fehler';
+        const cats = ['Grundlagen/VA', 'Formell/Fehler', 'Fristen', 'Ermessen/NB', 'Aufhebung §§ 48/49', 'Rechtsschutz/Spezial'];
+
+        openModal(`
+          <form id="norm-form" class="stack">
+            <div class="modal-head">
+              <h3 style="font-size:16px;font-weight:700;">${isEdit ? 'Paragraf bearbeiten' : 'Neuen Paragrafen anlegen'}</h3>
+              <button type="button" class="btn btn-icon" id="nf-x">✕</button>
+            </div>
+
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label" for="nf-vwr">Vorlesung (VWR 1–15)</label>
+                <select id="nf-vwr" class="select">
+                  ${state.lectures.map(l => `<option value="${l.vwr}" ${l.vwr === defaultVwr ? 'selected' : ''}>VWR ${l.vwr}: ${esc(l.title)}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="field-label" for="nf-cat">Kategorie</label>
+                <select id="nf-cat" class="select">
+                  ${cats.map(c => `<option value="${c}" ${c === defaultCat ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="field-label" for="nf-norm">Paragraf / Norm *</label>
+              <input id="nf-norm" class="input" type="text" required value="${esc(isEdit ? normObj.norm : '')}" placeholder="z. B. § 45 Abs. 1 Nr. 2 VwVfG" />
+            </div>
+
+            <div>
+              <label class="field-label" for="nf-meaning">Bedeutung *</label>
+              <input id="nf-meaning" class="input" type="text" required value="${esc(isEdit ? normObj.meaning : '')}" placeholder="Kurz und prüfungsrelevant" />
+            </div>
+
+            <div>
+              <label class="field-label" for="nf-usage">Klausur-Einsatz</label>
+              <input id="nf-usage" class="input" type="text" value="${esc(isEdit ? normObj.usage : '')}" placeholder="Wo und wie wird die Norm im Gutachten zitiert?" />
+            </div>
+
+            <div class="wrap-bar" style="justify-content:flex-end;">
+              <button type="button" class="btn" id="nf-cancel">Abbrechen</button>
+              <button type="submit" class="btn btn-primary">${isEdit ? 'Speichern' : 'Paragraf anlegen'}</button>
+            </div>
+          </form>
+        `);
+
+        document.getElementById('nf-x').onclick = closeModal;
+        document.getElementById('nf-cancel').onclick = closeModal;
+        document.getElementById('norm-form').onsubmit = (e) => {
+          e.preventDefault();
+          const vwr = Math.max(1, Math.min(15, Number(document.getElementById('nf-vwr').value) || 1));
+          const cat = document.getElementById('nf-cat').value;
+          const norm = document.getElementById('nf-norm').value.trim();
+          const meaning = document.getElementById('nf-meaning').value.trim();
+          const usage = document.getElementById('nf-usage').value.trim();
+          if (!norm || !meaning) return;
+
+          if (isEdit) {
+            normObj.vwr = vwr;
+            normObj.cat = cat;
+            normObj.norm = norm;
+            normObj.meaning = meaning;
+            normObj.usage = usage;
+            showToast('Paragraf gespeichert!');
+          } else {
+            state.norms.push({ id: 'n-' + Date.now().toString(36), vwr, cat, norm, meaning, usage });
+            if (vwr > state.maxVwr) state.maxVwr = vwr;
+            showToast('Paragraf hinzugefügt!');
+          }
+          closeModal();
+          saveState();
+          renderAll();
+        };
+      }
+
+      // =======================================================================
+      // 6. RENDER HEADER CHROME & LEFT VORLESUNGS-GUIDE
+      // =======================================================================
+
+      function renderHeaderAndTabs() {
+        const cActive = activeCardsAll();
+        const nActive = activeNormsAll();
+        const pActive = activePhrasesAll();
+        const dActive = activeDrillsAll();
+
+        const knownCount = cActive.filter(c => c.status === 'known').length;
+        document.getElementById('hdr-mastery').textContent = `${knownCount} / ${cActive.length} sitzen`;
+        document.getElementById('hdr-vwr-badge').textContent = `Stand: bis VWR ${state.maxVwr}/15`;
+        document.getElementById('vwr-slider').value = String(state.maxVwr);
+        document.getElementById('btn-vwr-minus').disabled = state.maxVwr <= 1;
+        document.getElementById('btn-vwr-plus').disabled = state.maxVwr >= 15;
+
+        const btnAll = document.getElementById('btn-vwr-all');
+        btnAll.className = state.maxVwr === 15 ? 'btn btn-sm btn-primary' : 'btn btn-sm';
+
+        document.getElementById('hdr-scope-counts').textContent =
+          `Aktiv: ${cActive.length} Karten · ${nActive.length} Normen · ${pActive.length} Schemata · ${dActive.length} Drills`;
+
+        // Mobile guide button
+        const guideEl = document.getElementById('left-guide');
+        const mobLbl = document.getElementById('mobile-guide-label');
+        const mobArr = document.getElementById('mobile-guide-arrow');
+        if (state.mobileGuideOpen) {
+          guideEl.classList.remove('mobile-hidden');
+          mobLbl.textContent = `Vorlesungs-Guide ausblenden (VWR 1–${state.maxVwr})`;
+          mobArr.textContent = '▴';
+        } else {
+          guideEl.classList.add('mobile-hidden');
+          mobLbl.textContent = `Vorlesungs-Guide einblenden (VWR 1–${state.maxVwr})`;
+          mobArr.textContent = '▾';
+        }
+
+        // Tab counts & active state
+        document.getElementById('tc-cards').textContent = String(cActive.length);
+        document.getElementById('tc-norms').textContent = String(nActive.length);
+        document.getElementById('tc-phrases').textContent = String(pActive.length);
+        document.getElementById('tc-drills').textContent = String(dActive.length);
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === state.activeTab);
+        });
+      }
+
+      function renderLeftGuide() {
+        const box = document.getElementById('left-guide');
+        const visible = activeLectures();
+        const filtered = state.guideCoreOnly ? visible.filter(l => l.relevance === 'Kernstoff') : visible;
+
+        const listHtml = filtered.map(lec => {
+          const isOpen = state.expandedLecId === lec.id;
+          const cardCount = state.cards.filter(c => c.vwr === lec.vwr).length;
+          const noteVal = state.notes[lec.id] || '';
+          const relBadge = lec.relevance === 'Kernstoff'
+            ? '<span class="badge badge-accent">Kernstoff</span>'
+            : '<span class="badge">Basis</span>';
+
+          return `
+            <div class="guide-item">
+              <button type="button" class="guide-trigger ${isOpen ? 'open' : ''}" data-lec="${esc(lec.id)}">
+                <div class="stack-sm" style="gap:4px;min-width:0;flex:1;">
+                  <div class="wrap-bar" style="gap:6px;">
+                    <span class="text-xs fw-bold text-accent">VWR ${lec.vwr}</span>
+                    ${relBadge}
+                    ${noteVal.trim() ? '<span class="badge badge-warn">Notiz</span>' : ''}
+                  </div>
+                  <div style="font-size:13px;font-weight:600;line-height:1.3;color:var(--text);">${esc(lec.title)}</div>
+                </div>
+                <span class="text-muted" style="font-size:13px;margin-top:2px;">${isOpen ? '▴' : '▾'}</span>
+              </button>
+
+              ${isOpen ? `
+                <div class="guide-body">
+                  <ul class="bullet-list">
+                    ${lec.bullets.map(b => `<li><span class="bullet-dot"></span><span>${fmt(b)}</span></li>`).join('')}
+                  </ul>
+
+                  <div>
+                    <label class="field-label" for="note-${esc(lec.id)}" style="display:flex;justify-content:space-between;">
+                      <span>Eigene Notizen (auto-saved)</span>
+                      <span class="text-muted" id="saved-${esc(lec.id)}" style="font-weight:500;"></span>
+                    </label>
+                    <textarea id="note-${esc(lec.id)}" class="textarea guide-note-input" data-note-lec="${esc(lec.id)}" rows="2" placeholder="Eigene Eselsbrücke oder Dozenten-Hinweis...">${esc(noteVal)}</textarea>
+                  </div>
+
+                  <button type="button" class="btn btn-primary btn-sm practice-vwr-btn" data-practice-vwr="${lec.vwr}" style="width:100%;">
+                    Karten zu VWR ${lec.vwr} üben (${cardCount}) →
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+
+        const footerHtml = state.maxVwr < 15 ? `
+          <div class="guide-footer">
+            <p class="text-xs text-muted"><strong>VWR ${state.maxVwr + 1}–15 ausgeblendet</strong> – erhöhe den Regler oben, sobald du weiter bist.</p>
+            <button type="button" class="btn btn-sm" id="btn-unlock-next" style="width:100%;">+ VWR ${state.maxVwr + 1} freischalten</button>
+          </div>
+        ` : '';
+
+        box.innerHTML = `
+          <div class="guide-header">
+            <div class="wrap-between">
+              <div>
+                <h2 style="font-size:14.5px;font-weight:700;">Vorlesungs-Guide</h2>
+                <p class="text-xs text-muted">Kompakt ohne Ballast · VWR 1–${state.maxVwr}</p>
+              </div>
+              <span class="badge">${filtered.length} / ${visible.length}</span>
+            </div>
+            <div class="wrap-bar">
+              <button type="button" class="pill ${!state.guideCoreOnly ? 'active' : ''}" id="guide-all" style="flex:1;justify-content:center;">Alle</button>
+              <button type="button" class="pill ${state.guideCoreOnly ? 'active' : ''}" id="guide-core" style="flex:1;justify-content:center;">Nur Kernstoff</button>
+            </div>
+          </div>
+
+          <div class="guide-list">
+            ${listHtml || '<div class="empty-box">Keine Kernstoff-Einheiten in VWR 1–' + state.maxVwr + '.</div>'}
+          </div>
+          ${footerHtml}
+        `;
+
+        document.getElementById('guide-all').onclick = () => { state.guideCoreOnly = false; renderLeftGuide(); };
+        document.getElementById('guide-core').onclick = () => { state.guideCoreOnly = true; renderLeftGuide(); };
+
+        const unlockBtn = document.getElementById('btn-unlock-next');
+        if (unlockBtn) unlockBtn.onclick = () => setMaxVwr(state.maxVwr + 1);
+
+        box.querySelectorAll('.guide-trigger').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.lec;
+            state.expandedLecId = state.expandedLecId === id ? null : id;
+            renderLeftGuide();
+          };
+        });
+
+        box.querySelectorAll('.guide-note-input').forEach(ta => {
+          ta.oninput = () => {
+            const id = ta.dataset.noteLec;
+            state.notes[id] = ta.value;
+            saveState();
+            const ind = document.getElementById('saved-' + id);
+            if (ind) {
+              ind.textContent = 'Gespeichert';
+              clearTimeout(ta._saveTimer);
+              ta._saveTimer = setTimeout(() => { if (ind) ind.textContent = ''; }, 1400);
+            }
+          };
+        });
+
+        box.querySelectorAll('.practice-vwr-btn').forEach(btn => {
+          btn.onclick = () => {
+            state.cardVwrFilter = Number(btn.dataset.practiceVwr);
+            state.cardStatusFilter = 'ALL';
+            state.cardSearch = '';
+            state.cardMode = 'learn';
+            state.cardIdx = 0;
+            state.cardFlipped = false;
+            state.activeTab = 'cards';
+            state.mobileGuideOpen = false;
+            renderAll();
+          };
+        });
+      }
+
+      // =======================================================================
+      // 7. TAB 1: KARTEIKARTEN
+      // =======================================================================
+
+      function getFilteredCards() {
+        const q = state.cardSearch.trim().toLowerCase();
+        return activeCardsAll().filter(c => {
+          if (state.cardVwrFilter !== 'ALL' && c.vwr !== Number(state.cardVwrFilter)) return false;
+          if (state.cardStatusFilter === 'OPEN' && c.status !== 'new' && c.status !== 'again') return false;
+          if (state.cardStatusFilter === 'unsure' && c.status !== 'unsure') return false;
+          if (state.cardStatusFilter === 'known' && c.status !== 'known') return false;
+          if (q && !c.front.toLowerCase().includes(q) && !c.back.toLowerCase().includes(q) && !c.tag.toLowerCase().includes(q)) return false;
+          return true;
+        });
+      }
+
+      function statusBadgeHtml(st) {
+        if (st === 'known') return '<span class="badge badge-success">Sitzt</span>';
+        if (st === 'unsure') return '<span class="badge badge-warn">Unsicher</span>';
+        if (st === 'again') return '<span class="badge badge-danger">Nochmal</span>';
+        return '<span class="badge">Neu</span>';
+      }
+
+      function tagBadgeHtml(tag) {
+        if (tag === 'Falle') return '<span class="badge badge-danger">Falle</span>';
+        if (tag === 'Schema') return '<span class="badge badge-accent">Schema</span>';
+        if (tag === 'Frist') return '<span class="badge badge-warn">Frist</span>';
+        if (tag === 'Aufhebung') return '<span class="badge badge-accent">Aufhebung</span>';
+        return `<span class="badge">${esc(tag)}</span>`;
+      }
+
+      function rateCurrentCard(newStatus) {
+        const list = getFilteredCards();
+        const card = list[state.cardIdx];
+        if (!card) return;
+        card.status = newStatus;
+        state.cardFlipped = false;
+        saveState();
+
+        const nextList = getFilteredCards();
+        if (nextList.length === 0) {
+          state.cardIdx = 0;
+        } else if (state.cardStatusFilter === 'ALL') {
+          state.cardIdx = (state.cardIdx + 1) % nextList.length;
+        } else if (state.cardIdx >= nextList.length) {
+          state.cardIdx = 0;
+        }
+        renderAll();
+      }
+
+      function renderCardsTab() {
+        const scopeCards = activeCardsAll();
+        const list = getFilteredCards();
+        if (state.cardIdx >= list.length) state.cardIdx = Math.max(0, list.length - 1);
+        const cur = list[state.cardIdx] || null;
+        const pct = list.length ? Math.round(((state.cardIdx + 1) / list.length) * 100) : 0;
+
+        const filterCard = `
+          <div class="card-box stack">
+            <div class="wrap-between">
+              <div>
+                <h2 style="font-size:15px;font-weight:700;">Karteikarten (${scopeCards.length} von ${state.cards.length} aktiv · VWR 1–${state.maxVwr})</h2>
+                <p class="text-xs text-muted">${list.length} Karten im aktuellen Filter</p>
+              </div>
+              <div class="wrap-bar">
+                <button type="button" class="pill ${state.cardMode === 'learn' ? 'active' : ''}" id="fc-m-learn">Lernmodus</button>
+                <button type="button" class="pill ${state.cardMode === 'list' ? 'active' : ''}" id="fc-m-list">Karten-Liste</button>
+                <button type="button" class="btn btn-primary btn-sm" id="fc-add">+ Neue Karte</button>
+              </div>
+            </div>
+
+            <div class="divider wrap-between">
+              <div class="wrap-bar">
+                ${[
+                  ['ALL', 'Alle'],
+                  ['OPEN', 'Offen / Nochmal'],
+                  ['unsure', 'Unsicher'],
+                  ['known', 'Sitzt']
+                ].map(([k, lbl]) => `<button type="button" class="pill fc-st-pill ${state.cardStatusFilter === k ? 'active' : ''}" data-st="${k}">${lbl}</button>`).join('')}
+              </div>
+
+              <div class="wrap-bar" style="flex:1 1 260px;justify-content:flex-end;">
+                <select id="fc-vwr-sel" class="select" style="width:auto;min-width:155px;max-width:220px;padding:6px 10px;font-size:12.5px;">
+                  <option value="ALL" ${state.cardVwrFilter === 'ALL' ? 'selected' : ''}>Alle VWR (1–${state.maxVwr})</option>
+                  ${activeLectures().map(l => `<option value="${l.vwr}" ${Number(state.cardVwrFilter) === l.vwr ? 'selected' : ''}>VWR ${l.vwr}: ${esc(l.title.slice(0, 24))}${l.title.length > 24 ? '…' : ''}</option>`).join('')}
+                </select>
+                <input type="search" id="fc-search" class="input" value="${esc(state.cardSearch)}" placeholder="Karten suchen..." style="width:175px;max-width:100%;padding:6px 10px;font-size:12.5px;" />
+              </div>
+            </div>
+          </div>
+        `;
+
+        if (state.cardMode === 'list') {
+          return `
+            ${filterCard}
+            <div class="card-box stack-sm">
+              ${list.length ? list.map(c => `
+                <div class="norm-row">
+                  <div class="norm-mid">
+                    <div class="wrap-bar" style="gap:6px;margin-bottom:4px;">
+                      <span class="badge badge-accent">VWR ${c.vwr}</span>
+                      ${tagBadgeHtml(c.tag)}
+                      ${statusBadgeHtml(c.status)}
+                    </div>
+                    <p class="text-sm fw-bold">${esc(c.front)}</p>
+                    <p class="text-xs text-sec">${fmt(c.back)}</p>
+                  </div>
+                  <div class="wrap-bar">
+                    <button type="button" class="btn btn-sm fc-edit-id" data-id="${esc(c.id)}">Bearbeiten</button>
+                    <button type="button" class="btn btn-sm btn-danger fc-del-id" data-id="${esc(c.id)}">Löschen</button>
+                  </div>
+                </div>
+              `).join('') : '<div class="empty-box">Keine Karten für diese Filterkombination gefunden.</div>'}
+            </div>
+          `;
+        }
+
+        if (!cur) {
+          return `
+            ${filterCard}
+            <div class="card-box empty-box stack" style="align-items:center;">
+              <p class="fw-bold" style="color:var(--text);">Keine Karten in diesem Filter</p>
+              <p class="text-xs text-muted">Super – entweder sitzen hier schon alle Karten oder der Filter ist sehr eng.</p>
+              <button type="button" class="btn btn-primary btn-sm" id="fc-clear-filters">Filter zurücksetzen</button>
+            </div>
+          `;
+        }
+
+        return `
+          ${filterCard}
+          <div class="stack">
+            <div class="stack-sm">
+              <div class="wrap-between" style="padding:0 2px;">
+                <div class="wrap-bar">
+                  <span class="text-xs fw-bold text-sec">Karte ${state.cardIdx + 1} von ${list.length}</span>
+                  ${statusBadgeHtml(cur.status)}
+                </div>
+                <div class="wrap-bar">
+                  <button type="button" class="btn btn-sm" id="fc-edit-cur">Bearbeiten</button>
+                  <button type="button" class="btn btn-sm btn-danger" id="fc-del-cur">Löschen</button>
+                </div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+            </div>
+
+            <div class="flip-scene" id="fc-flip-stage" role="button" tabindex="0">
+              <div class="flip-card ${state.cardFlipped ? 'flipped' : ''}">
+                <!-- FRONT -->
+                <div class="flip-face">
+                  <div class="wrap-between">
+                    <div class="wrap-bar" style="gap:6px;">
+                      <span class="badge badge-accent">VWR ${cur.vwr}</span>
+                      ${tagBadgeHtml(cur.tag)}
+                    </div>
+                    <span class="text-xs text-muted">Vorderseite</span>
+                  </div>
+                  <p class="flip-question">${esc(cur.front)}</p>
+                  <p class="text-xs text-muted" style="text-align:center;">Tippen oder Leertaste zum Umdrehen</p>
+                </div>
+
+                <!-- BACK -->
+                <div class="flip-face flip-face-back">
+                  <div class="wrap-between" style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+                    <span class="text-xs fw-bold text-accent">KLAUSUR-ANTWORT</span>
+                    <span class="badge badge-accent">VWR ${cur.vwr}</span>
+                  </div>
+                  <div class="flip-answer">${fmt(cur.back)}</div>
+                  <p class="text-xs text-muted" style="text-align:center;">Bewerten: 1 = Nochmal · 2 = Unsicher · 3 = Sitzt</p>
+                </div>
+              </div>
+            </div>
+
+            ${state.cardFlipped ? `
+              <div class="rating-grid">
+                <button type="button" class="btn btn-danger fc-rate-btn" data-rate="again" style="min-height:44px;">Nochmal (1)</button>
+                <button type="button" class="btn btn-warn fc-rate-btn" data-rate="unsure" style="min-height:44px;">Unsicher (2)</button>
+                <button type="button" class="btn btn-success fc-rate-btn" data-rate="known" style="min-height:44px;">Sitzt (3)</button>
+              </div>
+            ` : `
+              <div class="wrap-between">
+                <button type="button" class="btn" id="fc-prev">← Zurück</button>
+                <button type="button" class="btn btn-primary" id="fc-show-ans" style="flex:1 1 160px;max-width:260px;min-height:42px;">Antwort zeigen</button>
+                <button type="button" class="btn" id="fc-next">Weiter →</button>
+              </div>
+            `}
+          </div>
+        `;
+      }
+
+      // =======================================================================
+      // 8. TAB 2: PARAGRAFEN-TRAINER
+      // =======================================================================
+
+      function renderNormsTab() {
+        const scopeNorms = activeNormsAll();
+        const cats = ['ALL', 'Grundlagen/VA', 'Formell/Fehler', 'Fristen', 'Ermessen/NB', 'Aufhebung §§ 48/49', 'Rechtsschutz/Spezial'];
+        const q = state.normSearch.trim().toLowerCase();
+
+        const list = scopeNorms.filter(n => {
+          if (state.normCatFilter !== 'ALL' && n.cat !== state.normCatFilter) return false;
+          if (q && !n.norm.toLowerCase().includes(q) && !n.meaning.toLowerCase().includes(q) && !n.usage.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        return `
+          <div class="card-box stack">
+            <div class="wrap-between">
+              <div>
+                <h2 style="font-size:15px;font-weight:700;">Paragrafen-Trainer (${scopeNorms.length} von ${state.norms.length} aktiv · VWR 1–${state.maxVwr})</h2>
+                <p class="text-xs text-muted">3-Stufen-Selbsttest: Im Verdeckt-Modus auf einen Eintrag tippen zum Aufdecken</p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" id="nm-add">+ Neuer Paragraf</button>
+            </div>
+
+            <div class="divider wrap-between">
+              <div class="wrap-bar">
+                <button type="button" class="pill nm-quiz-btn ${state.normQuizMode === 'show' ? 'active' : ''}" data-qm="show">Alles zeigen</button>
+                <button type="button" class="pill nm-quiz-btn ${state.normQuizMode === 'hideMeaning' ? 'active' : ''}" data-qm="hideMeaning">Bedeutung verdecken</button>
+                <button type="button" class="pill nm-quiz-btn ${state.normQuizMode === 'hideNorm' ? 'active' : ''}" data-qm="hideNorm">Norm verdecken</button>
+              </div>
+              <input type="search" id="nm-search" class="input" value="${esc(state.normSearch)}" placeholder="Norm oder Stichwort..." style="width:210px;max-width:100%;padding:6px 10px;font-size:12.5px;" />
+            </div>
+
+            <div class="wrap-bar">
+              ${cats.map(c => `<button type="button" class="pill nm-cat-btn ${state.normCatFilter === c ? 'active' : ''}" data-cat="${esc(c)}">${c === 'ALL' ? 'Alle Kategorien' : esc(c)}</button>`).join('')}
+            </div>
+          </div>
+
+          <div class="stack-sm">
+            ${list.length ? list.map(n => {
+              const rev = !!state.normRevealed[n.id];
+              const hideNorm = state.normQuizMode === 'hideNorm' && !rev;
+              const hideMean = state.normQuizMode === 'hideMeaning' && !rev;
+
+              return `
+                <div class="norm-row ${state.normQuizMode !== 'show' ? 'clickable' : ''}" data-norm-row="${esc(n.id)}">
+                  <div class="norm-left">
+                    <div class="wrap-bar" style="gap:6px;">
+                      <span class="badge">VWR ${n.vwr}</span>
+                      <span class="text-xs text-muted">${esc(n.cat)}</span>
+                    </div>
+                    ${hideNorm
+                      ? '<span class="norm-mask">Tippen: Norm aufdecken</span>'
+                      : `<span class="fw-bold text-accent" style="font-size:14.5px;">${esc(n.norm)}</span>`}
+                  </div>
+
+                  <div class="norm-mid">
+                    ${hideMean
+                      ? '<span class="norm-mask">Tippen: Bedeutung &amp; Einsatz aufdecken</span>'
+                      : `<p class="text-sm" style="font-weight:600;color:var(--text);">${esc(n.meaning)}</p>
+                         <p class="text-xs text-muted"><strong class="text-sec">Klausur:</strong> ${esc(n.usage)}</p>`}
+                  </div>
+
+                  <div class="wrap-bar">
+                    <button type="button" class="btn btn-sm nm-edit" data-id="${esc(n.id)}">Bearbeiten</button>
+                    <button type="button" class="btn btn-sm btn-danger nm-del" data-id="${esc(n.id)}">Löschen</button>
+                  </div>
+                </div>
+              `;
+            }).join('') : '<div class="card-box empty-box">Keine Paragrafen für diese Auswahl gefunden.</div>'}
+          </div>
+        `;
+      }
+
+      // =======================================================================
+      // 9. TAB 3: FORMULIERUNGSHILFEN & PRÜFUNGSSCHEMATA
+      // =======================================================================
+
+      function renderClozeText(raw, prefix) {
+        let i = 0;
+        return esc(raw).replace(/\{\{(.+?)\}\}/g, (_, inner) => {
+          const key = `${prefix}-g${i++}`;
+          if (!state.phraseCloze) {
+            return `<strong style="color:var(--text);font-weight:700;">${inner}</strong>`;
+          }
+          const isRev = !!state.phraseGapsRevealed[key];
+          return `<span class="cloze-gap ${isRev ? 'revealed' : ''}" data-gap="${key}" title="Tippen zum Aufdecken">${inner}</span>`;
+        });
+      }
+
+      function renderPhrasesTab() {
+        const list = activePhrasesAll();
+
+        return `
+          <div class="card-box wrap-between">
+            <div>
+              <h2 style="font-size:15px;font-weight:700;">Formulierungshilfen &amp; Schemata (${list.length} von ${state.phrases.length} aktiv · VWR 1–${state.maxVwr})</h2>
+              <p class="text-xs text-muted">Original-Gutachtentexte aus den HS-Bund-Lösungen · 1-Klick-Kopie &amp; Lücken-Test</p>
+            </div>
+            <div class="wrap-bar">
+              <button type="button" class="btn btn-sm ${state.phraseCloze ? 'btn-primary' : ''}" id="ph-cloze-toggle">
+                Lücken-Test: ${state.phraseCloze ? 'AN' : 'AUS'}
+              </button>
+              ${state.phraseCloze ? '<button type="button" class="btn btn-sm" id="ph-reveal-all">Alle aufdecken</button>' : ''}
+            </div>
+          </div>
+
+          <div class="stack">
+            ${list.length ? list.map(sec => {
+              const isOpen = !!state.phraseOpen[sec.id];
+              return `
+                <article class="card-box" style="padding:0;overflow:hidden;">
+                  <button type="button" class="guide-trigger ph-acc ${isOpen ? 'open' : ''}" data-ph="${esc(sec.id)}" style="padding:15px 16px;">
+                    <div class="stack-sm" style="gap:4px;min-width:0;flex:1;">
+                      <div class="wrap-bar" style="gap:6px;">
+                        <span class="badge badge-accent">ab VWR ${sec.vwr}</span>
+                        <span style="font-size:14.5px;font-weight:700;color:var(--text);">${esc(sec.title)}</span>
+                      </div>
+                      <span class="text-xs text-muted">${esc(sec.subtitle)}</span>
+                    </div>
+                    <span class="text-muted" style="font-size:14px;">${isOpen ? '▴' : '▾'}</span>
+                  </button>
+
+                  ${isOpen ? `
+                    <div class="stack" style="padding:16px;border-top:1px solid var(--border);">
+                      ${sec.tableHtml || ''}
+                      ${sec.blocks.map((blk, bIdx) => `
+                        <div class="phrase-block">
+                          <div class="wrap-between">
+                            <span class="text-xs fw-bold text-accent">${esc(blk.label)}</span>
+                            <button type="button" class="btn btn-sm ph-copy" data-ph-id="${esc(sec.id)}" data-bidx="${bIdx}">Kopieren</button>
+                          </div>
+                          <p class="text-sm text-sec" style="line-height:1.62;">${renderClozeText(blk.text, sec.id + '-' + bIdx)}</p>
+                        </div>
+                      `).join('')}
+                      <div class="wrap-bar" style="justify-content:flex-end;">
+                        <button type="button" class="btn btn-sm ph-copy-all" data-ph-id="${esc(sec.id)}">Gesamten Baukasten kopieren</button>
+                      </div>
+                    </div>
+                  ` : ''}
+                </article>
+              `;
+            }).join('') : '<div class="card-box empty-box">Erhöhe den Vorlesungsstand auf mindestens VWR 2, um Formulierungshilfen zu sehen.</div>'}
+          </div>
+        `;
+      }
+
+      // =======================================================================
+      // 10. TAB 4: KLAUSUR-DRILLS (24 ECHTE HS-BUND-MINI-FÄLLE)
+      // =======================================================================
+
+      function renderDrillsTab() {
+        const scope = activeDrillsAll();
+        const correctCnt = scope.filter(d => state.drillAnswers[d.id] && state.drillAnswers[d.id].correct).length;
+        const anyAnswered = scope.some(d => state.drillAnswers[d.id] !== undefined);
+
+        const list = scope.filter(d => {
+          const ans = state.drillAnswers[d.id];
+          if (state.drillFilter === 'UNSOLVED') return ans === undefined;
+          if (state.drillFilter === 'WRONG') return ans !== undefined && !ans.correct;
+          return true;
+        });
+
+        return `
+          <div class="card-box stack">
+            <div class="wrap-between">
+              <div>
+                <h2 style="font-size:15px;font-weight:700;">Klausur-Drills (${scope.length} von ${state.drills.length} aktiv · VWR 1–${state.maxVwr})</h2>
+                <p class="text-xs text-muted">Fortschritt im aktuellen Stand: <strong style="color:var(--text);">${correctCnt} / ${scope.length} richtig</strong></p>
+              </div>
+              ${anyAnswered ? '<button type="button" class="btn btn-sm" id="dr-reset">Drills zurücksetzen</button>' : ''}
+            </div>
+
+            <div class="divider wrap-bar">
+              <button type="button" class="pill dr-f-btn ${state.drillFilter === 'ALL' ? 'active' : ''}" data-df="ALL">Alle (${scope.length})</button>
+              <button type="button" class="pill dr-f-btn ${state.drillFilter === 'UNSOLVED' ? 'active' : ''}" data-df="UNSOLVED">Unbeantwortet</button>
+              <button type="button" class="pill dr-f-btn ${state.drillFilter === 'WRONG' ? 'active' : ''}" data-df="WRONG">Falsch beantwortet</button>
+            </div>
+          </div>
+
+          <div class="stack">
+            ${list.length ? list.map((d, idx) => {
+              const ans = state.drillAnswers[d.id];
+              const done = ans !== undefined;
+
+              return `
+                <article class="card-box stack">
+                  <div class="wrap-between">
+                    <div class="wrap-bar" style="gap:6px;">
+                      <span class="badge badge-accent">VWR ${d.vwr}</span>
+                      <span class="badge">${esc(d.tag)}</span>
+                      <span class="text-xs fw-bold text-muted">${esc(d.title)}</span>
+                    </div>
+                    ${done ? (ans.correct
+                      ? '<span class="badge badge-success">✓ Richtig</span>'
+                      : '<span class="badge badge-danger">✕ Falsch</span>') : ''}
+                  </div>
+
+                  <p class="text-sm fw-bold" style="line-height:1.5;color:var(--text);">${idx + 1}. ${esc(d.caseText)}</p>
+
+                  <div class="stack-sm">
+                    ${d.options.map((opt, oi) => {
+                      let cls = 'drill-opt';
+                      if (done) {
+                        if (oi === d.correct) cls += ' opt-correct';
+                        else if (oi === ans.selected) cls += ' opt-wrong';
+                        else cls += ' opt-dim';
+                      }
+                      return `
+                        <button type="button" class="${cls}" data-did="${esc(d.id)}" data-oi="${oi}">
+                          <span class="opt-letter">${String.fromCharCode(65 + oi)}</span>
+                          <span>${esc(opt)}</span>
+                        </button>
+                      `;
+                    }).join('')}
+                  </div>
+
+                  ${done ? `
+                    <div class="phrase-block" style="background-color:${ans.correct ? 'var(--success-bg)' : 'var(--warn-bg)'};border-color:${ans.correct ? 'var(--success-border)' : 'var(--warn-border)'};">
+                      <p class="text-xs" style="color:${ans.correct ? 'var(--success-text)' : 'var(--warn-text)'};line-height:1.55;">
+                        <strong>Begründung:</strong> ${esc(d.explain)}
+                      </p>
+                    </div>
+                  ` : ''}
+                </article>
+              `;
+            }).join('') : `
+              <div class="card-box empty-box stack" style="align-items:center;">
+                <p class="fw-bold" style="color:var(--text);">Keine Drills in dieser Ansicht</p>
+                <button type="button" class="btn btn-primary btn-sm" id="dr-show-all">Alle aktiven Drills zeigen</button>
+              </div>
+            `}
+          </div>
+        `;
+      }
+
+      // =======================================================================
+      // 11. TAB EVENT BINDING & MASTER RENDER
+      // =======================================================================
+
+      function bindStageEvents() {
+        const stage = document.getElementById('tab-stage');
+
+        // --- TAB 1 EVENTS ---
+        if (state.activeTab === 'cards') {
+          document.getElementById('fc-m-learn').onclick = () => { state.cardMode = 'learn'; renderAll(); };
+          document.getElementById('fc-m-list').onclick = () => { state.cardMode = 'list'; renderAll(); };
+          document.getElementById('fc-add').onclick = () => openCardModal(null);
+
+          stage.querySelectorAll('.fc-st-pill').forEach(btn => {
+            btn.onclick = () => {
+              state.cardStatusFilter = btn.dataset.st;
+              state.cardIdx = 0;
+              state.cardFlipped = false;
+              renderAll();
+            };
+          });
+
+          const sel = document.getElementById('fc-vwr-sel');
+          sel.onchange = () => {
+            state.cardVwrFilter = sel.value === 'ALL' ? 'ALL' : Number(sel.value);
+            state.cardIdx = 0;
+            state.cardFlipped = false;
+            renderAll();
+          };
+
+          const search = document.getElementById('fc-search');
+          search.oninput = () => {
+            const pos = search.selectionStart;
+            state.cardSearch = search.value;
+            state.cardIdx = 0;
+            state.cardFlipped = false;
+            renderAll();
+            const nextEl = document.getElementById('fc-search');
+            if (nextEl) { nextEl.focus(); nextEl.setSelectionRange(pos, pos); }
+          };
+
+          const clearBtn = document.getElementById('fc-clear-filters');
+          if (clearBtn) clearBtn.onclick = () => {
+            state.cardStatusFilter = 'ALL';
+            state.cardVwrFilter = 'ALL';
+            state.cardSearch = '';
+            state.cardIdx = 0;
+            state.cardFlipped = false;
+            renderAll();
+          };
+
+          // Learn mode controls
+          const flipStage = document.getElementById('fc-flip-stage');
+          if (flipStage) flipStage.onclick = () => { state.cardFlipped = !state.cardFlipped; renderAll(); };
+
+          const showAns = document.getElementById('fc-show-ans');
+          if (showAns) showAns.onclick = () => { state.cardFlipped = true; renderAll(); };
+
+          const prev = document.getElementById('fc-prev');
+          if (prev) prev.onclick = () => {
+            const len = getFilteredCards().length;
+            if (len) { state.cardIdx = (state.cardIdx - 1 + len) % len; state.cardFlipped = false; renderAll(); }
+          };
+
+          const next = document.getElementById('fc-next');
+          if (next) next.onclick = () => {
+            const len = getFilteredCards().length;
+            if (len) { state.cardIdx = (state.cardIdx + 1) % len; state.cardFlipped = false; renderAll(); }
+          };
+
+          stage.querySelectorAll('.fc-rate-btn').forEach(btn => {
+            btn.onclick = () => rateCurrentCard(btn.dataset.rate);
+          });
+
+          const editCur = document.getElementById('fc-edit-cur');
+          if (editCur) editCur.onclick = () => {
+            const card = getFilteredCards()[state.cardIdx];
+            if (card) openCardModal(card);
+          };
+
+          const delCur = document.getElementById('fc-del-cur');
+          if (delCur) delCur.onclick = () => {
+            const card = getFilteredCards()[state.cardIdx];
+            if (!card) return;
+            openConfirm('Karteikarte löschen?', `Möchtest du „${card.front}“ dauerhaft löschen?`, 'Löschen', true, () => {
+              state.cards = state.cards.filter(c => c.id !== card.id);
+              state.cardFlipped = false;
+              saveState();
+              renderAll();
+              showToast('Karte gelöscht.', 'info');
+            });
+          };
+
+          // List mode edit/delete
+          stage.querySelectorAll('.fc-edit-id').forEach(btn => {
+            btn.onclick = () => {
+              const card = state.cards.find(c => c.id === btn.dataset.id);
+              if (card) openCardModal(card);
+            };
+          });
+
+          stage.querySelectorAll('.fc-del-id').forEach(btn => {
+            btn.onclick = () => {
+              const card = state.cards.find(c => c.id === btn.dataset.id);
+              if (!card) return;
+              openConfirm('Karteikarte löschen?', `Möchtest du „${card.front}“ dauerhaft löschen?`, 'Löschen', true, () => {
+                state.cards = state.cards.filter(c => c.id !== card.id);
+                saveState();
+                renderAll();
+                showToast('Karte gelöscht.', 'info');
+              });
+            };
+          });
+        }
+
+        // --- TAB 2 EVENTS ---
+        if (state.activeTab === 'norms') {
+          document.getElementById('nm-add').onclick = () => openNormModal(null);
+
+          stage.querySelectorAll('.nm-quiz-btn').forEach(btn => {
+            btn.onclick = () => {
+              state.normQuizMode = btn.dataset.qm;
+              state.normRevealed = {};
+              renderAll();
+            };
+          });
+
+          stage.querySelectorAll('.nm-cat-btn').forEach(btn => {
+            btn.onclick = () => {
+              state.normCatFilter = btn.dataset.cat;
+              renderAll();
+            };
+          });
+
+          const nSearch = document.getElementById('nm-search');
+          nSearch.oninput = () => {
+            const pos = nSearch.selectionStart;
+            state.normSearch = nSearch.value;
+            renderAll();
+            const nextEl = document.getElementById('nm-search');
+            if (nextEl) { nextEl.focus(); nextEl.setSelectionRange(pos, pos); }
+          };
+
+          stage.querySelectorAll('[data-norm-row]').forEach(row => {
+            row.onclick = (e) => {
+              if (e.target.closest('button') || state.normQuizMode === 'show') return;
+              const id = row.dataset.normRow;
+              state.normRevealed[id] = !state.normRevealed[id];
+              renderAll();
+            };
+          });
+
+          stage.querySelectorAll('.nm-edit').forEach(btn => {
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              const obj = state.norms.find(n => n.id === btn.dataset.id);
+              if (obj) openNormModal(obj);
+            };
+          });
+
+          stage.querySelectorAll('.nm-del').forEach(btn => {
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              const obj = state.norms.find(n => n.id === btn.dataset.id);
+              if (!obj) return;
+              openConfirm('Paragraf löschen?', `Möchtest du „${obj.norm}“ entfernen?`, 'Löschen', true, () => {
+                state.norms = state.norms.filter(n => n.id !== obj.id);
+                saveState();
+                renderAll();
+                showToast('Paragraf gelöscht.', 'info');
+              });
+            };
+          });
+        }
+
+        // --- TAB 3 EVENTS ---
+        if (state.activeTab === 'phrases') {
+          document.getElementById('ph-cloze-toggle').onclick = () => {
+            state.phraseCloze = !state.phraseCloze;
+            state.phraseGapsRevealed = {};
+            renderAll();
+          };
+
+          const revAll = document.getElementById('ph-reveal-all');
+          if (revAll) revAll.onclick = () => {
+            stage.querySelectorAll('.cloze-gap').forEach(el => {
+              state.phraseGapsRevealed[el.dataset.gap] = true;
+            });
+            renderAll();
+          };
+
+          stage.querySelectorAll('.ph-acc').forEach(btn => {
+            btn.onclick = () => {
+              const id = btn.dataset.ph;
+              state.phraseOpen[id] = !state.phraseOpen[id];
+              renderAll();
+            };
+          });
+
+          stage.querySelectorAll('.cloze-gap').forEach(el => {
+            el.onclick = () => {
+              const k = el.dataset.gap;
+              state.phraseGapsRevealed[k] = !state.phraseGapsRevealed[k];
+              renderAll();
+            };
+          });
+
+          stage.querySelectorAll('.ph-copy').forEach(btn => {
+            btn.onclick = () => {
+              const sec = state.phrases.find(s => s.id === btn.dataset.phId);
+              const blk = sec && sec.blocks[Number(btn.dataset.bidx)];
+              if (blk) copyCleanText(blk.text);
+            };
+          });
+
+          stage.querySelectorAll('.ph-copy-all').forEach(btn => {
+            btn.onclick = () => {
+              const sec = state.phrases.find(s => s.id === btn.dataset.phId);
+              if (!sec) return;
+              const combined = sec.blocks.map(b => `${b.label}:\n${b.text}`).join('\n\n');
+              copyCleanText(combined);
+            };
+          });
+        }
+
+        // --- TAB 4 EVENTS ---
+        if (state.activeTab === 'drills') {
+          stage.querySelectorAll('.dr-f-btn').forEach(btn => {
+            btn.onclick = () => { state.drillFilter = btn.dataset.df; renderAll(); };
+          });
+
+          const showAll = document.getElementById('dr-show-all');
+          if (showAll) showAll.onclick = () => { state.drillFilter = 'ALL'; renderAll(); };
+
+          const resetBtn = document.getElementById('dr-reset');
+          if (resetBtn) resetBtn.onclick = () => {
+            activeDrillsAll().forEach(d => delete state.drillAnswers[d.id]);
+            saveState();
+            renderAll();
+            showToast('Aktive Drills zurückgesetzt.', 'info');
+          };
+
+          stage.querySelectorAll('.drill-opt').forEach(btn => {
+            btn.onclick = () => {
+              const did = btn.dataset.did;
+              const oi = Number(btn.dataset.oi);
+              const drill = state.drills.find(x => x.id === did);
+              if (!drill) return;
+              state.drillAnswers[did] = { selected: oi, correct: oi === drill.correct };
+              saveState();
+              renderAll();
+            };
+          });
+        }
+      }
+
+      function renderAll() {
+        renderHeaderAndTabs();
+        renderLeftGuide();
+        const stage = document.getElementById('tab-stage');
+        if (state.activeTab === 'cards') stage.innerHTML = renderCardsTab();
+        else if (state.activeTab === 'norms') stage.innerHTML = renderNormsTab();
+        else if (state.activeTab === 'phrases') stage.innerHTML = renderPhrasesTab();
+        else if (state.activeTab === 'drills') stage.innerHTML = renderDrillsTab();
+        bindStageEvents();
+      }
+
+      // =======================================================================
+      // 12. STATIC GLOBAL EVENT LISTENERS & KEYBOARD SHORTCUTS
+      // =======================================================================
+
+      document.getElementById('vwr-slider').addEventListener('input', (e) => setMaxVwr(e.target.value));
+      document.getElementById('btn-vwr-minus').addEventListener('click', () => setMaxVwr(state.maxVwr - 1));
+      document.getElementById('btn-vwr-plus').addEventListener('click', () => setMaxVwr(state.maxVwr + 1));
+      document.getElementById('btn-vwr-all').addEventListener('click', () => setMaxVwr(15));
+
+      document.getElementById('btn-theme').addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+        saveState();
+      });
+
+      document.getElementById('btn-tips').addEventListener('click', openTipsModal);
+      document.getElementById('btn-backup').addEventListener('click', openBackupModal);
+
+      document.getElementById('btn-mobile-guide').addEventListener('click', () => {
+        state.mobileGuideOpen = !state.mobileGuideOpen;
+        renderHeaderAndTabs();
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeTab = btn.dataset.tab;
+          renderAll();
+        });
+      });
+
+      document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+        if (e.target.id === 'modal-backdrop') closeModal();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('modal-backdrop').classList.contains('open')) {
+          closeModal();
+          return;
+        }
+        if (state.activeTab !== 'cards' || state.cardMode !== 'learn') return;
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+        if (document.getElementById('modal-backdrop').classList.contains('open')) return;
+
+        const list = getFilteredCards();
+        if (!list.length) return;
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          state.cardFlipped = !state.cardFlipped;
+          renderAll();
+        } else if (e.code === 'ArrowRight') {
+          e.preventDefault();
+          state.cardIdx = (state.cardIdx + 1) % list.length;
+          state.cardFlipped = false;
+          renderAll();
+        } else if (e.code === 'ArrowLeft') {
+          e.preventDefault();
+          state.cardIdx = (state.cardIdx - 1 + list.length) % list.length;
+          state.cardFlipped = false;
+          renderAll();
+        } else if (state.cardFlipped && e.key === '1') {
+          e.preventDefault();
+          rateCurrentCard('again');
+        } else if (state.cardFlipped && e.key === '2') {
+          e.preventDefault();
+          rateCurrentCard('unsure');
+        } else if (state.cardFlipped && e.key === '3') {
+          e.preventDefault();
+          rateCurrentCard('known');
+        }
+      });
+
+      // Boot
+      applyTheme();
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
