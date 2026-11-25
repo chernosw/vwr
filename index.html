@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="KlausurFit VWR">
+<meta name="theme-color" content="#b3102b">
+<title>KlausurFit VWR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE  everyday study tool: calm, direct, nothing extra
+   IDEA   a German Karteikarte (red header rule, blue ruled lines) in a Karteikasten; stars are Textmarker strokes
+   PICTURE the live index card; on Start the exam table + points bar; in Frist the calendar sheet the exam also prints
+   COLOUR ground stone/night, Karteikarten-Rot, Linienblau, Textmarker-Gelb as the one accent
+   TYPE   Figtree 800 + Figtree
+   LAYOUT one-screen app: red top bar, scrolling view up to 760px, bottom tab bar; phone first */
+:root{color-scheme:light dark;--bg:light-dark(#f2f1ed,#0f1114);--ink:light-dark(#15171b,#eceef2);--mut:light-dark(#5b616b,#a0a7b3);--card:light-dark(#ffffff,#1a1d23);--edge:light-dark(#dad9d4,#2d313a);--red:light-dark(#c8102e,#ff6b7d);--blue:light-dark(#2563d9,#82abff);--line:light-dark(rgba(37,99,217,.14),rgba(130,171,255,.10));--soft:light-dark(#edf2fc,#18223a);--warm:light-dark(#fff7d1,#2b2714);--mark:#ffe14a;--hdr:#b3102b;--okc:#11804a}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip;display:flex;flex-direction:column}
+button,select,input{font-family:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.top{flex:none;background:var(--hdr);color:#fff;display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.top h1{flex:1;margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em}
+.top h1 small{font-weight:500;opacity:.85;font-size:14px;margin-left:6px}
+.pill{font-size:13px;font-weight:700;background:rgba(255,255,255,.16);border-radius:99px;padding:4px 10px;white-space:nowrap}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.wrap{max-width:760px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-right,0px)) 32px max(16px,env(safe-area-inset-left,0px))}
+.view[hidden]{display:none}
+.tabs{flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--card);border-top:1px solid var(--edge);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{appearance:none;border:0;background:none;color:var(--mut);font-weight:600;font-size:12px;line-height:1.2;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}
+.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button[aria-current=page]{color:var(--red)}
+h2{font-size:clamp(30px,6.4vw,42px);line-height:1.05;letter-spacing:-.02em;font-weight:800;margin:2px 0 8px;text-wrap:balance}
+h3{font-size:19px;font-weight:800;margin:28px 0 10px;letter-spacing:-.01em}
+p{margin:0 0 10px}
+.lead{color:var(--mut);margin:0 0 16px;max-width:62ch}
+.mut{color:var(--mut)}
+.small{font-size:14px}
+.btn{appearance:none;border:1px solid var(--edge);background:var(--card);color:var(--ink);font-weight:700;font-size:16px;min-height:48px;padding:0 16px;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;line-height:1.2}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--hdr);border-color:var(--hdr);color:#fff}
+.btn.ok{background:var(--okc);border-color:var(--okc);color:#fff}
+.btn.ghost{background:none}
+.btn[disabled]{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 6px}
+.quick .btn{flex-direction:column;min-height:72px;font-size:15px;padding:8px}
+.quick .btn small{font-weight:500;font-size:13px;color:inherit;opacity:.8}
+.st{display:inline-block;padding:0 4px;font-size:14px;letter-spacing:1px;line-height:1.4;color:#1d1d1d;background:linear-gradient(transparent 22%,var(--mark) 22%,var(--mark) 86%,transparent 86%);white-space:nowrap}
+.st i{font-style:normal}
+.st .off{opacity:.25}
+.kk{position:relative;background:var(--card);border:1px solid var(--edge);border-radius:14px;box-shadow:0 12px 26px -20px rgba(0,0,0,.45);overflow:hidden}
+.kk-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px 10px;border-bottom:2px solid var(--red);font-size:13px;font-weight:600;color:var(--mut)}
+.kk-head .sp{flex:1}
+.kk-body{padding:12px 16px 18px;line-height:28px;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 27px,var(--line) 27px,var(--line) 28px);background-position:0 11px}
+.kk-body.tap{cursor:pointer;min-height:300px;display:flex;flex-direction:column}
+.q{font-size:21px;font-weight:700;line-height:28px;margin:0}
+.qs{font-size:15px;color:var(--mut);margin:0 0 6px;line-height:24px}
+.hint{margin-top:auto;padding-top:18px;font-size:14px;color:var(--mut);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip-n{display:inline-block;border:1.5px dashed var(--blue);color:var(--blue);border-radius:8px;padding:0 8px;font-weight:700;font-size:14px;line-height:26px}
+.ans{font-size:17px}
+.box{margin-top:12px;border-radius:10px;padding:8px 12px 10px;line-height:1.5;font-size:15px;background:var(--soft)}
+.box b.l{display:block;font-size:13px;color:var(--mut);margin-bottom:2px}
+.box.norm{font-weight:700;font-size:16px}
+.box.easy{background:var(--warm)}
+.box.tip{background:var(--card);border:1.5px solid var(--red)}
+.fbox{background:var(--card);border:1px solid var(--edge);border-radius:12px;margin-bottom:10px}
+.fbox summary{display:flex;align-items:center;gap:10px;min-height:46px;padding:8px 14px;font-weight:600;font-size:15px}
+.fbox summary #fsum{flex:1}
+.fbox .fopen{color:var(--blue);font-size:14px;font-weight:700}
+.fbox[open] summary{border-bottom:1px solid var(--edge)}
+.fbox .filters{padding:10px 12px 12px;margin:0}
+.src{margin-top:12px;font-size:13px;color:var(--mut);line-height:1.4}
+.kk.turn{animation:turn .28s ease}
+@keyframes turn{0%{transform:perspective(900px) rotateX(0)}50%{transform:perspective(900px) rotateX(88deg)}100%{transform:perspective(900px) rotateX(0)}}
+@media (prefers-reduced-motion:reduce){.kk.turn{animation:none}}
+.seg{display:flex;background:var(--card);border:1px solid var(--edge);border-radius:12px;padding:3px;margin-bottom:10px}
+.seg button{flex:1;appearance:none;border:0;background:none;color:var(--ink);font-weight:700;font-size:15px;min-height:42px;border-radius:9px;cursor:pointer}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:13px;font-weight:600;color:var(--mut)}
+select,input[type=date]{font-size:16px;min-height:46px;padding:8px 10px;border-radius:10px;border:1px solid var(--edge);background:var(--card);color:var(--ink);width:100%}
+.count{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px;font-size:14px;color:var(--mut)}
+.toggle{appearance:none;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:99px;padding:0 14px;min-height:40px;font-weight:700;font-size:14px;cursor:pointer}
+.toggle.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.actions.one{grid-template-columns:minmax(0,1fr)}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.nav .btn{min-width:48px;padding:0 12px}
+.empty{text-align:center;padding:34px 16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{appearance:none;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:99px;padding:0 14px;min-height:40px;font-weight:600;font-size:15px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+details.case,details.les{background:var(--card);border:1px solid var(--edge);border-radius:14px;margin-bottom:10px;overflow:hidden}
+details summary{list-style:none;cursor:pointer;padding:13px 16px}
+details summary::-webkit-details-marker{display:none}
+details[open]>summary{border-bottom:2px solid var(--red)}
+.sumt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sumt strong{font-size:18px;line-height:1.25}
+.meta{font-size:13px;color:var(--mut);margin-top:3px}
+.meta .alt{color:var(--red);font-weight:700}
+.cbody{padding:12px 16px 16px}
+.cbody h4{font-size:15px;margin:14px 0 6px}
+.cbody ul,.cbody ol{margin:0;padding-left:20px}
+.cbody li{margin-bottom:6px}
+.sol{list-style:none;padding:0!important}
+.sol li{border-left:3px solid var(--blue);padding:2px 0 2px 10px;margin-bottom:10px}
+.sol b{display:block;font-size:14px}
+.erg{margin-top:10px;font-weight:700}
+details.inner{border:1px dashed var(--edge);border-radius:12px;margin-top:12px}
+details.inner summary{padding:10px 12px;font-weight:700;color:var(--blue)}
+details.inner .cbody{padding:10px 12px}
+.ptsbar{display:flex;gap:3px;height:46px;margin:8px 0 6px}
+.ptsbar span{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;border-radius:6px}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:4px 14px;font-size:14px}
+.legend div{display:flex;align-items:center;gap:8px}
+.legend i{width:12px;height:12px;border-radius:3px;flex:none}
+.legend b{margin-left:auto;font-variant-numeric:tabular-nums}
+.panel{background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:14px 16px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:13px;color:var(--mut);font-weight:700;border-bottom:2px solid var(--red);padding:6px 8px}
+td{padding:9px 8px;border-bottom:1px solid var(--edge);vertical-align:top;line-height:1.4}
+tr:last-child td{border-bottom:0}
+td.k{font-weight:700}
+.prog{display:grid;gap:10px}
+.prow{display:grid;grid-template-columns:5.2em minmax(0,1fr) auto;align-items:center;gap:10px;font-size:14px}
+.ptrack{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.ptrack span{display:block;height:100%;background:var(--okc);border-radius:99px}
+.prow b{font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:12px 0}
+.mon{background:var(--card);border:1px solid var(--edge);border-radius:12px;padding:10px}
+.mon h4{margin:0 0 6px;font-size:15px}
+.g7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;text-align:center;font-size:14px;font-variant-numeric:tabular-nums}
+.g7 .h{font-size:12px;color:var(--mut);font-weight:700;padding:2px 0}
+.d{padding:5px 0;border-radius:7px;position:relative;line-height:1.3}
+.d.we{color:var(--red);background:color-mix(in srgb,var(--red) 8%,transparent)}
+.d.hol::after{content:"";position:absolute;left:50%;bottom:1px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--red)}
+.d.post{box-shadow:inset 0 0 0 2px var(--blue)}
+.d.start{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.d.bek{background:var(--blue);color:#fff}
+.d.raw{box-shadow:inset 0 0 0 2px var(--red)}
+.d.end{background:var(--hdr);color:#fff}
+.mk{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mut)}
+.mk span{display:inline-flex;align-items:center;gap:6px}
+.mk i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.steps{padding-left:22px;margin:0}
+.steps li{margin-bottom:9px;line-height:1.5}
+.fb{border-radius:12px;padding:10px 14px;margin-top:12px;font-weight:600;line-height:1.45}
+.fb.good{background:color-mix(in srgb,var(--okc) 16%,var(--card));border:1.5px solid var(--okc)}
+.fb.bad{background:color-mix(in srgb,var(--red) 10%,var(--card));border:1.5px solid var(--red)}
+.big{font-size:clamp(24px,6vw,34px);font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.answer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:14px}
+.les .cbody p,.les .cbody li{font-size:16px}
+.ex{background:var(--soft);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;line-height:1.5}
+@media(max-width:600px){
+.quick{grid-template-columns:minmax(0,1fr)}
+.quick .btn{flex-direction:row;justify-content:space-between;min-height:54px;padding:0 16px}
+table{font-size:14px}
+.stack thead{display:none}
+.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--edge)}
+.stack tr:last-child{border-bottom:0}
+.stack td{display:grid;grid-template-columns:6.6em minmax(0,1fr);gap:8px;border:0;padding:3px 0}
+.stack td::before{content:attr(data-l);color:var(--mut);font-size:13px;font-weight:700}
+.filters{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.answer{grid-template-columns:minmax(0,1fr)}
+.kbd{visibility:hidden}
+}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<header class="top">
+  <h1>KlausurFit VWR<small>Modul 1</small></h1>
+  <span class="pill" id="pill">★★★ 0 %</span>
+</header>
+
+<main id="main">
+<div class="wrap">
+
+<section class="view" id="v-start">
+  <h2>Was in der Klausur Punkte bringt</h2>
+  <p class="lead">Ausgewertet aus allen Altklausuren, allen Lösungen des Klausurenskripts, den Prüfungsschemata und den Folien. Was in keiner Klausur und keinem Klausurfall vorkam, ist komplett rausgeflogen.</p>
+  <div class="quick">
+    <button class="btn pri" data-go="k3">★★★ lernen<small id="q3">Klausur-Kern</small></button>
+    <button class="btn" data-go="frist">Frist üben<small>Aufgabe 2 sichern</small></button>
+    <button class="btn" data-go="faelle">Fälle lösen<small>Aufbau trainieren</small></button>
+  </div>
+
+  <h3>Das Muster der Altklausuren</h3>
+  <div class="panel scroll">
+    <table class="stack">
+      <thead><tr><th>Klausur</th><th>Aufgabe 1</th><th>Kernproblem</th><th>Aufgabe 2</th></tr></thead>
+      <tbody>
+        <tr><td class="k">SoSe 2025 · Jagdschein</td><td>Anspruchsaufbau (BJagdG)</td><td>Zuverlässigkeit: Straftat ohne Jagdbezug vs. Alkoholsucht</td><td>Widerspruchsfrist, Ende Samstag</td></tr>
+        <tr><td class="k">WiSe 24/25 · Bewachung</td><td>Anspruchsaufbau (§ 34a GewO)</td><td>Zuverlässigkeit: Gewerbebezug, Bagatelle, Privates</td><td>Widerspruchsfrist, Ende Sonntag</td></tr>
+        <tr><td class="k">SoSe 2024 · Apotheke</td><td>Rücknahme + Widerruf (ApoG)</td><td>Zuverlässigkeit, Begründung + Heilung, falsche Belehrung</td><td>–</td></tr>
+        <tr><td class="k">WiSe 25/26 · Entlassung</td><td>Rechtmäßigkeitsaufbau (BBG)</td><td>Formelle Prüfung + Beamtenrecht (eigene App)</td><td>–</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Wo die Punkte liegen (Bewertungsbogen Apotheke)</h3>
+  <div class="panel">
+    <p class="small"><b>Formelle Rechtmäßigkeit: 35 von 100 Punkten.</b> Die 6 Prüfpunkte sind sicheres Handwerk. Bestanden ab 50 Punkten.</p>
+    <div class="ptsbar" aria-label="Punkteverteilung">
+      <span style="flex:8;background:#8b919c">8</span>
+      <span style="flex:35;background:var(--blue)">35</span>
+      <span style="flex:22;background:var(--red)">22</span>
+      <span style="flex:5;background:#8b919c" title="5"></span>
+      <span style="flex:30;background:#7d0b1f">30</span>
+    </div>
+    <div class="legend">
+      <div><i style="background:#8b919c"></i>Ermächtigungsgrundlage<b>8 + 5</b></div>
+      <div><i style="background:var(--blue)"></i>Formell (Rücknahme)<b>35</b></div>
+      <div><i style="background:var(--red)"></i>Materiell Rücknahme<b>22</b></div>
+      <div><i style="background:#7d0b1f"></i>Materiell Widerruf<b>30</b></div>
+    </div>
+  </div>
+
+  <h3>Dein Stand</h3>
+  <div class="panel prog" id="prog"></div>
+
+  <h3>Erst verstehen (in einfach)</h3>
+  <div id="lessons"></div>
+</section>
+
+<section class="view" id="v-karten" hidden>
+  <div class="seg" role="tablist">
+    <button id="dk-w" class="on" data-deck="w">Wissen</button>
+    <button id="dk-n" data-deck="n">§-Trainer</button>
+  </div>
+  <details class="fbox" id="fbox"><summary><span id="fsum">Filter</span><span class="fopen">ändern</span></summary>
+  <div class="filters">
+    <label class="f">Einheit<select id="f-unit"></select></label>
+    <label class="f">Relevanz<select id="f-star">
+      <option value="3">nur ★★★</option>
+      <option value="2">alle (★★ und ★★★)</option>
+    </select></label>
+    <label class="f">Status<select id="f-stat">
+      <option value="all">alle Karten</option>
+      <option value="open">noch nicht gewusst</option>
+      <option value="again">nur „Nochmal“</option>
+    </select></label>
+    <label class="f">Reihenfolge<select id="f-mix">
+      <option value="0">nach Vorlesung</option>
+      <option value="1">gemischt</option>
+    </select></label>
+  </div>
+  </details>
+  <div class="count"><span id="cnt"></span><button class="toggle" id="restart">Neu starten</button></div>
+  <div id="cardbox"></div>
+</section>
+
+<section class="view" id="v-faelle" hidden>
+  <h2>Fälle</h2>
+  <p class="lead">Erst Sachverhalt lesen und selbst gliedern, dann die Lösungsskizze aufklappen. Die Altklausuren zuerst.</p>
+  <div class="chips" id="fchips"></div>
+  <div id="cases"></div>
+</section>
+
+<section class="view" id="v-frist" hidden>
+  <h2>Widerspruchsfrist</h2>
+  <p class="lead">Kam in 3 von 4 Klausuren als Aufgabe 2. Rechne mit dem Kalender, wie in der Prüfung. Feiertage: NRW.</p>
+  <div class="kk">
+    <div class="kk-head"><span>Aufgabe</span><span class="sp"></span><span id="fscore"></span></div>
+    <div class="kk-body"><p class="ans" id="ftask"></p></div>
+  </div>
+  <div class="cal" id="fcal"></div>
+  <div class="mk" id="fmk" hidden>
+    <span><i style="box-shadow:inset 0 0 0 2px var(--blue)"></i>zur Post</span>
+    <span><i style="background:var(--blue)"></i>Bekanntgabe</span>
+    <span><i style="box-shadow:inset 0 0 0 2px var(--red)"></i>rechnerisches Ende</span>
+    <span><i style="background:var(--hdr)"></i>Fristende</span>
+    <span><i style="background:color-mix(in srgb,var(--red) 14%,transparent)"></i>Wochenende · Punkt = Feiertag</span>
+  </div>
+  <div class="answer">
+    <label class="f">Fristende (Datum)<input type="date" id="fin"></label>
+    <button class="btn pri" id="fcheck">Prüfen</button>
+  </div>
+  <div id="fres"></div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" id="fsol">Lösung zeigen</button>
+    <button class="btn" id="fnew">Neue Aufgabe</button>
+  </div>
+  <div id="fsteps"></div>
+
+  <h3>Eigene Frist berechnen</h3>
+  <div class="panel">
+    <div class="grid2">
+      <label class="f">Wie bekannt gegeben?<select id="m-mode">
+        <option value="direkt">Bekanntgabe/Zustellung am …</option>
+        <option value="brief">Einfacher Brief, zur Post am …</option>
+        <option value="brief2">Brief zur Post + tatsächlich erhalten am …</option>
+      </select></label>
+      <label class="f">Datum<input type="date" id="m-d1"></label>
+      <label class="f" id="m-d2w" hidden>Tatsächlich erhalten am<input type="date" id="m-d2"></label>
+      <label class="f">Rechtsbehelfsbelehrung<select id="m-rbb">
+        <option value="1">ordnungsgemäß (1 Monat)</option>
+        <option value="12">fehlt / falsch (1 Jahr)</option>
+      </select></label>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn pri" id="m-go">Berechnen</button></div>
+    <div id="m-out"></div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<nav class="tabs" aria-label="Bereiche">
+  <button data-tab="start"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg>Start</button>
+  <button data-tab="karten"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="15" height="12" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v10M6 10h9"/></svg>Karten</button>
+  <button data-tab="faelle"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/></svg>Fälle</button>
+  <button data-tab="frist"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3"/></svg>Frist</button>
+</nav>
+
+<script>
+{
+/* ---------- Inhalte ---------- */
+const U={1:"Begriff & Rechtsquellen",2:"Organisation",3:"Verfahren",4:"Handlungsformen",5:"Grundsätze",6:"Rechtsbegriff & Ermessen",7:"Der Verwaltungsakt",8:"Wirksamkeit & Fristen",9:"Aufbau & Technik",10:"Rechtmäßigkeit – Inhalte",11:"Anspruchsaufbau",12:"Aufhebung",13:"Nebenbestimmungen",14:"Prozessrecht",15:"Digitales"};
+
+const CARDS=[
+{u:3,s:3,t:"Verfahren",q:"Wer ist „Beteiligter“ – und wofür brauchst du das in jeder Klausur?",n:"§ 13 Abs. 1 Nr. 2 VwVfG",a:"Beteiligter ist u. a., an wen die Behörde den VA richten will oder gerichtet hat (Adressat).",e:"Beteiligter = der, um den es geht. Fast immer der Adressat des Bescheids.",k:"Standardsatz bei der Anhörung: „A ist als Adressat Beteiligter i. S. d. § 13 Abs. 1 Nr. 2 VwVfG.“"},
+{u:5,s:3,t:"Gesetzmäßigkeit",q:"Vorrang und Vorbehalt des Gesetzes – Unterschied?",n:"Art. 20 Abs. 3 GG",a:"<b>Vorrang:</b> kein Handeln GEGEN das Gesetz.<br><b>Vorbehalt:</b> kein Handeln OHNE Gesetz – für Eingriffe braucht die Verwaltung eine Ermächtigungsgrundlage (EGL).",e:"Vorrang = nichts Verbotenes tun. Vorbehalt = für alles Belastende eine Erlaubnis im Gesetz haben.",k:"Der Vorbehalt ist dein erster Satz unter I. EGL – in jeder Rechtmäßigkeitsprüfung."},
+{u:5,s:2,t:"Gesetzmäßigkeit",q:"Wie weit reicht der Vorbehalt des Gesetzes (Wesentlichkeitstheorie)?",a:"Wesentliches muss das Parlament selbst regeln. Eingriffsverwaltung: immer EGL. Leistungsverwaltung: grds. nicht (h. M.). Sonderrechtsverhältnisse (Beamte, Strafgefangene): seit BVerfGE 33, 1 ebenfalls.",k:"Brauchst du bei Rücknahme/Widerruf eines BELASTENDEN VA: keine Belastung, aber wesentliche Maßnahme → EGL trotzdem nötig."},
+{u:5,s:3,t:"Verhältnismäßigkeit",q:"Prüfungsreihenfolge der Verhältnismäßigkeit?",n:"Art. 20 Abs. 3 GG (Rechtsstaatsprinzip)",a:"1. Legitimer Zweck<br>2. Geeignetheit<br>3. Erforderlichkeit<br>4. Angemessenheit",e:"Was will die Behörde? Hilft das Mittel? Gibt es etwas Sanfteres, das genauso gut hilft? Ist der Schaden für den Bürger nicht zu groß im Vergleich zum Nutzen?",k:"Immer zuerst den Zweck benennen – sonst kannst du die Geeignetheit nicht prüfen.",src:"Teletak, Fahrtenbuch, Versammlung, LuftSiG, Pass"},
+{u:5,s:3,t:"Verhältnismäßigkeit",q:"Wann ist eine Maßnahme geeignet?",a:"Wenn mit ihrer Hilfe der verfolgte Zweck erreicht oder zumindest gefördert wird.",e:"Es reicht, wenn sie ein bisschen hilft."},
+{u:5,s:3,t:"Verhältnismäßigkeit",q:"Wann ist eine Maßnahme erforderlich?",a:"Wenn kein milderes, gleich geeignetes Mittel zur Verfügung steht.",e:"Gibt es etwas Sanfteres, das genauso gut funktioniert? Dann ist die Maßnahme zu hart.",k:"Ein milderes Mittel benennen und begründen, warum es NICHT gleich geeignet ist (kürzeres Fahrtenbuch, Pass nur räumlich beschränkt)."},
+{u:5,s:3,t:"Verhältnismäßigkeit",q:"Wann ist eine Maßnahme angemessen?",a:"Wenn sie nicht zu einem Nachteil führt, der zu dem erstrebten Erfolg erkennbar außer Verhältnis steht – Abwägung: Vorteile (öffentliches Interesse) gegen Nachteile (Adressat).",e:"Eine Waage: Was gewinnt die Allgemeinheit, was verliert der Bürger?"},
+{u:5,s:3,t:"Verhältnismäßigkeit",q:"Wo prüfst du die Verhältnismäßigkeit in der Klausur?",a:"Bei Ermessen auf der Rechtsfolgenseite als mögliche <b>Ermessensüberschreitung</b> (§ 40 VwVfG). Bei gebundenen Entscheidungen nicht – außer das Gesetz verlangt sie (z. B. § 7 Abs. 2 PassG, „erforderlich“ in § 35 Abs. 1 GewO).",e:"„Kann“ = die Behörde wählt selbst → du prüfst, ob die Wahl verhältnismäßig war. „Ist zu“ = der Gesetzgeber hat schon entschieden.",src:"Teletak, Fahrtenbuch, Versammlung, LuftSiG, Pass"},
+{u:6,s:3,t:"Rechtsbegriffe",q:"Bestimmter vs. unbestimmter Rechtsbegriff?",a:"<b>Bestimmt:</b> eindeutig (z. B. 50 km/h).<br><b>Unbestimmt:</b> mehrdeutig, muss ausgelegt werden – durch Standarddefinition oder eigene Auslegung; oft Wertung oder Prognose (z. B. „Zuverlässigkeit“).",e:"Bestimmt = eine Zahl, klar. Unbestimmt = ein Gummiwort, das du erst definieren musst.",k:"Im Gutachten: „Die Zuverlässigkeit ist ein unbestimmter Rechtsbegriff, der der Auslegung bedarf.“ Dann Definition, dann Subsumtion."},
+{u:6,s:2,t:"Rechtsbegriffe",q:"Hat die Behörde bei unbestimmten Rechtsbegriffen einen Spielraum?",a:"Grundsätzlich nein: Auslegung und Anwendung sind voll gerichtlich überprüfbar (kein Beurteilungsspielraum).",e:"Spielraum gibt es nur auf der Rechtsfolgenseite (Ermessen). Auf der Tatbestandsseite gibt es nur richtig oder falsch.",src:"Kalle Kaleu"},
+{u:6,s:3,t:"Ermessen",q:"Gebundene Entscheidung oder Ermessen – woran erkennst du es?",a:"<b>Gebunden:</b> „ist zu“, „muss“, „hat zu“ → Behörde muss genau diese Rechtsfolge setzen.<br><b>Ermessen:</b> „kann“, „darf“, „ist befugt“ → Entscheidungsspielraum.",e:"„Ist“ = Pflicht. „Kann“ = Wahl.",k:"Spezialgesetze sind oft gebunden („ist zu versagen“, „ist zu widerrufen“) – dann ist die Rechtsfolge in zwei Sätzen erledigt."},
+{u:6,s:2,t:"Ermessen",q:"Was gilt bei „Soll“-Vorschriften?",a:"Im Regelfall gebunden („soll“ = „muss“). Abweichung nur in atypischen Fällen (z. B. § 9 Abs. 1 S. 1 StAG).",k:"Gleiches Muster: § 48 Abs. 2 S. 4 VwVfG („in der Regel“ für die Vergangenheit)."},
+{u:6,s:3,t:"Ermessen",q:"Entschließungs- vs. Auswahlermessen?",a:"<b>Entschließungsermessen:</b> OB die Behörde handelt.<br><b>Auswahlermessen:</b> WIE (welche Maßnahme) und gegen WEN.",e:"Erst: Mache ich überhaupt etwas? Dann: Was genau und bei wem?"},
+{u:6,s:3,t:"Ermessen",q:"Welche Ermessensfehler gibt es?",n:"§ 40 VwVfG",a:"<b>Ermessensnichtgebrauch:</b> Behörde übt ihr Ermessen gar nicht aus.<br><b>Ermessensfehlgebrauch:</b> Behörde handelt dem Zweck der EGL zuwider.<br><b>Ermessensüberschreitung:</b> nicht vorgesehene Rechtsfolge bzw. gesetzliche Grenzen überschritten – v. a. Verstoß gegen die Verhältnismäßigkeit.",e:"Nicht nachgedacht – aus falschem Grund – zu weit gegangen.",k:"Typisch: „Für Nichtgebrauch oder Fehlgebrauch ist nichts ersichtlich. In Betracht kommt eine Überschreitung durch Verstoß gegen die Verhältnismäßigkeit.“"},
+{u:7,s:2,t:"Verwaltungsakt",q:"Welche Merkmale hat ein VA?",n:"§ 35 S. 1 VwVfG",a:"1. Hoheitliche Maßnahme<br>2. Behörde<br>3. Auf dem Gebiet des öffentlichen Rechts<br>4. Regelung<br>5. Einzelfall<br>6. Unmittelbare Außenwirkung",e:"Merksatz: Eine hoheitlich handelnde Behörde regelt öffentlich-rechtlich einen Einzelfall nach außen.",k:"Steht in der Anmerkung „ist ein VA“, verweist du nur darauf.",src:"Gewerbeuntersagung Aufg. 1"},
+{u:7,s:2,t:"Verwaltungsakt",q:"Definition „hoheitliche Maßnahme“?",a:"Jedes zweckgerichtete hoheitliche Handeln mit Erklärungswert – mündlich, schriftlich, elektronisch oder konkludent."},
+{u:7,s:2,t:"Verwaltungsakt",q:"Definition „Behörde“?",n:"§ 1 Abs. 4 VwVfG",a:"Jede Stelle, die Aufgaben der öffentlichen Verwaltung wahrnimmt (funktionaler Behördenbegriff)."},
+{u:7,s:2,t:"Verwaltungsakt",q:"Wann handelt die Behörde auf dem Gebiet des öffentlichen Rechts?",a:"Wenn die streitentscheidende Norm öffentlich-rechtlich ist. <b>Modifizierte Subjektstheorie:</b> Die Norm berechtigt oder verpflichtet ausschließlich einen Träger hoheitlicher Gewalt. Ergänzend: Subordinationstheorie (Über-/Unterordnung), Interessentheorie (öffentliches Interesse).",k:"Erst die Norm benennen (z. B. § 35 Abs. 1 GewO), dann die Theorie anwenden."},
+{u:7,s:2,t:"Verwaltungsakt",q:"Definition „Regelung“?",a:"Einseitiges und unmittelbares Herbeiführen einer Rechtsfolge: Rechte oder Pflichten werden begründet, geändert, aufgehoben oder verbindlich festgestellt.",e:"Danach ist rechtlich etwas anders als vorher."},
+{u:7,s:2,t:"Verwaltungsakt",q:"Einzelfall – und was ist eine Allgemeinverfügung?",n:"§ 35 S. 2 VwVfG",a:"Einzelfall = konkreter Sachverhalt + bestimmte Person (konkret-individuell). Allgemeinverfügung = konkreter Sachverhalt, bestimmbarer Personenkreis (konkret-generell). Abstrakt-generell = Rechtsnorm, kein VA."},
+{u:7,s:2,t:"Verwaltungsakt",q:"Definition „Außenwirkung“ – und der Sonderfall Beamte?",a:"Die Regelung wirkt gegenüber einer Person außerhalb der Verwaltung. Beamte: Versetzung (+), Umsetzung (–), weil sie nur verwaltungsintern wirkt."},
+{u:7,s:3,t:"Verwaltungsakt",q:"Begünstigender vs. belastender VA?",n:"§ 48 Abs. 1 S. 2 VwVfG",a:"<b>Begünstigend:</b> begründet oder bestätigt ein Recht oder einen rechtlich erheblichen Vorteil.<br><b>Belastend:</b> greift in Rechte ein, mindestens in die allgemeine Handlungsfreiheit (Art. 2 Abs. 1 GG).",e:"Du bekommst etwas = begünstigend. Dir wird etwas verboten oder weggenommen = belastend.",k:"Entscheidet über die Anhörung (nur bei Belastung) und über das Schema bei Rücknahme/Widerruf."},
+{u:8,s:2,t:"Wirksamkeit",q:"Wann wird ein VA wirksam – und wie lange bleibt er es?",n:"§ 43 VwVfG",a:"Mit Bekanntgabe, mit dem bekannt gegebenen Inhalt (Abs. 1). Wirksam, bis er zurückgenommen, widerrufen, anderweitig aufgehoben oder erledigt ist (Abs. 2). Ein nichtiger VA ist unwirksam (Abs. 3).",e:"Ohne Bekanntgabe existiert der VA rechtlich nicht."},
+{u:8,s:2,t:"Bekanntgabe",q:"Was ist Bekanntgabe – und wann ist sie erfolgt?",n:"§ 41 VwVfG",a:"Amtlich veranlasste Möglichkeit der Kenntnisnahme. Zeitpunkt: Zugang (§ 130 BGB analog) – maßgeblich ist die Möglichkeit der Kenntnisnahme. Folgen: Wirksamkeit und Beginn der Rechtsbehelfsfrist."},
+{u:8,s:3,t:"Bekanntgabe",q:"Wann gilt ein per einfachem Brief versandter VA als bekannt gegeben?",n:"§ 41 Abs. 2 S. 1 VwVfG",a:"Am <b>vierten Tag</b> nach der Aufgabe zur Post (Inland) – seit 01.01.2025, vorher drei Tage.",e:"Brief geht am Montag raus → gilt am Freitag als angekommen.",k:"Das ist eine FIKTION, keine Frist: Fällt der vierte Tag auf Samstag oder Sonntag, bleibt es dabei. § 31 Abs. 3 VwVfG gilt hier NICHT."},
+{u:8,s:3,t:"Bekanntgabe",q:"Der Brief kommt früher oder später an als am vierten Tag – was gilt?",n:"§ 41 Abs. 2 S. 3 VwVfG",a:"<b>Früher:</b> unbeachtlich, es bleibt beim vierten Tag (Fiktion).<br><b>Später:</b> Die Fiktion gilt nicht – maßgeblich ist der tatsächliche Zugang.",e:"Eine Verspätung der Post soll nie zu deinen Lasten gehen.",src:"Fristfall, Abwandlung 1 und 2"},
+{u:8,s:2,t:"Bekanntgabe",q:"Förmliche Bekanntgabe durch Zustellung – wann und wie?",n:"§ 41 Abs. 5 VwVfG i. V. m. VwZG",a:"Zwingend, wenn gesetzlich vorgeschrieben (z. B. § 38 S. 2 BBG bei der Entlassung). Arten nach VwZG, z. B. Einschreiben mit Rückschein (§ 4 VwZG): Bekanntgabetag ist der Tag auf dem Rückschein. Vorteil: Der Zugang ist nachweisbar."},
+{u:8,s:2,t:"Fehlerfolgen",q:"Rechtswidrig oder nichtig – was ist der Unterschied?",a:"<b>Rechtswidriger VA:</b> trotzdem wirksam, aber anfechtbar; Fehler ggf. heilbar (§ 45).<br><b>Nichtiger VA (§ 44):</b> unwirksam (§ 43 Abs. 3).",e:"Rechtswidrig = gilt, bis jemand ihn kippt. Nichtig = gilt nie."},
+{u:8,s:2,t:"Bestandskraft",q:"Was bedeutet Bestandskraft?",a:"<b>Formell:</b> unanfechtbar – keine Rechtsbehelfe mehr möglich.<br><b>Materiell:</b> Die Regelung ist verbindlich. Auch ein rechtswidriger VA wird bestandskräftig, wenn er nicht rechtzeitig angegriffen wird.",k:"Bei Rücknahme/Widerruf: „auch nachdem er unanfechtbar geworden ist“ kurz erwähnen."},
+{u:8,s:3,t:"Frist",q:"Normkette der Widerspruchsfrist?",a:"Dauer: 1 Monat ab Bekanntgabe (§ 70 Abs. 1 S. 1 VwGO).<br>Berechnung: §§ 79, 31 Abs. 1 VwVfG i. V. m. §§ 187 ff. BGB.<br>Beginn: § 187 Abs. 1 BGB · Ende: § 188 Abs. 2 BGB · Wochenende/Feiertag: § 31 Abs. 3 S. 1 VwVfG (bzw. § 193 BGB).",k:"In 3 von 4 Altklausuren Aufgabe 2 – leichte, sichere Punkte.",src:"Jagdschein, Bewachung, Kalle Kaleu, Fahrtenbuch"},
+{u:8,s:3,t:"Frist",q:"Wird der Tag der Bekanntgabe mitgezählt?",n:"§ 187 Abs. 1 BGB",a:"Nein. Der Ereignistag zählt nicht – die Frist beginnt am Folgetag um 0:00 Uhr, auch wenn das ein Samstag oder Sonntag ist."},
+{u:8,s:3,t:"Frist",q:"Wann endet eine Monatsfrist?",n:"§ 188 Abs. 2 BGB",a:"Mit Ablauf (24:00 Uhr) des Tages im Folgemonat, der dieselbe Zahl trägt wie der Bekanntgabetag.",e:"Bekanntgabe am 10. → Fristende am 10. des nächsten Monats."},
+{u:8,s:3,t:"Frist",q:"Das Fristende fällt auf Samstag, Sonntag oder Feiertag – was jetzt?",n:"§ 31 Abs. 3 S. 1 VwVfG (§ 193 BGB)",a:"Die Frist endet erst mit Ablauf des nächsten Werktags.",k:"Gilt nur für das ENDE einer echten Frist – nicht für den Fristbeginn und nicht für die Vier-Tages-Fiktion."},
+{u:8,s:2,t:"Frist",q:"Bekanntgabe am 31.01. – wann endet die Monatsfrist?",n:"§ 188 Abs. 3 BGB",a:"Am 28.02. (im Schaltjahr 29.02.): Fehlt der Tag im Monat, endet die Frist am letzten Tag des Monats."},
+{u:8,s:3,t:"Frist",q:"Die Rechtsbehelfsbelehrung fehlt oder ist falsch – welche Frist gilt?",n:"§ 58 Abs. 2 VwGO",a:"Statt einem Monat: ein Jahr seit Bekanntgabe.",k:"Der VA wird dadurch NICHT formell rechtswidrig."},
+{u:8,s:2,t:"Frist",q:"Wo und wie wird Widerspruch erhoben?",n:"§ 70 Abs. 1 VwGO",a:"Schriftlich, elektronisch (§ 3a Abs. 2 VwVfG) oder zur Niederschrift bei der Behörde, die den VA erlassen hat; fristwahrend auch bei der Widerspruchsbehörde (S. 2). Es zählt der Eingang."},
+{u:9,s:3,t:"Aufbau",q:"Rechtmäßigkeitsaufbau oder Anspruchsaufbau – wann welcher?",a:"<b>Rechtmäßigkeit:</b> Die Behörde hat schon gehandelt (Verbot, Entziehung, Aufhebung) – „Ist die Maßnahme rechtmäßig?“<br><b>Anspruch:</b> Der Bürger will etwas (Erlaubnis, Pass, Jagdschein) – „Hat X einen Anspruch auf …?“",e:"Behörde nimmt oder verbietet → Rechtmäßigkeit. Bürger will etwas haben → Anspruch.",k:"Die Aufgabenstellung verrät es fast immer wörtlich."},
+{u:9,s:3,t:"Aufbau",q:"Grobaufbau der Rechtmäßigkeitsprüfung?",a:"I. Ermächtigungsgrundlage<br>II. Formelle Rechtmäßigkeit: Zuständigkeit, Verfahren, Form, Begründung, Bekanntgabe, Rechtsbehelfsbelehrung<br>III. Materielle Rechtmäßigkeit: Tatbestand, Rechtsfolge<br>IV. Ergebnis",e:"Darf sie das überhaupt? Hat sie es richtig gemacht (Form)? Lagen die Voraussetzungen vor und hat sie richtig entschieden (Inhalt)?",k:"Formell merken: „Zuständig verfahren, formen, begründen, bekanntgeben, belehren.“"},
+{u:9,s:3,t:"Aufbau",q:"Was schreibst du unter I. Ermächtigungsgrundlage?",n:"Art. 20 Abs. 3 GG",a:"1. Die Maßnahme ist belastend – Eingriff jedenfalls in Art. 2 Abs. 1 GG.<br>2. Vorbehalt des Gesetzes → EGL erforderlich.<br>3. EGL nennen: „Als EGL kommt § … in Betracht.“<br>Ob ihre Voraussetzungen vorliegen, prüfst du erst in III.",k:"Kurz halten: In der Apotheken-Klausur gab es dafür nur 8 bzw. 5 von 100 Punkten."},
+{u:9,s:3,t:"Gutachtenstil",q:"Wie ist ein Prüfungspunkt im Gutachtenstil aufgebaut?",a:"1. Obersatz im Konjunktiv („H könnte unzuverlässig sein.“)<br>2. Definition<br>3. Subsumtion (Sachverhalt unter die Definition)<br>4. Ergebnis („Somit ist …“)",e:"Frage stellen – Regel nennen – Fall reinlegen – Antwort geben.",k:"Unproblematisches im Urteilsstil (ein Satz), Probleme ausführlich. Eine „lose Schüttung“ von Argumenten wird abgewertet."},
+{u:9,s:3,t:"Klausurtechnik",q:"Was bedeutet „Weitere Normen sind nicht zu berücksichtigen“?",a:"Nur die abgedruckten Vorschriften (plus VwVfG, VwGO, GG) verwenden – keine anderen Absätze oder Gesetze heranziehen, auch wenn du sie kennst.",src:"Jagdschein, Bewachung"},
+{u:9,s:3,t:"Klausurtechnik",q:"Wie gehst du mit Anmerkungen und Bearbeitungshinweisen um?",a:"Sie sind verbindlich und sparen dir Arbeit („ist ein VA“, „zuständige Behörde“, „keine Ermessensfehler“, „Fehler können geheilt werden“). Kurz darauf verweisen („laut Anmerkung 3“) – nicht nochmal ausführlich prüfen.",e:"Die Anmerkungen sind ein Spickzettel vom Prüfer."},
+{u:10,s:3,t:"Formell",q:"Welche drei Arten der Zuständigkeit gibt es?",a:"<b>Sachlich:</b> Welche Behörde hat die Aufgabe? (Fachgesetz, Zuständigkeitsverordnung)<br><b>Örtlich:</b> Welcher Bezirk? (Spezialgesetz oder § 3 VwVfG)<br><b>Instanziell:</b> Welche Stufe? (folgt meist aus der sachlichen)",k:"Steht im Sachverhalt „die zuständige Behörde“, genügt ein Satz."},
+{u:10,s:3,t:"Formell",q:"Was besagt die Kehrseitentheorie?",a:"Für die Aufhebung (Rücknahme/Widerruf) gelten Zuständigkeit und Form wie beim Ausgangs-VA (actus contrarius): Wer erlassen hat, hebt auf – in derselben Form.",e:"Wer den Bescheid gemacht hat, macht ihn auch wieder weg.",k:"Gibt der Sachverhalt die Zuständigkeit schon vor, brauchst du sie nicht.",src:"Apotheke, Beihilfe"},
+{u:10,s:3,t:"Anhörung",q:"Prüfungsschema der Anhörung?",n:"§ 28 VwVfG",a:"1. Erforderlich (Abs. 1): VA (§ 35) + Eingriff in Rechte (belastend) + Beteiligter (§ 13 Abs. 1 Nr. 2)<br>2. Erfolgt?<br>3. Falls nein: entbehrlich nach Abs. 2 (Ermessen) oder unterblieben nach Abs. 3 (zwingend)?<br>4. Falls nein: Heilung nach § 45 Abs. 1 Nr. 3, Abs. 2",e:"Bevor dir etwas weggenommen wird, darfst du etwas dazu sagen. Wurde das vergessen, kann man es oft nachholen.",k:"Anhörungsprobleme stecken in fast jedem Übungsfall – sichere Punkte."},
+{u:10,s:3,t:"Anhörung",q:"Definition „Gefahr im Verzug“?",n:"§ 28 Abs. 2 Nr. 1 Alt. 1 VwVfG",a:"Wenn durch eine vorherige Anhörung – auch bei kürzester Frist – ein Zeitverlust einträte, der mit hoher Wahrscheinlichkeit dazu führt, dass die Maßnahme zu spät käme, um ihren Zweck zu erreichen.",k:"Gegenargument: Eine mündliche oder telefonische Anhörung wäre möglich gewesen – erst recht, wenn die Behörde sogar die Postlaufzeit abwartet. Strenger Maßstab!",src:"Gewerbeuntersagung, Teletak"},
+{u:10,s:2,t:"Anhörung",q:"Wann ist eine sofortige Entscheidung „im öffentlichen Interesse“ notwendig?",n:"§ 28 Abs. 2 Nr. 1 Alt. 2 VwVfG",a:"Wenn der Zweck der Maßnahme durch die Anhörung ganz oder zu einem nicht unwesentlichen Teil vereitelt würde. Nicht die Zeit steht im Vordergrund, sondern die Bedeutung der gefährdeten Rechtsgüter (Überraschungseffekt, Leib und Leben). Restriktiv auslegen.",src:"Teletak, LuftSiG"},
+{u:10,s:2,t:"Anhörung",q:"Der Betroffene äußert sich nicht – ist die Anhörung trotzdem erfolgt?",a:"Ja. § 28 Abs. 1 verlangt nur, dass Gelegenheit zur Äußerung gegeben wird.",src:"Apotheke"},
+{u:10,s:3,t:"Heilung",q:"Wie und bis wann können Anhörung und Begründung nachgeholt werden?",n:"§ 45 Abs. 1 Nr. 2, 3, Abs. 2 VwVfG",a:"Die Nachholung heilt den Fehler (Nr. 2 Begründung, Nr. 3 Anhörung) – bis zum Abschluss der letzten Tatsacheninstanz eines verwaltungsgerichtlichen Verfahrens (Abs. 2). Typisch: im Widerspruchsverfahren.",e:"Vergessen und später nachgeholt → zählt nicht mehr als Fehler.",src:"Apotheke, Waffenbesitzkarte, Versammlung"},
+{u:10,s:3,t:"Formell",q:"Welche Form braucht ein VA?",n:"§ 37 Abs. 2 S. 1 VwVfG",a:"Grundsatz Formfreiheit: schriftlich, elektronisch, mündlich oder anders. Ausnahme: Ein Spezialgesetz schreibt eine Form vor (z. B. Schriftform nach § 38 S. 1 BBG, § 51 Abs. 5 BBhV).",k:"Bei Aufhebung: Kehrseitentheorie – Form wie beim Ausgangs-VA."},
+{u:10,s:3,t:"Formell",q:"Wann muss ein VA begründet werden – und was muss rein?",n:"§ 39 Abs. 1 VwVfG",a:"Pflicht bei schriftlichen oder elektronischen (bzw. so bestätigten) VA. Inhalt: wesentliche tatsächliche und rechtliche Gründe (S. 2), bei Ermessen auch die Ermessenserwägungen (S. 3). Ausnahmen: § 39 Abs. 2.",k:"Floskeln ohne Tatsachen und Normen = keine Begründung → dann Heilung nach § 45 Abs. 1 Nr. 2 prüfen.",src:"Apotheke, Versammlung"},
+{u:10,s:2,t:"Formell",q:"Warum prüfst du die Bekanntgabe in der formellen Rechtmäßigkeit?",n:"§§ 41, 43 Abs. 1 VwVfG",a:"Sie ist eigentlich Wirksamkeitsvoraussetzung – wird aber als eigener Punkt der formellen Rechtmäßigkeit angesprochen, meist in einem Satz („wurde am … bekannt gegeben“)."},
+{u:10,s:3,t:"Formell",q:"Rechtsbehelfsbelehrung: Was muss rein – und was passiert bei Fehlern?",n:"§ 37 Abs. 6 VwVfG, § 58 Abs. 1 VwGO",a:"Rein gehören: Rechtsbehelf (Widerspruch), Behörde mit Sitz, Frist. Fehlt sie oder ist sie falsch, bleibt der VA formell rechtmäßig – Folge ist nur die Jahresfrist (§ 58 Abs. 2 VwGO).",e:"Eine falsche Belehrung schadet nicht dem Bescheid – sie gibt dir mehr Zeit.",k:"Typische Falle: „Es steht Ihnen frei, Rechtsbehelfe einzulegen …“ = fehlerhaft.",src:"Apotheke, LuftSiG, Versammlung"},
+{u:10,s:2,t:"Materiell",q:"Was prüfst du in der materiellen Rechtmäßigkeit?",a:"1. Tatbestandsvoraussetzungen der EGL (ggf. allgemeine Voraussetzungen: Bestimmtheit § 37 Abs. 1, richtiger Adressat, Möglichkeit der Befolgung)<br>2. Rechtsfolge: gebunden oder Ermessen (§ 40) – richtig angewandt?"},
+{u:10,s:2,t:"Materiell",q:"„Die zuständige Behörde …“ steht in der EGL – prüfst du das materiell?",a:"Nein. Die Zuständigkeit gehört ausschließlich in die formelle Rechtmäßigkeit.",src:"Fahrtenbuch"},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Definition der Unzuverlässigkeit?",a:"Unzuverlässig ist, wer nach dem Gesamteindruck seines Verhaltens nicht die Gewähr dafür bietet, dass er sein Gewerbe (seine Tätigkeit) künftig ordnungsgemäß ausüben wird. Ordnungsgemäß heißt v. a.: die einschlägigen Vorschriften einhalten und nicht gegen die Rechtsordnung verstoßen – bezogen auf das Gewerbe.",e:"Kann man dir zutrauen, dass du das in Zukunft sauber machst?",k:"DAS Klausurthema: kam in jeder VWR-Altklausur vor (GewO, BJagdG, ApoG). Wörtlich auswendig lernen!",src:"Bewachung, Jagdschein, Apotheke"},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Was sind „Tatsachen“ – und was reicht nicht?",a:"Dem Beweis zugängliche Sachverhalte. Bloße Zweifel oder Vermutungen reichen nicht; die negative Prognose muss wahrscheinlich sein. Eine strafgerichtliche Verurteilung ist nicht nötig – laufende Ermittlungen können genügen.",src:"Gewerbeuntersagung, Kalle Kaleu"},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Die drei Prüffragen zur Zuverlässigkeit?",a:"1. <b>Tatsachen?</b> Was ist beweisbar passiert?<br>2. <b>Bezug?</b> Hat es mit dieser Tätigkeit zu tun (Gewerbe-/Branchenbezug)?<br>3. <b>Prognose?</b> Ist künftiges Fehlverhalten wahrscheinlich (Wiederholungsgefahr, wie lange her, wie schwer)?",e:"Was war? Passt es zum Job? Passiert es wieder?",k:"Jede Tatsache aus dem Sachverhalt einzeln durch diese drei Fragen schicken – der Sachbearbeiter nennt sie dir meist."},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Gewerbe- bzw. Branchenbezug – Beispiele aus den Klausuren?",a:"<b>Bezug (+):</b> Weitergabe von Arzneimitteln an Drogenhersteller (Apotheke) · Alkoholsucht und Waffe (Jagd) · Betrug an Kunden (Gebrauchtwagen).<br><b>Bezug (–):</b> private Erbschaftsteuer, private Ebay-Streitigkeiten (Bewachung) · Untreue ohne Jagd-/Waffenbezug (Jagd) · private Trunkenheitsfahrt (Apotheke).",src:"Bewachung, Jagdschein, Apotheke"},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Klassische Fallgruppen der Unzuverlässigkeit (Rechtsprechung)?",a:"Straftaten und Ordnungswidrigkeiten, Steuerrückstände, nicht abgeführte Sozialversicherungsbeiträge, mangelnde wirtschaftliche Leistungsfähigkeit – jeweils mit Gewerbebezug.<br>In der Regel <b>nicht:</b> mangelnde Sachkunde, punktuelle Verletzung zivilrechtlicher Pflichten.",src:"Bewachung"},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Wann fällt die Zukunftsprognose positiv aus, wann negativ?",a:"<b>Positiv:</b> Tat liegt lange zurück, Bagatelle, im Jugendalter (20 Jahre alter Ladendiebstahl; 12 Jahre alte Trunkenheitsfahrt).<br><b>Negativ:</b> Wiederholungsabsicht erkennbar (Presse: „lasse mir nichts sagen“; Chat: „bessere Strategien, nicht aufzufallen“), Verhalten dauert an.",src:"Bewachung, Apotheke, Kalle Kaleu, Gewerbeuntersagung"},
+{u:10,s:2,t:"Zuverlässigkeit",q:"Bindet eine Bewährungsstrafe die Behörde bei der Prognose?",a:"Nein. Die positive Sozialprognose des Strafgerichts ist für die gefahrenabwehrrechtliche Bewertung nicht bindend.",src:"Jagdschein"},
+{u:10,s:2,t:"Zuverlässigkeit",q:"Kann jemand wegen einer anderen Person unzuverlässig sein?",a:"Ja (str.): Wer einem unzuverlässigen Dritten maßgeblichen Einfluss auf den Betrieb einräumt (vorbestrafte Verlobte als Geschäftsführerin), verletzt seine Aufsichtspflicht. Die Gegenansicht ist vertretbar – dann aber damit auseinandersetzen.",src:"Kalle Kaleu"},
+{u:10,s:2,t:"Zuverlässigkeit",q:"Regelbeispiel oder Regelvermutung erfüllt – ist man automatisch unzuverlässig?",a:"Nein. Auch dann ist eine Prognose für die Zukunft nötig, und Ausnahmen von der Regel sind zu prüfen (z. B. § 4 Abs. 1 Nr. 1 GastG, § 5 Abs. 2 WaffG).",src:"Kalle Kaleu, Waffenbesitzkarte"},
+{u:10,s:3,t:"Zuverlässigkeit",q:"Zuverlässigkeit in einem anderen Gesetz (Jagd, Luftsicherheit) – wie definierst du?",a:"In Anlehnung an die gewerberechtliche Definition, ausgerichtet am Zweck des Gesetzes: „… nicht die Gewähr bietet, die Jagd künftig ordnungsgemäß auszuüben“ bzw. „… von ihr keine Gefahr für die Sicherheit des Luftverkehrs ausgeht“.",k:"Die Prüfer erwarten hier eine eigene, sauber hergeleitete Definition.",src:"Jagdschein, LuftSiG"},
+{u:10,s:3,t:"Gewerbe",q:"Definition „Gewerbe“?",a:"Jede erlaubte, auf Gewinnerzielung gerichtete, auf Dauer angelegte, selbständige Tätigkeit, die kein freier Beruf ist.",e:"5 Stichworte: erlaubt – Gewinn – Dauer – selbständig – kein freier Beruf.",src:"Bewachung, Gewerbeuntersagung, Kalle Kaleu"},
+{u:11,s:3,t:"Anspruch",q:"Prüfungsaufbau: Anspruch auf Erlass eines VA?",a:"I. Anspruchsgrundlage (Was will wer von wem? AGL nennen)<br>II. Formelle Anspruchsvoraussetzungen: 1. Antrag (ggf. Form) 2. zuständige Behörde<br>III. Materielle Anspruchsvoraussetzungen: 1. Tatbestand 2. Rechtsfolge<br>IV. Ergebnis",e:"Wie ein Gutschein: Gibt es eine Regel, die dir das verspricht? Hast du richtig gefragt? Erfüllst du die Bedingungen?",k:"Kein Verfahren, keine Form, keine Begründung prüfen – den VA gibt es ja noch nicht!"},
+{u:11,s:3,t:"Anspruch",q:"Wie formulierst du eine Anspruchsgrundlage mit Versagungsgründen?",a:"„Ein Anspruch könnte sich aus § 34a Abs. 1 S. 1 i. V. m. S. 3 GewO ergeben. Danach ist die Erlaubnis zu erteilen, wenn kein Versagungsgrund vorliegt (Umkehrschluss).“",k:"Versagungsgründe ohne Problem kurz vorziehen („Nr. 1: H ist 32 Jahre alt.“) – das eigentliche Problem ausführlich.",src:"Bewachung, Jagdschein, Kalle Kaleu"},
+{u:11,s:3,t:"Anspruch",q:"Gebundene AGL vs. Ermessens-AGL – was ist jeweils das Ergebnis?",a:"<b>Gebunden:</b> Anspruch auf den VA selbst.<br><b>Ermessen:</b> nur Anspruch auf ermessensfehlerfreie Entscheidung (Ausnahme: Ermessensreduzierung auf Null)."},
+{u:12,s:3,t:"Aufhebung",q:"Rücknahme oder Widerruf?",a:"<b>Rücknahme:</b> Der VA war von Anfang an rechtswidrig (§ 48 VwVfG).<br><b>Widerruf:</b> Der VA war rechtmäßig, soll aber jetzt weg (§ 49 VwVfG).",e:"Rücknahme = „Das war von Anfang an falsch.“ Widerruf = „Das war richtig, aber jetzt hat sich etwas geändert.“"},
+{u:12,s:3,t:"Aufhebung",q:"Was prüfst du vor §§ 48, 49 VwVfG?",a:"Ob ein Spezialgesetz die Aufhebung regelt (lex specialis), z. B. § 45 WaffG, § 4 ApoG, § 15 GastG, § 14 BBG. Dann normaler Rechtmäßigkeitsaufbau mit dieser EGL.",k:"Altklausur Apotheke: Rücknahme + Widerruf nach ApoG = 100 % der Punkte."},
+{u:12,s:3,t:"Aufhebung",q:"Spezialgesetzliche Rücknahme vs. Widerruf – das typische Muster?",a:"<b>Rücknahme:</b> Der Versagungsgrund lag schon bei Erteilung vor und wird nachträglich bekannt („hätte versagt werden müssen“).<br><b>Widerruf:</b> Der Versagungsgrund tritt erst nach Erteilung ein.<br>Meist gebunden: „ist zurückzunehmen / zu widerrufen“.",e:"Zeitstrahl: Grund VOR der Erlaubnis → Rücknahme. Grund NACH der Erlaubnis → Widerruf.",src:"Apotheke, Waffenbesitzkarte"},
+{u:12,s:2,t:"Aufhebung",q:"Aufhebung eines BELASTENDEN VA – welche Besonderheiten?",a:"EGL trotzdem nötig (keine Belastung, aber wesentlich). Keine Anhörung nötig (kein Eingriff). Keine Rechtsbehelfsbelehrung nötig (nicht anfechtbar). Keine Jahresfrist."},
+{u:12,s:2,t:"Aufhebung",q:"„Auch nachdem er unanfechtbar geworden ist“ – wie gehst du damit um?",a:"Kurz nennen: Rücknahme und Widerruf sind vor und nach Eintritt der formellen Bestandskraft möglich. Ob das ein eigenes Tatbestandsmerkmal ist, ist streitig – die Erwähnung genügt."},
+{u:12,s:2,t:"Rücknahme",q:"Tatbestand der Rücknahme eines belastenden VA?",n:"§ 48 Abs. 1 S. 1 VwVfG",a:"a) rechtswidriger VA (ggf. inzident prüfen)<br>b) auch nach Unanfechtbarkeit<br>c) nicht begünstigend<br>d) Jahresfrist gilt NICHT<br>Rechtsfolge: Ermessen – ob, ex tunc/ex nunc, ganz/teilweise.",src:"Kurzbeispiel „Schnuffi“"},
+{u:12,s:2,t:"Rücknahme",q:"Tatbestand der Rücknahme eines Geldleistungs-VA?",n:"§ 48 Abs. 1 S. 1, 2, Abs. 2 VwVfG",a:"a) rechtswidriger VA · b) auch nach Unanfechtbarkeit · c) begünstigend · d) Geld- oder teilbare Sachleistung · e) kein schutzwürdiges Vertrauen (Abs. 2) · f) Jahresfrist (Abs. 4)",src:"Beihilfe"},
+{u:12,s:2,t:"Rücknahme",q:"In welcher Reihenfolge prüfst du den Vertrauensschutz?",n:"§ 48 Abs. 2 VwVfG",a:"1. Ausschlussgründe S. 3 Nr. 1–3 (Täuschung/Drohung/Bestechung – falsche Angaben – Kenntnis oder grob fahrlässige Unkenntnis)<br>2. Wenn keiner: S. 2 – Vertrauen in der Regel schutzwürdig, wenn die Leistung verbraucht ist<br>3. Sonst: S. 1 – Abwägung Vertrauen vs. öffentliches Interesse",src:"Beihilfe"},
+{u:12,s:2,t:"Rücknahme",q:"Kenntnis und grob fahrlässige Unkenntnis der Rechtswidrigkeit?",n:"§ 48 Abs. 2 S. 3 Nr. 3 VwVfG",a:"<b>Kenntnis:</b> Der Begünstigte weiß, dass der VA rechtswidrig ist.<br><b>Grob fahrlässige Unkenntnis:</b> Er ist so rechtskundig, dass er ohne Weiteres folgern müsste, dass der VA nicht rechtmäßig ist oder sein kann.",src:"Beihilfe (Beamter wunderte sich über doppelte Zahlung)"},
+{u:12,s:2,t:"Rücknahme",q:"Jahresfrist: Wann beginnt sie, auf wessen Kenntnis kommt es an?",n:"§ 48 Abs. 4 VwVfG",a:"Ein Jahr ab Kenntnis ALLER Tatsachen, die die Rücknahme rechtfertigen. h. M.: Kenntnis des zuständigen Sachbearbeiters (a. A.: irgendein Mitarbeiter). Gilt nicht bei Täuschung/Drohung/Bestechung (Abs. 4 S. 2) und nur bei begünstigenden VA.",k:"Rechnen wie jede Frist: § 31 VwVfG i. V. m. §§ 187, 188 BGB, ggf. § 31 Abs. 3.",src:"Beihilfe"},
+{u:12,s:2,t:"Rücknahme",q:"Welche Rechtsfolge gilt in den Fällen des § 48 Abs. 2 S. 3?",n:"§ 48 Abs. 2 S. 4 VwVfG",a:"In der Regel Rücknahme mit Wirkung für die Vergangenheit (ex tunc) – das Ermessen aus Abs. 1 ist insoweit modifiziert.",src:"Beihilfe"},
+{u:12,s:2,t:"Rücknahme",q:"Was ist bei § 48 Abs. 3 anders als bei Abs. 2?",n:"§ 48 Abs. 3 VwVfG",a:"Für sonstige begünstigende VA (keine Geld-/Sachleistung): keine Vertrauensschutzprüfung im Tatbestand – Vertrauen zählt nur beim Ausgleich des Vermögensnachteils. Jahresfrist gilt; Rechtsfolge Ermessen."},
+{u:12,s:2,t:"Widerruf",q:"Widerruf eines belastenden VA – was ist besonders?",n:"§ 49 Abs. 1 VwVfG",a:"Ausschlussgründe: Ein VA gleichen Inhalts müsste erneut erlassen werden (gebundene Verwaltung) oder der Widerruf ist aus anderen Gründen unzulässig (z. B. Selbstbindung). Keine Jahresfrist. Ermessen, nur für die Zukunft."},
+{u:12,s:2,t:"Widerruf",q:"Welche Widerrufsgründe nennt § 49 Abs. 2 S. 1?",n:"§ 49 Abs. 2 S. 1 Nr. 1–5 VwVfG",a:"Nr. 1 Widerruf durch Gesetz zugelassen oder im VA vorbehalten<br>Nr. 2 Auflage nicht (fristgerecht) erfüllt<br>Nr. 3 nachträglich eingetretene Tatsachen + öffentliches Interesse gefährdet<br>Nr. 4 Rechtsänderung (Vorteil noch nicht genutzt) + öffentliches Interesse<br>Nr. 5 schwere Nachteile für das Gemeinwohl",e:"Vorbehalt – Auflage – neue Fakten – neues Gesetz – Notfall."},
+{u:12,s:2,t:"Widerruf",q:"Wie prüfst du § 49 Abs. 2 S. 1 Nr. 3 VwVfG?",a:"aa) nachträglich eingetretene Tatsachen<br>bb) Behörde wäre deshalb berechtigt, den VA nicht zu erlassen (inzident: Voraussetzungen des Ausgangs-VA, z. B. Zuverlässigkeit)<br>cc) ohne Widerruf wäre das öffentliche Interesse gefährdet",src:"LuftSiG"},
+{u:12,s:2,t:"Widerruf",q:"Gilt beim Widerruf nach § 49 Abs. 2 eine Frist – und welche Wirkung hat er?",a:"Ja: Jahresfrist über § 49 Abs. 2 S. 2 i. V. m. § 48 Abs. 4. Wirkung nur für die Zukunft (ex nunc). Rechtsfolge: Ermessen."},
+{u:12,s:2,t:"Widerruf",q:"Wann greift § 49 Abs. 3 VwVfG?",n:"§ 49 Abs. 3 VwVfG",a:"Bei einer Geld- oder teilbaren Sachleistung für einen bestimmten Zweck, die zweckwidrig verwendet wird oder deren Auflage nicht erfüllt wird. Geht Abs. 2 vor; Widerruf auch für die Vergangenheit; Erstattung nach § 49a."},
+{u:13,s:2,t:"Nebenbestimmungen",q:"Was ist eine Nebenbestimmung – und welche gibt es?",n:"§ 36 Abs. 2 VwVfG",a:"Zusatz, der die Hauptregelung des VA begrenzt oder ergänzt. Nr. 1 Befristung · Nr. 2 Bedingung · Nr. 3 Widerrufsvorbehalt · Nr. 4 Auflage · Nr. 5 Auflagenvorbehalt.",k:"Kam als Zuordnungsaufgabe (Kalle Kaleu Aufg. 3): Maßgabe lesen → Nummer zuordnen → kurz begründen.",src:"Kalle Kaleu"},
+{u:13,s:2,t:"Nebenbestimmungen",q:"Befristung vs. Bedingung?",a:"<b>Befristung (Nr. 1):</b> Beginn oder Ende hängt von einem bestimmten ZEITPUNKT ab („bis 31. Oktober“).<br><b>Bedingung (Nr. 2):</b> Beginn oder Ende hängt von einem UNGEWISSEN künftigen Ereignis ab („sobald Bauarbeiten beginnen“).",e:"Sicher, wann → Befristung. Unsicher, ob überhaupt → Bedingung."},
+{u:13,s:2,t:"Nebenbestimmungen",q:"Bedingung vs. Auflage – wie unterscheidest du?",a:"<b>Auflage (Nr. 4):</b> schreibt ein Tun, Dulden oder Unterlassen vor; eigener VA, selbständig durchsetzbar; der Haupt-VA wirkt sofort.<br><b>Bedingung:</b> unselbständig, nicht durchsetzbar; der Haupt-VA wirkt erst oder nur mit Eintritt.",e:"Auflage: „Du darfst – und musst zusätzlich putzen.“ Bedingung: „Du darfst erst, wenn …“"},
+{u:13,s:2,t:"Nebenbestimmungen",q:"Widerrufsvorbehalt und Auflagenvorbehalt?",a:"<b>Widerrufsvorbehalt (Nr. 3):</b> „widerruflich erteilt“ – die Behörde behält sich den Widerruf vor (später § 49 Abs. 2 Nr. 1).<br><b>Auflagenvorbehalt (Nr. 5):</b> Die Behörde behält sich vor, später Auflagen hinzuzufügen („weitere Maßgaben bleiben vorbehalten“)."},
+{u:10,s:2,t:"Anhörung",q:"Muss angehört werden, wenn die Behörde einen Antrag ABLEHNT?",n:"§ 28 Abs. 1 VwVfG",a:"Nach dem BVerwG nein: Die Ablehnung greift nicht in bestehende Rechte ein, sie verweigert nur eine Erweiterung. (Weite Teile der Literatur: ja.)",e:"Anhörung schützt das, was du schon hast. Was du erst haben willst, wird dir durch ein Nein nicht weggenommen.",k:"Im Anspruchsaufbau prüfst du die Anhörung ohnehin nicht – nur Antrag und Zuständigkeit."},
+{u:10,s:2,t:"Anhörung",q:"Im Zweifel: Ist die Anhörung entbehrlich?",a:"Nein. Die Entbehrlichkeit ist die Ausnahme, es gilt ein strenger Maßstab. § 28 Abs. 2 Nr. 1 Alt. 2 ist ein Auffangtatbestand und eng auszulegen; der bloße Hinweis, die Behörde wolle rechtmäßig handeln, reicht nicht. Fehlt jede Eilbedürftigkeit, ist anzuhören.",src:"Übung Anhörung (Gaststätte)"},
+{u:10,s:2,t:"Anhörung",q:"Wann unterbleibt die Anhörung zwingend?",n:"§ 28 Abs. 3 VwVfG",a:"Wenn ihr ein zwingendes öffentliches Interesse entgegensteht: nur besonders gewichtige Interessen, die eindeutig Vorrang haben und gerade durch die Anhörung verletzt würden (z. B. Lebensgefahr für Menschen, Gefährdung der Sicherheit der Bundesrepublik)."},
+{u:10,s:2,t:"Heilung",q:"Heilung (§ 45) oder Unbeachtlichkeit (§ 46) – was ist der Unterschied?",n:"§§ 45, 46 VwVfG",a:"<b>§ 45:</b> Nachholung → der Fehler entfällt. Bis zum Ende der letzten Tatsacheninstanz (= Berufung; die Revision prüft nur Rechtsfragen). Nichtige VA sind unheilbar.<br><b>§ 46:</b> Der Fehler bleibt, der VA bleibt rechtswidrig – Aufhebung kann aber nicht verlangt werden, wenn offensichtlich ist, dass der Fehler die Entscheidung nicht beeinflusst hat. Bei fehlender Anhörung meist nicht offensichtlich.",k:"Steht in der Anmerkung „Auf § 46 VwVfG ist nicht einzugehen“, lässt du ihn weg.",src:"Übung Anhörung, Apotheke"},
+{u:10,s:3,t:"Klausurtechnik",q:"Standardsätze für unproblematische Prüfungspunkte?",a:"„Die zuständige Behörde hat gehandelt.“ (steht im Sachverhalt)<br>„Die instanzielle Zuständigkeit folgt aus der sachlichen.“<br>„Ein Antrag liegt vor.“<br>Form, Begründung und Bekanntgabe dürfen zusammengefasst werden, wenn es dort keine Rechtsfragen gibt.",e:"Keine Zeit an Selbstverständliches verschwenden – die Punkte liegen bei den Problemen.",src:"Schema Rechtmäßigkeitsaufbau"},
+{u:10,s:2,t:"Materiell",q:"Wann prüfst du Bestimmtheit, Adressat und Möglichkeit?",n:"§ 37 Abs. 1, § 44 Abs. 2 Nr. 4 VwVfG",a:"Nur wenn der Sachverhalt eindeutige Hinweise auf einen Mangel gibt. Bestimmtheit: Der Bürger muss wissen, was von ihm verlangt wird. Möglichkeit: Was tatsächlich unmöglich ist, macht den VA nichtig (§ 44 Abs. 2 Nr. 4)."},
+{u:10,s:2,t:"Zuverlässigkeit",q:"Regelvermutung mit Zeitgrenze – Beispiel Makler (§ 34c GewO)?",a:"Regelmäßig unzuverlässig, wer in den letzten 5 Jahren wegen bestimmter Straftaten verurteilt wurde. Urkundenfälschung vor 11 Jahren ohne Gewerbebezug → kein Regelfall und auch sonst keine Unzuverlässigkeit → Anspruch (+).",k:"Immer zwei Schritte: Regelfall? Wenn nein: trotzdem allgemein unzuverlässig nach der Definition?",src:"Arbeitsblatt Anspruchsaufbau"},
+{u:6,s:2,t:"Ermessen",q:"Ermessensfehler erkennen – drei Beispiele aus den Übungen?",n:"§ 40 VwVfG",a:"<b>Fehlgebrauch:</b> Der Beamte entzieht den Pass, um dem Nachbarn „eins auszuwischen“ (sachfremde Erwägung).<br><b>Nichtgebrauch:</b> Der Beamte glaubt, er sei zur Maßnahme gezwungen – obwohl die Norm „kann“ sagt.<br><b>Überschreitung:</b> Zwangsgeld von 30.000 €, obwohl das Gesetz höchstens 25.000 € erlaubt.",e:"Falscher Grund – gar nicht nachgedacht – mehr als erlaubt.",src:"Übung Ermessen"},
+{u:6,s:2,t:"Ermessen",q:"Ermessen ohne das Wort „kann“?",a:"Möglich: „Das Zwangsgeld beträgt bis zu 25.000 €“ heißt, die Behörde wählt die Höhe innerhalb des Rahmens (Auswahlermessen).",src:"Übung Ermessen"},
+{u:6,s:2,t:"Ermessen",q:"Was ist „reines“ Entschließungsermessen? Beispiel?",a:"Die Behörde kann nur handeln oder nicht handeln, aber nicht zwischen Maßnahmen wählen. Beispiel § 8 PassG: Pass entziehen „kann“ – ja oder nein. Dagegen § 7 Abs. 1 PassG „ist zu versagen“ = gebunden.",src:"Übung Ermessen"},
+{u:11,s:2,t:"Anspruch",q:"Wann wird aus „nur ermessensfehlerfreie Entscheidung“ doch ein Anspruch auf den VA?",a:"Bei Ermessensreduzierung auf Null – z. B. durch Selbstbindung der Verwaltung (Art. 3 Abs. 1 GG): Die Behörde erteilt seit Jahren allen Konkurrenten die Erlaubnis und will diese Praxis nicht ändern. Dazu kann Vertrauensschutz (Rechtsstaat, Art. 12 GG) kommen.",e:"Wenn die Behörde es bei allen anderen immer so macht, darf sie dich nicht ohne Grund anders behandeln.",src:"Arbeitsblatt Anspruchsaufbau (Sondernutzung)"},
+{u:5,s:2,t:"Verhältnismäßigkeit",q:"Drei Lehrbeispiele: An welcher Stufe scheitert die Maßnahme?",a:"<b>Filter</b>, der die schädlichen Stoffe gar nicht herausfiltert → ungeeignet.<br><b>Ganze Versammlung auflösen</b>, statt nur die bekannten Randalierer auszuschließen → nicht erforderlich.<br><b>Lagerhalle abreißen</b>, weil sie den Abstand um 2 cm unterschreitet → unangemessen.",e:"Hilft nicht – geht sanfter – viel zu hart.",src:"Übung Verhältnismäßigkeit"},
+{u:7,s:2,t:"Verwaltungsakt",q:"Ist die Ernennung zum Beamten ein VA?",a:"Ja: hoheitliche Maßnahme (Erklärung der Aufnahme ins Beamtenverhältnis), Behörde (z. B. GZD als Bundesoberbehörde, § 1 Nr. 2 FVG), öffentliches Recht (BBG berechtigt nur Hoheitsträger), Regelung (begründet Rechte und Pflichten), Einzelfall (nur diese Person), Außenwirkung (die Person steht vor der Ernennung außerhalb der Verwaltung).",src:"Übung Ernennung"}
+];
+
+/* §-Trainer: [Frage, Norm, Einheit, Sterne] */
+const NORMS=[
+["Vorbehalt und Vorrang des Gesetzes","Art. 20 Abs. 3 GG",5,3],
+["Behördenbegriff","§ 1 Abs. 4 VwVfG",7,2],
+["Örtliche Zuständigkeit (allgemein)","§ 3 VwVfG",10,2],
+["Beteiligter (Adressat)","§ 13 Abs. 1 Nr. 2 VwVfG",3,3],
+["Anhörung – Grundsatz","§ 28 Abs. 1 VwVfG",10,3],
+["Anhörung entbehrlich (Gefahr im Verzug, öffentliches Interesse)","§ 28 Abs. 2 Nr. 1 VwVfG",10,3],
+["Anhörung unterbleibt zwingend","§ 28 Abs. 3 VwVfG",10,2],
+["Fristberechnung im Verwaltungsverfahren","§ 31 Abs. 1 VwVfG i. V. m. §§ 187 ff. BGB",8,3],
+["Fristende am Samstag, Sonntag, Feiertag","§ 31 Abs. 3 S. 1 VwVfG (§ 193 BGB)",8,3],
+["Definition Verwaltungsakt","§ 35 S. 1 VwVfG",7,2],
+["Nebenbestimmungen (Befristung … Auflagenvorbehalt)","§ 36 Abs. 2 Nr. 1–5 VwVfG",13,2],
+["Bestimmtheit des VA","§ 37 Abs. 1 VwVfG",10,2],
+["Formfreiheit des VA","§ 37 Abs. 2 S. 1 VwVfG",10,3],
+["Pflicht zur Rechtsbehelfsbelehrung","§ 37 Abs. 6 VwVfG, § 58 Abs. 1 VwGO",10,3],
+["Begründungspflicht","§ 39 Abs. 1 VwVfG",10,3],
+["Begründung bei Ermessen","§ 39 Abs. 1 S. 3 VwVfG",10,2],
+["Ausnahmen von der Begründungspflicht","§ 39 Abs. 2 VwVfG",10,2],
+["Ermessen und Ermessensfehler","§ 40 VwVfG",6,3],
+["Bekanntgabe","§ 41 Abs. 1 VwVfG",8,3],
+["Vier-Tages-Fiktion (einfacher Brief)","§ 41 Abs. 2 S. 1 VwVfG",8,3],
+["Fiktion gilt nicht bei späterem Zugang","§ 41 Abs. 2 S. 3 VwVfG",8,3],
+["Bekanntgabe durch Zustellung","§ 41 Abs. 5 VwVfG i. V. m. VwZG",8,2],
+["Wirksamkeit des VA","§ 43 VwVfG",8,2],
+["Heilung: Begründung nachgeholt","§ 45 Abs. 1 Nr. 2 VwVfG",10,3],
+["Heilung: Anhörung nachgeholt","§ 45 Abs. 1 Nr. 3 VwVfG",10,3],
+["Bis wann ist Heilung möglich?","§ 45 Abs. 2 VwVfG",10,3],
+["Definition begünstigender VA","§ 48 Abs. 1 S. 2 VwVfG",12,3],
+["Rücknahme eines belastenden VA","§ 48 Abs. 1 S. 1 VwVfG",12,2],
+["Vertrauensschutz bei Geldleistungen","§ 48 Abs. 2 VwVfG",12,2],
+["Kein Vertrauen bei Täuschung, falschen Angaben, Kenntnis","§ 48 Abs. 2 S. 3 Nr. 1–3 VwVfG",12,2],
+["Jahresfrist für Rücknahme","§ 48 Abs. 4 VwVfG",12,2],
+["Widerruf eines belastenden VA","§ 49 Abs. 1 VwVfG",12,2],
+["Widerruf eines begünstigenden VA","§ 49 Abs. 2 VwVfG",12,2],
+["Widerruf zweckgebundener Geldleistungen","§ 49 Abs. 3 VwVfG",12,2],
+["Rechtsbehelfe gegen VA: VwGO anwendbar","§ 79 VwVfG",8,2],
+["Ereignistag zählt nicht mit","§ 187 Abs. 1 BGB",8,3],
+["Ende einer Monatsfrist","§ 188 Abs. 2 BGB",8,3],
+["Fehlender Tag im Monat (z. B. 31.)","§ 188 Abs. 3 BGB",8,2],
+["Widerspruchsfrist ein Monat","§ 70 Abs. 1 S. 1 VwGO",8,3],
+["Jahresfrist bei fehlender Belehrung","§ 58 Abs. 2 VwGO",8,3],
+["Unbeachtlichkeit von Verfahrensfehlern","§ 46 VwVfG",10,2]
+];
+
+const CASES=[
+{name:"Jagdschein",src:"Modulprüfung SoSe 2025",alt:1,cat:"anspruch frist",typ:"Anspruch + Frist",s:3,
+sv:"H (32) wurde wegen Untreue in 15 Fällen zu 1 Jahr und 8 Monaten auf Bewährung verurteilt und ist alkoholsüchtig. Er besteht die Jägerprüfung (schriftlich, mündlich-praktisch, Schießen), weist eine Jagdhaftpflichtversicherung nach und beantragt den Jagdschein. Die Behörde versagt ihn wegen Unzuverlässigkeit. Bekanntgabe Mi 10.07.02, Widerspruch eingeworfen Mo 12.08.02.",
+task:"1. Hat H einen Anspruch auf den Jagdschein? Auf alle vom Sachbearbeiter gewürdigten Aspekte eingehen. 2. Hat H fristgerecht Widerspruch erhoben?",
+pts:["Zuverlässigkeit als unbestimmten Rechtsbegriff selbst definieren (angelehnt ans Gewerberecht)","Beide Tatsachen getrennt prüfen: Verurteilung UND Alkoholsucht","Bewährung bindet die Behörde nicht","Fristende Samstag → Montag"],
+sol:[["I. Anspruchsgrundlage","§ 15 Abs. 1 S. 1, Abs. 5 S. 1 i. V. m. § 17 Abs. 1 BJagdG – zu erteilen, wenn die Prüfung bestanden ist und kein Versagungsgrund vorliegt (Umkehrschluss)."],["II. Formell","Antrag (+), zuständige Behörde (+)."],["III. 1 a) Jägerprüfung","Im Geltungsbereich, schriftlich, mündlich-praktisch, Schießprüfung – bestanden (+)."],["III. 1 b) Nr. 1, 3, 4","Kurz: 32 Jahre alt; kein Entzug; Versicherung nachgewiesen → (–)."],["Nr. 2 Zuverlässigkeit","Definition: keine Gewähr, die Jagd künftig ordnungsgemäß auszuüben (Vorschriften einhalten, keine Gefahr bei der Jagd). Tatsachen + Prognose."],["(1) Verurteilung","Schwer, Bewährung läuft noch, Bewährung bindet die Behörde nicht – aber Untreue ist ein Vermögensdelikt ohne Bezug zu Jagd, Tieren oder Waffen; keine weiteren Taten → keine Unzuverlässigkeit (a. A. vertretbar)."],["(2) Alkoholsucht","Jagd = Umgang mit der Waffe; Alkohol beeinträchtigt Wahrnehmung, Reaktion und Treffsicherheit; ein Süchtiger kann nicht verlässlich verzichten; Gewöhnung ändert nichts → unzuverlässig (+)."],["Ergebnis Aufgabe 1","Versagungsgrund Nr. 2 (+) → kein Anspruch."],["Aufgabe 2","Bekanntgabe Mi 10.07.02 → Beginn 11.07. (§ 187 Abs. 1 BGB) → Ende 10.08.02 (§ 188 Abs. 2 BGB) = Samstag → § 31 Abs. 3 S. 1 VwVfG → Mo 12.08.02, 24 Uhr → fristgerecht."]],
+erg:"Kein Anspruch auf den Jagdschein; der Widerspruch ist fristgerecht."},
+{name:"Bewachungserlaubnis",src:"Modulprüfung WiSe 24/25",alt:1,cat:"anspruch frist",typ:"Anspruch + Frist",s:3,
+sv:"R (35), Chef eines Motorradclubs, will Türsteher- und Security-Dienste anbieten und davon leben. Er hat die IHK-Sachkundeprüfung, eine Haftpflichtversicherung und durch eine Erbschaft genug Geld. Ein neuer, unerfahrener Sachbearbeiter lehnt ab wegen: Ladendiebstahl mit 15 (Sonnenbrille, 10 €), noch nicht gezahlter Erbschaftsteuer, zwei privaten Ebay-Zivilstreitigkeiten. Bekanntgabe Do 25.01.01, Widerspruch geht Mo 26.02.01 ein.",
+task:"1. Hat R einen Anspruch auf die Bewachungserlaubnis? 2. Hat R fristgerecht Widerspruch erhoben?",
+pts:["Gewerbe-Definition sauber subsumieren","Alle drei Gründe einzeln: Gewerbebezug und Prognose","Die im Sachverhalt abgedruckte Rechtsprechung nutzen (Fallgruppen!)","Fristende Sonntag → Montag"],
+sol:[["I. Anspruchsgrundlage","§ 34a Abs. 1 S. 1 i. V. m. S. 3 GewO – zu erteilen, wenn kein Versagungsgrund vorliegt (Umkehrschluss)."],["II. Formell","Antrag (+), zuständige Behörde (+)."],["III. 1 a) Bewachungsgewerbe","Bewachung (aktiver Schutz) von Leben/Eigentum fremder Personen (Gäste, Personal) (+); gewerbsmäßig: erlaubt, Gewinn, Dauer, selbständig, kein freier Beruf (+)."],["III. 1 b) Nr. 2–4","Geordnete Vermögensverhältnisse (Erbschaft), IHK-Nachweis, Versicherung → (–)."],["Nr. 1: Diebstahl","Bezug zur Bewachung denkbar, aber Bagatelle, 20 Jahre her, Jugendalter → keine negative Prognose."],["Nr. 1: Erbschaftsteuer","Steuerrückstand ist eine Fallgruppe – aber privat, kein Gewerbebezug."],["Nr. 1: Ebay-Streit","Privat und punktuell → nach der Rechtsprechung regelmäßig keine Unzuverlässigkeit."],["III. 2 Rechtsfolge","Gebunden → Anspruch (+)."],["Aufgabe 2","Bekanntgabe Do 25.01.01 → Beginn 26.01. → Ende 25.02.01 = Sonntag → Mo 26.02.01 → fristgerecht."]],
+erg:"R hat einen Anspruch; der Widerspruch ist fristgerecht."},
+{name:"Apothekenbetriebserlaubnis",src:"Modulprüfung SoSe 2024",alt:1,cat:"aufhebung recht",typ:"Rücknahme + Widerruf (Spezialgesetz)",s:3,
+sv:"Apotheker H hat seit Jahr 01 eine Betriebserlaubnis. Verschuldet verkauft er 02 20.000 Packungen Schnupfenmittel an Crystal-Meth-Hersteller und wird 03 nach dem BtMG zu 20 Monaten auf Bewährung verurteilt. Die Behörde erfährt außerdem von einer 12 Jahre alten Trunkenheitsfahrt (Geldstrafe), die bei Erteilung unbekannt war. Bei der Anhörung äußert H sich nicht. Aufhebungsbescheid 18.06.03 mit Floskel-Begründung und nichtssagender Rechtsbehelfsbelehrung, bekannt gegeben 20.06.03. Erst der Widerspruchsbescheid begründet ausführlich. In Chats kündigt H an, weitermachen zu wollen.",
+task:"1. Ist eine Rücknahme der Erlaubnis rechtmäßig? 2. Ist ein Widerruf rechtmäßig (nur materiell, alle Gründe)?",
+pts:["Punkte: Rücknahme 65 (EGL 8 · formell 35 · materiell 22), Widerruf 35 (EGL 5 · materiell 30)","Begründungsfehler + Heilung durch den Widerspruchsbescheid","Fehlerhafte Belehrung → § 58 Abs. 2, nicht formell rechtswidrig","Rücknahme = Grund schon bei Erteilung; Widerruf = Grund danach"],
+sol:[["A. I. EGL","§ 4 Abs. 1 i. V. m. § 2 Abs. 1 Nr. 4 ApoG (Spezialgesetz vor § 48 VwVfG)."],["A. II. Zuständigkeit","Kehrseitentheorie: Ausgangsbehörde (+)."],["Verfahren","Anhörung nötig (belastend, Beteiligter); Gelegenheit gegeben – dass H schweigt, ist unerheblich (+)."],["Form","Ausgangs-VA formfrei → Aufhebung formfrei (Kehrseite); schriftlich (+)."],["Bekanntgabe","20.06.03 (+)."],["Begründung","Floskel ohne Tatsachen und Normen → § 39 Abs. 1 verletzt; geheilt durch den Widerspruchsbescheid, § 45 Abs. 1 Nr. 2, Abs. 2."],["Rechtsbehelfsbelehrung","Nennt weder Widerspruch noch Frist noch Behörde → fehlerhaft → nur Jahresfrist § 58 Abs. 2 VwGO. Ergebnis: formell rechtmäßig."],["A. III. Materiell","Erlaubnis (+); Trunkenheitsfahrt = Tatsache, nachträglich bekannt. Aber: allgemeiner Lebensbereich, kein Bezug zur Apothekenleitung, 12 Jahre her → keine negative Prognose → Rücknahme rechtswidrig."],["B. I. EGL","§ 4 Abs. 2 i. V. m. § 2 Abs. 1 Nr. 4 ApoG."],["B. II. Materiell","BtM-Tat nach Erteilung; unmittelbarer Bezug (Zugang zu Arzneimitteln ausgenutzt, Kernpflicht aus § 1 Abs. 1 ApoG verletzt); Prognose negativ (Chats) → unzuverlässig (+)."],["Rechtsfolge","„ist zu widerrufen“ → gebunden → Widerruf rechtmäßig."]],
+erg:"Rücknahme rechtswidrig, Widerruf rechtmäßig."},
+{name:"Waffenbesitzkarte",src:"Klausurenskript 7.3",alt:0,cat:"aufhebung recht",typ:"Rücknahme + Widerruf (Spezialgesetz)",s:3,
+sv:"N erhält im November 01 eine Waffenbesitzkarte. Vor gut 30 Jahren war er stellvertretender Vorsitzender eines Vereins, der vor 24 Jahren verboten wurde. Seit 02 ist er Funktionär der verfassungsfeindlichen P-Partei, befürwortet im Internet fremden- und islamfeindliche Gewalt und ruft zu Demos auf. Die Behörde hebt die Karte am 10.08.05 ohne Anhörung auf; im Widerspruchsverfahren wird seine Stellungnahme berücksichtigt.",
+task:"A. Ist eine Rücknahme rechtmäßig (formell und materiell)? B. Ist ein Widerruf rechtmäßig (nur materiell, alle Gründe)?",
+pts:["Gleiches Muster wie die Apotheken-Klausur!","Anhörung fehlt → Heilung im Widerspruchsverfahren","Rücknahme scheitert an der 10-Jahres-Grenze; Widerruf greift aus zwei Gründen"],
+sol:[["A. I. EGL","§ 45 Abs. 1 WaffG (Verlust des Rechts aus § 10 Abs. 1 WaffG = belastend)."],["A. II. Formell","Zuständigkeit (+); Anhörung fehlt und war nicht entbehrlich → geheilt nach § 45 Abs. 1 Nr. 3 VwVfG im Widerspruchsverfahren; Form, Begründung, Bekanntgabe, Belehrung (+)."],["A. III. Materiell","Waffenbesitzkarte = Erlaubnis. Versagungsgrund schon bei Erteilung? § 5 Abs. 2 Nr. 2 a WaffG: Mitglied in verbotenem Verein – aber seit Ende der Mitgliedschaft mehr als 10 Jahre → (–). Rücknahme rechtswidrig."],["B. I. EGL","§ 45 Abs. 2 S. 1 WaffG (formell laut Aufgabe nicht prüfen)."],["B. II. Nr. 3 a","P-Partei = Vereinigung (Anmerkung); Bestrebungen gegen die verfassungsmäßige Ordnung (= freiheitlich demokratische Grundordnung: Menschenwürde, Demokratie, Rechtsstaat); N unterstützt aktiv → (+)."],["B. II. Nr. 3 b","Völkerverständigung, auch das Zusammenleben in Deutschland; konkrete Aktivitäten (Gewaltbefürwortung, Demo-Aufrufe) – bloße Szenezugehörigkeit reicht nicht → (+)."],["Nachträglich + Rechtsfolge","Alles ab 02, also nach Erteilung (+). „ist zu widerrufen“ → gebunden → Widerruf rechtmäßig."]],
+erg:"Rücknahme rechtswidrig, Widerruf rechtmäßig."},
+{name:"Gewerbeuntersagung",src:"Klausurenskript 5.2",alt:0,cat:"recht",typ:"VA-Begriff + Rechtmäßigkeit",s:3,
+sv:"G betreibt in Münster einen Gebrauchtwagenhandel, kauft Unfallwagen billig, repariert sie notdürftig und verkauft sie, ohne die Mängel offenzulegen. Es kommt zu Unfällen mit Verletzten; die Staatsanwaltschaft ermittelt (Betrug, Körperverletzung). G macht weiter. Die Behörde untersagt das Gewerbe per Post ohne vorherige Anhörung (Heilung laut Anmerkung); Bekanntgabe 19.09.01.",
+task:"1. Ist die Untersagung ein VA? 2. Ist sie rechtmäßig?",
+pts:["Alle 6 VA-Merkmale definieren und subsumieren","Gefahr im Verzug eher (–): eine telefonische Anhörung wäre möglich gewesen","Keine Verurteilung nötig","„Erforderlich zum Schutz der Allgemeinheit“ ist Tatbestandsmerkmal"],
+sol:[["Aufgabe 1","Hoheitliche Maßnahme, Behörde (§ 1 Abs. 4), öffentliches Recht (modifizierte Subjektstheorie, § 35 GewO), Regelung (Verbot), Einzelfall (G, sein Betrieb), Außenwirkung → VA (+)."],["I. EGL","Belastend (Art. 12, 2 Abs. 1 GG) → § 35 Abs. 1 S. 1 GewO."],["II. Formell","Zuständigkeit (+). Anhörung erforderlich, fehlt; Gefahr im Verzug (–), weil telefonisch möglich (a. A. vertretbar); öffentliches Interesse (–); geheilt (§ 45 Abs. 1 Nr. 3, Anmerkung). Form, Begründung, Bekanntgabe, Belehrung (+)."],["III. 1 a) Gewerbe","Definition (+), wird tatsächlich ausgeübt (+)."],["III. 1 b) Unzuverlässigkeit","Tatsachen: Betrug § 263, Körperverletzung §§ 223, 224 StGB – beweisbar, Verurteilung nicht nötig. Prognose: macht trotz Unfällen und Ermittlungen weiter → negativ."],["III. 1 c) Erforderlichkeit","Schutz der Allgemeinheit; Stichproben oder Ermahnung wären nicht gleich wirksam (+)."],["III. 2 Rechtsfolge","„ist zu untersagen“ → gebunden; nur der Umfang (ganz/teilweise) ist Ermessen – laut Anmerkung ganz korrekt."]],
+erg:"VA (+); die Untersagung ist rechtmäßig."},
+{name:"Kalle Kaleu",src:"Klausurenskript 6.2",alt:0,cat:"anspruch frist nb",typ:"Anspruch + Frist + Nebenbestimmungen",s:3,
+sv:"K beantragt eine Gaststättenerlaubnis für die Kneipe „Bermudadreieck“ am Aasee. In Oldenburg wurde er wegen verbotenen Glücksspiels und Förderung der Prostitution zu einer Freiheitsstrafe verurteilt und kündigt in der Presse an, sich „von denen da oben nichts sagen“ zu lassen. Geschäftsführerin soll seine mehrfach vorbestrafte Verlobte M werden (gefährliche Körperverletzung, meist aus Eifersucht in Kneipen; Diebstahl; Steuerhinterziehung; letzte Tat vor wenigen Wochen). Ablehnung bekannt gegeben 23.05.03. Abwandlung: Sondernutzungserlaubnis mit fünf Maßgaben.",
+task:"1. Anspruch auf die Gaststättenerlaubnis? 2. Widerspruch fristgerecht? 3. Welche Nebenbestimmungen liegen vor?",
+pts:["Gaststättengewerbe nach § 1 GastG sauber herleiten","Regelbeispiel erfüllt – trotzdem Prognose","Unzuverlässigkeit wegen der Verlobten (str.)","Nebenbestimmungen zuordnen"],
+sol:[["I. Anspruchsgrundlage","§ 2 Abs. 1 S. 1 i. V. m. § 4 Abs. 1 S. 1 Nr. 1 GastG (Umkehrschluss). Formelles ist laut Aufgabe nicht gefragt."],["III. 1 a) Gaststättengewerbe","Gewerbe (Definition) + stehend (vor Ort) + Schankwirtschaft (§ 1 Abs. 1 Nr. 1) + für jedermann zugänglich (+)."],["III. 1 b) aa) Regelbeispiel","Verbotenes Glücksspiel + der Unsittlichkeit Vorschub geleistet (Prostitution); nicht geringfügig (Freiheitsstrafe). Prognose: Presseaussage → Wiederholungsgefahr → unzuverlässig."],["bb) Verlobte als Geschäftsführerin","Erheblich und kneipentypisch vorbestraft, zuletzt vor Wochen; maßgeblicher Einfluss → Aufsichtspflicht verletzt → unzuverlässig (a. A. vertretbar)."],["Ergebnis Aufgabe 1","Versagungsgrund (+), gebunden → kein Anspruch."],["Aufgabe 2","Bekanntgabe 23.05.03 → Ende 23.06.03 = Sonntag → Mo 24.06.03 → fristgerecht."],["Aufgabe 3","„widerruflich“ = Widerrufsvorbehalt (Nr. 3) · „Reinigung“ = Auflage (Nr. 4) · „Bauarbeiten“ = Bedingung (Nr. 2) · „weitere Maßgaben“ = Auflagenvorbehalt (Nr. 5) · „bis 31. Oktober“ = Befristung (Nr. 1)."]],
+erg:"Kein Anspruch; Widerspruch fristgerecht; Nebenbestimmungen wie zugeordnet."},
+{name:"Fristberechnung",src:"Klausurenskript 4",alt:0,cat:"frist",typ:"Frist (mit 4 Abwandlungen)",s:3,
+sv:"Ein Bescheid wird am Mo 12.08.01 mit einfachem Brief zur Post gegeben; B legt am 16.09.01 Widerspruch ein. Abwandlungen: (1) B erhält den Brief schon am 14.08., (2) erst am 17.08., (3) Einschreiben mit Rückschein, Übergabe 13.08., (4) Bekanntgabe am 15.08.",
+task:"Wann wurde bekannt gegeben, wann endet die Frist, war B rechtzeitig?",
+pts:["Vier-Tages-Fiktion ist keine Frist → kein § 31 Abs. 3","Früher Zugang ist egal, später Zugang zählt (§ 41 Abs. 2 S. 3)","Fristbeginn am Samstag ist egal – nur das Ende wird verschoben"],
+sol:[["Ausgangsfall","Post Mo 12.08. → Bekanntgabe Fr 16.08. (§ 41 Abs. 2 S. 1) → Beginn Sa 17.08. → Ende Mo 16.09. → rechtzeitig."],["Abwandlung 1","Früherer Zugang (14.08.) unbeachtlich → wie Ausgangsfall."],["Abwandlung 2","Späterer Zugang 17.08. → Fiktion gilt nicht → Ende Di 17.09. → rechtzeitig."],["Abwandlung 3","Zustellung nach § 41 Abs. 5 VwVfG i. V. m. § 4 VwZG, Rückschein 13.08. → Ende Fr 13.09."],["Abwandlung 4","Bekanntgabe 15.08. → Ende 15.09. = Sonntag → Mo 16.09. → rechtzeitig."],["Zusatz","Post am 14.08. → Fiktion So 18.08. – bleibt Sonntag (BVerwG: Fiktion, kein § 31 Abs. 3). Der BFH rechnet bei der AO anders – in VWR nach BVerwG lösen."]],
+erg:"Das ist das Schema für Aufgabe 2 – im Tab „Frist“ beliebig oft üben."},
+{name:"Teletak",src:"Klausurenskript 5.3",alt:0,cat:"recht",typ:"Rechtmäßigkeit",s:2,
+sv:"H trainiert seinen Hund im Nordpark Münster mit einem Teletak-Gerät (Stromstöße). Ein Tierarzt bestätigt erhebliche Schmerzen; H will weitermachen. Der Oberbürgermeister untersagt den Einsatz schriftlich und mit Begründung, ohne H vorher anzuhören. Bekanntgabe 23.07.01.",
+task:"Ist die Ordnungsverfügung rechtmäßig?",
+pts:["Zuständigkeit sachlich und örtlich mit Normen begründen","Anhörung: Entbehrlichkeit vertretbar – sonst Heilung prüfen","„kann“ → Verhältnismäßigkeit als Ermessensüberschreitung"],
+sol:[["I. EGL","§ 16a Abs. 1 i. V. m. § 3 Nr. 5 TierSchG (belastend, Art. 2 Abs. 1 GG)."],["II. Zuständigkeit","Sachlich: § 1 TierSchZV (kreisfreie Stadt), Oberbürgermeister nach § 63 Abs. 1 GO NRW. Örtlich: § 4 Abs. 1 OBG NRW (Nordpark liegt in Münster)."],["Anhörung","Erforderlich, fehlt. § 28 Abs. 2 Nr. 1: Gefahr im Verzug ODER öffentliches Interesse (Tierschutz, H will weitermachen) vertretbar. Wer verneint: Heilung nach § 45 Abs. 1 Nr. 3 möglich."],["Form, Begründung, Bekanntgabe, Belehrung","Alle (+)."],["III. 1 Tatbestand","Ausbildung mit erheblichen Schmerzen = Verstoß gegen § 3 Nr. 5; künftige Verstöße drohen; H ist richtiger Adressat."],["III. 2 Rechtsfolge","„kann“ → Ermessen; Überschreitung? Zweck Tierschutz; geeignet (keine Schmerzen mehr), erforderlich (kein milderes Mittel), angemessen (mehr Zeit und Geld für H wiegen weniger als die Schmerzen des Tieres)."]],
+erg:"Die Verfügung ist rechtmäßig (verneint man die Entbehrlichkeit: Fehler heilbar)."},
+{name:"Fahrtenbuch",src:"Klausurenskript 5.4",alt:0,cat:"recht frist",typ:"Rechtmäßigkeit + Frist",s:2,
+sv:"Mit dem Motorrad von Halter A wird die Höchstgeschwindigkeit (60 km/h) um 40 km/h überschritten (1 Punkt). A reagiert nicht auf den Anhörungsbogen und schweigt bei der Polizei; die Nachbarn wissen nichts. Der Oberbürgermeister ordnet nach Anhörung ein Fahrtenbuch an (schriftlich, begründet, mit Belehrung). Bekanntgabe 14.04.02; Widerspruch 15.05.02. Der 14.05.02 ist Christi Himmelfahrt.",
+task:"1. Ist die Fahrtenbuchanordnung rechtmäßig? 2. Ist der Widerspruch fristgerecht?",
+pts:["„Zuständige Behörde“ nur formell prüfen","Unmöglichkeit der Fahrerfeststellung definieren","Verhältnismäßigkeit: kürzere Dauer ist kein gleich geeignetes Mittel","Fristende am Feiertag"],
+sol:[["I. EGL","§ 31a Abs. 1 S. 1 StVZO (Pflicht zum Führen = Eingriff in Art. 2 Abs. 1 GG)."],["II. Formell","Zuständigkeit (Anmerkung), Anhörung erfolgt, Schriftform zulässig, Begründung, Bekanntgabe, Belehrung (+)."],["III. 1 a) Zuwiderhandlung","Ordnungswidrigkeit nach § 49 Abs. 3 Nr. 4 i. V. m. § 41 Abs. 1 StVO, Zeichen 274 (+)."],["III. 1 b) Feststellung unmöglich","Behörde hat alle angemessenen und zumutbaren Maßnahmen ergriffen (Anhörungsbogen, Polizei, Nachbarn) – ohne Erfolg (+)."],["III. 1 c) Halter","A ist Halter (+)."],["III. 2 Rechtsfolge","„kann“ → Ermessen. Zweck: künftige Fahrerfeststellung + Abschreckung. Geeignet (+); erforderlich: eine kürzere Dauer liefe bei Saison-Abmeldung leer (+); angemessen: Punkte-Verstoß wiegt schwerer als der Eintragungsaufwand (+)."],["Aufgabe 2","Bekanntgabe 14.04.02 → Ende 14.05.02 = Christi Himmelfahrt → § 31 Abs. 3 → Fr 15.05.02 → fristgerecht."]],
+erg:"Anordnung rechtmäßig; Widerspruch fristgerecht."},
+{name:"Versammlungsverbot",src:"Klausurenskript 5.5",alt:0,cat:"recht",typ:"Rechtmäßigkeit",s:2,
+sv:"V, Vorsitzender einer Bürgervereinigung, plant eine öffentliche Info- und Diskussionsveranstaltung im Saal einer Gaststätte in Münster. Aktivisten verabreden auf Facebook, Andersdenkende mit Teleskopschlagstöcken anzugreifen; V ermutigt sie. Der Polizeipräsident hört V an und verbietet die Versammlung – als Begründung nur ein Hinweis auf „allseits bekannte Bedenken“, ohne Rechtsbehelfsbelehrung. Bekanntgabe 24.07.",
+task:"Ist das Verbot rechtmäßig?",
+pts:["Richtige EGL: § 5 VersG (geschlossener Raum), nicht § 15","Begründung fehlt inkl. Ermessenserwägungen (§ 39 Abs. 1 S. 3) → Heilung","Fehlende Belehrung → § 58 Abs. 2","Versammlungsbegriff selbst definieren"],
+sol:[["I. EGL","§ 5 Nr. 3 VersG – § 15 VersG gilt nur unter freiem Himmel."],["II. Formell","Zuständigkeit (Anmerkung), Anhörung (+), Form (+). Begründung: Floskel, keine Ermessenserwägungen → § 39 Abs. 1 verletzt, kein Fall des § 39 Abs. 2 → Nachholung nach § 45 Abs. 1 Nr. 2 möglich. Belehrung fehlt → Jahresfrist, nicht formell rechtswidrig."],["III. 1 Tatbestand","Versammlung (örtliche Zusammenkunft mehrerer Personen zur Meinungsbildung oder -äußerung) (+); öffentlich + geschlossener Raum (+); Tatsachen (Facebook-Chats), dass der Veranstalter einen gewalttätigen Verlauf anstrebt (+); Einzelfall (+)."],["III. 2 Rechtsfolge","„kann“ → Verhältnismäßigkeit: geeignet (+); erforderlich – Maßnahmen nur gegen die Störer laut Anmerkung nicht erfolgversprechend (+); angemessen – Leib und Leben der Teilnehmer überwiegen (+)."]],
+erg:"Das Verbot ist rechtmäßig."},
+{name:"Pass",src:"Klausurenskript 6.3",alt:0,cat:"anspruch",typ:"Anspruch",s:2,
+sv:"D, Deutscher mit gewöhnlichem Aufenthalt in Münster, beantragt einen Reisepass. Laut Polizei will er nach Syrien reisen, sich dem Jihad anschließen und Anschläge auf Einrichtungen der USA im Ausland verüben.",
+task:"Hat D einen Anspruch auf Ausstellung des Passes?",
+pts:["Zuständigkeit sachlich (Gemeinde, Oberbürgermeister) und örtlich (§ 3 VwVfG)","Innere/äußere Sicherheit (–), aber „sonstige erhebliche Belange“ (+)","Verhältnismäßigkeit über § 7 Abs. 2 PassG"],
+sol:[["I. Anspruchsgrundlage","§ 6 Abs. 1 S. 1 i. V. m. § 7 Abs. 1 Nr. 1 PassG."],["II. Formell","Antrag (+). Sachlich: Passbehörde = örtliche Ordnungsbehörde (§ 48 Abs. 1 OBG NRW), also die Gemeinde (§ 3 Abs. 1 OBG), handelnd durch den Oberbürgermeister (§ 63 Abs. 1 GO NRW). Örtlich: § 3 Abs. 1 Nr. 3 a VwVfG (gewöhnlicher Aufenthalt Münster). Keine Verfahrens- oder Formfragen!"],["III. 1 Tatbestand","Pass i. S. d. § 1 Abs. 2 Nr. 1 (+); Passbewerber ist Deutscher (+); bestimmte Tatsachen (polizeiliche Erkenntnisse) (+)."],["Innere/äußere Sicherheit","Taten richten sich gegen US-Einrichtungen im Ausland, nicht gegen die Bundesrepublik → (–)."],["Sonstige erhebliche Belange","Unbestimmter Rechtsbegriff; nach der Verwaltungsvorschrift: auswärtige Beziehungen, Ansehen der Bundesrepublik im Ausland → gefährdet (+)."],["III. 2 Rechtsfolge","Gebunden – aber § 7 Abs. 2: Die Versagung muss verhältnismäßig sein. Räumliche oder zeitliche Beschränkung nicht gleich geeignet (Ausreise über Drittländer, dauerhafte Absicht); Leib und Leben Dritter überwiegen → verhältnismäßig."]],
+erg:"Kein Anspruch auf den Pass."},
+{name:"Beihilfe",src:"Klausurenskript 7.1",alt:0,cat:"aufhebung",typ:"Rücknahme § 48 VwVfG",s:2,
+sv:"Beamter A erhält für dieselben Aufwendungen zweimal Beihilfe (je 357,33 €); der zweite Bescheid vom 10.02. ergeht ohne Antrag. A wundert sich und überweist das Geld aufs Sparkonto. Mitarbeiter T hört A an (Stellungnahme 26.03.), der zuständige Sachbearbeiter S prüft den vollständigen Vorgang am 02.04. Rücknahme für die Vergangenheit am 31.03. des Folgejahres.",
+task:"Ist die Aufhebung des zweiten Beihilfebescheids rechtmäßig?",
+pts:["Rücknahme eines Geldleistungs-VA (§ 48 Abs. 2)","Grob fahrlässige Unkenntnis des A (frisch aus dem Studium, wunderte sich)","Jahresfrist: Kenntnis des zuständigen Sachbearbeiters (h. M.) – Wochenende und Feiertage beachten"],
+sol:[["I. EGL","Kein Spezialgesetz → § 48 Abs. 1 S. 1, 2, Abs. 2 VwVfG (Wegnahme des Geldes = belastend)."],["II. Formell","Kehrseitentheorie (Service-Center Beihilfe); Anhörung (+), auch wenn T sie veranlasst hat; Schriftform § 51 Abs. 5 BBhV (Kehrseite); Begründung, Bekanntgabe, Belehrung (+)."],["III. 1 Tatbestand","VA (+); rechtswidrig (kein Antrag, doppelte Leistung) (+); Unanfechtbarkeit egal; begünstigend (+); einmalige Geldleistung (+)."],["Vertrauensschutz","Nr. 1 (–); Nr. 2 (–), A hat keine Angaben gemacht; Nr. 3: grob fahrlässige Unkenntnis (+) → kein schutzwürdiges Vertrauen."],["Jahresfrist","h. M.: Kenntnis des zuständigen S am 02.04. → Beginn 03.04. (Karfreitag egal) → Ende 02.04. des Folgejahres = Samstag → Mo 04.04. → Rücknahme am 31.03. fristgerecht. (a. A.: Kenntnis des T am 26.03. → Ende 29.03., Tag nach Ostermontag → verfristet.)"],["III. 2 Rechtsfolge","§ 48 Abs. 2 S. 4: Regelfall → für die Vergangenheit (Anmerkung) → rechtmäßig."]],
+erg:"Rücknahme rechtmäßig (nach h. M.)."},
+{name:"Luftsicherheitsgesetz",src:"Klausurenskript 7.2",alt:0,cat:"aufhebung",typ:"Widerruf § 49 VwVfG",s:2,
+sv:"K arbeitet als Köchin bei einem Caterer am Flughafen Münster/Osnabrück und befüllt Rollwagen für die Flugzeuge. Ihre Zuverlässigkeit nach § 7 LuftSiG wurde rechtmäßig festgestellt (bekannt gegeben 26.11.01). Ab 02 engagiert sie sich in einer verbotenen Vereinigung und schreibt Flugblätter, die Gewalt und Terror befürworten. Die Behörde erfährt davon im September 02 und widerruft ohne Anhörung (sofortige Entscheidung laut Anmerkung im öffentlichen Interesse); Bekanntgabe 15.10.02, Belehrung fehlerhaft.",
+task:"Ist der Widerruf der Zuverlässigkeitsfeststellung rechtmäßig?",
+pts:["EGL § 49 Abs. 2 S. 1 Nr. 3 VwVfG (kein Spezialgesetz)","Zuverlässigkeit am Zweck des LuftSiG selbst definieren","Jahresfrist und Wirkung nur für die Zukunft"],
+sol:[["I. EGL","Widerruf = belastend (Art. 12, 2 Abs. 1 GG) → § 49 Abs. 2 S. 1 Nr. 3 VwVfG."],["II. Formell","Zuständigkeit laut Sachverhalt (dann keine Kehrseitentheorie nötig); Anhörung entbehrlich nach § 28 Abs. 2 Nr. 1 Alt. 2 (Anmerkung); Form, Begründung, Bekanntgabe (+); Belehrung fehlerhaft → § 58 Abs. 2, nicht formell rechtswidrig."],["III. 1 a) Ausgangs-VA","Rechtmäßig und begünstigend (ermöglicht die Arbeit) (+); auch nach Unanfechtbarkeit (+)."],["III. 1 b) Nr. 3","Nachträgliche Tatsachen (Vereinigung, Flugblätter) (+); Behörde wäre berechtigt, die Feststellung nicht zu erlassen: K ist überprüfbare Person (§ 7 Abs. 1 Nr. 2), Zuverlässigkeit = keine Gefahr für den Luftverkehr i. S. v. § 1 LuftSiG → Manipulation des Essens möglich → unzuverlässig (+); öffentliches Interesse gefährdet (+)."],["III. 1 c) Jahresfrist","Kenntnis September 02, Widerruf Oktober 02 (+)."],["III. 2 Rechtsfolge","Ermessen: Verhältnismäßigkeit (+) – Sicherheit des Luftverkehrs überwiegt den Arbeitsplatz; nur für die Zukunft (+)."]],
+erg:"Der Widerruf ist rechtmäßig."},
+{name:"Übung Verhältnismäßigkeit",src:"Klausurenskript 2.1",alt:0,cat:"uebung",typ:"Drei Kurzfälle",s:2,
+sv:"(1) Die Behörde verlangt den Einbau eines Filters – der aber genau die Schadstoffe nicht herausfiltert, die das Pflanzensterben verursachen. (2) Die Polizei löst eine ganze Demonstration auf, weil einige polizeibekannte Randalierer daraus Sachbeschädigungen begehen. (3) Abrissverfügung gegen eine Lagerhalle, die die Abstandsfläche (6 m) um 2 cm unterschreitet; ein Rückbau ist technisch nicht möglich.",
+task:"Ist die jeweilige Maßnahme verhältnismäßig?",
+pts:["Erst den Zweck bestimmen","Bei der ersten Stufe, die scheitert, aufhören","Mildere Mittel konkret benennen"],
+sol:[["Fall 1","Der Filter fördert den Zweck (Pflanzenschutz) nicht → ungeeignet → unverhältnismäßig."],["Fall 2","Geeignet (Randalierer können nicht mehr in der Menge untertauchen). Aber milderes, gleich geeignetes Mittel: nur die Randalierer ausschließen (§ 18 Abs. 3 VersG) bzw. Platzverweise (§ 34 PolG NRW) → nicht erforderlich."],["Fall 3","Zweck: baurechtswidrigen Zustand beenden. Geeignet (+); erforderlich (+), weil Rückbau unmöglich. Angemessen? Abstandsflächen sichern Licht, Luft und Brandschutz – das leisten auch 6 m minus 2 cm; der Abriss trifft das Eigentum schwer → krasses Missverhältnis → unangemessen."]],
+erg:"Alle drei Maßnahmen sind unverhältnismäßig – an drei verschiedenen Stufen."},
+{name:"Übung Ermessen",src:"Klausurenskript 2.2",alt:0,cat:"uebung",typ:"Vier Kurzfälle (Pass)",s:2,
+sv:"Rund um die Entziehung eines Passes nach §§ 8, 7 Abs. 1 Nr. 3 PassG: (1) Welche Entscheidungsart enthalten § 7 und § 8 PassG? (2) Der Beamte entzieht dem A den Pass, um ihm als Nachbarn „eins auszuwischen“ (A spielt bei offenem Fenster Schlagzeug). (3) Der Beamte glaubt, er sei wegen der Verdachtsmomente zur Entziehung gezwungen. (4) A gibt den Pass nicht heraus; die Behörde meint, sie müsse ihn jetzt zwingen, und setzt ein Zwangsgeld von 30.000 € fest (§ 11 VwVG: „kann“, Höhe „bis zu 25.000 €“).",
+task:"Hat die Behörde ihr Ermessen jeweils richtig ausgeübt?",
+pts:["Erst klären, ob überhaupt Ermessen besteht – und welches","Fehlerart sauber benennen und definieren","Mehrere Fehler in einem Fall sind möglich"],
+sol:[["Fall 1","§ 7 Abs. 1 PassG „ist zu versagen“ = gebunden. § 8 PassG „kann entzogen werden“ = Ermessen, und zwar nur Entschließungsermessen (entziehen oder nicht)."],["Fall 2","Ermessen (+). Sachfremde Erwägung (Nachbarstreit) → Ermessensfehlgebrauch."],["Fall 3","Ermessen (+), der Beamte hält sich für gebunden → Ermessensnichtgebrauch."],["Fall 4","PassG-Ermessen fehlerfrei. § 11 Abs. 1 VwVG „kann“: Behörde glaubt, sie müsse → Nichtgebrauch. § 11 Abs. 3 VwVG „bis zu 25.000 €“ = Auswahlermessen; 30.000 € ist eine nicht zugelassene Rechtsfolge → Ermessensüberschreitung."]],
+erg:"Fall 2 Fehlgebrauch, Fall 3 Nichtgebrauch, Fall 4 Nichtgebrauch + Überschreitung."},
+{name:"Übung Anhörung",src:"Klausurenskript 5.1",alt:0,cat:"uebung recht",typ:"Anhörung + Heilung",s:2,
+sv:"Die Stadt will die Gaststättenerlaubnis des Wirts G („Zum schmutzigen Löffel“) widerrufen. Der Widerruf ist laut Anmerkung ein VA. G wurde bisher nicht angehört; eine besondere Eile ist nicht erkennbar.",
+task:"Muss G angehört werden? Was gilt, wenn es unterbleibt?",
+pts:["Erforderlichkeit: VA, belastend, Beteiligter","Entbehrlichkeit mit Definitionen – strenger Maßstab","Heilung (§ 45) und Unbeachtlichkeit (§ 46) unterscheiden"],
+sol:[["1. Erforderlich","Widerruf = VA (Anm.), belastend (G verliert das Recht, die Gaststätte zu betreiben), G ist Adressat = Beteiligter (§ 13 Abs. 1 Nr. 2) → Anhörung erforderlich."],["2. Entbehrlich?","§ 28 Abs. 2 Nr. 1: keine konkrete Gefahr durch die Verzögerung → weder Gefahr im Verzug noch öffentliches Interesse. § 28 Abs. 3 (–). Im Zweifel ist anzuhören."],["3. Heilung","Unterbliebene Anhörung kann nachgeholt werden (§ 45 Abs. 1 Nr. 3) – bis zum Ende der letzten Tatsacheninstanz (Berufung), § 45 Abs. 2. Nichtige VA sind unheilbar."],["4. § 46","Unbeachtlich nur, wenn offensichtlich kein Einfluss auf die Entscheidung – bei fehlender Anhörung meist nicht, weil G neue Tatsachen vortragen könnte. Auch dann bliebe der VA rechtswidrig."]],
+erg:"G ist anzuhören; ein Versäumnis wäre heilbar."},
+{name:"VA-Begriff: Ernennung und Einweisung",src:"Klausurenskript 3.1 + 3.2",alt:0,cat:"uebung",typ:"VA-Prüfung (§ 35 S. 1)",s:2,
+sv:"(1) Die GZD ernennt Manfred Mayer zum Beamten auf Widerruf. (2) Der Oberbürgermeister der Stadt Münster verfügt gegenüber Hauseigentümer H per Bescheid, dass er die Familie M zur Gefahrenabwehr weiterhin in seinem Haus unterbringen muss (§ 14 Abs. 1 OBG NRW).",
+task:"Sind Ernennung und Einweisung jeweils Verwaltungsakte?",
+pts:["Alle sechs Merkmale nacheinander mit Definition","Öffentliches Recht: streitentscheidende Norm benennen","Außenwirkung bei der Ernennung: Person steht vorher außerhalb der Verwaltung"],
+sol:[["Hoheitliche Maßnahme","(1) Erklärung der Aufnahme ins Beamtenverhältnis. (2) Bescheid mit dem Gebot, M weiter zu dulden."],["Behörde","(1) GZD, Bundesoberbehörde (§ 1 Nr. 2 FVG). (2) Oberbürgermeister nimmt Aufgaben der Gefahrenabwehr wahr. Beides § 1 Abs. 4 VwVfG."],["Öffentliches Recht","(1) BBG berechtigt nur Hoheitsträger. (2) § 14 Abs. 1 OBG NRW berechtigt nur Ordnungsbehörden. Modifizierte Subjektstheorie (+); andere Theorien gleiches Ergebnis."],["Regelung","(1) Begründet Rechte und Pflichten als Beamter. (2) Gebot an H."],["Einzelfall","Jeweils konkret-individuell (eine Person, ein Sachverhalt)."],["Außenwirkung","(1) M steht vor der Ernennung außerhalb der Verwaltung. (2) H ist Privatperson."]],
+erg:"Beides sind Verwaltungsakte."},
+{name:"Arbeitsblatt Anspruchsaufbau",src:"Klausurenskript 6.1",alt:0,cat:"uebung anspruch",typ:"Vier Kurzfälle",s:2,
+sv:"(1) Ehepaar Neureich beantragt eine Baugenehmigung; laut Anmerkung ist das Vorhaben genehmigungsbedürftig und -fähig. (2) Litzohr will Grundstücke vermitteln (§ 34c GewO); er wurde vor 11 Jahren wegen Urkundenfälschung verurteilt. (3) Heidi Klamm beantragt eine Sondernutzungserlaubnis (§ 18 StrG, Ermessen). (4) Wie (3), aber die Stadt erteilt allen Konkurrenten seit Jahrzehnten jedes Jahr die Erlaubnis.",
+task:"Besteht jeweils ein Anspruch?",
+pts:["Saubere Gliederung I.–III. in jedem Fall","Gebunden → Anspruch auf VA; Ermessen → nur fehlerfreie Entscheidung","Ermessensreduzierung auf Null durch Selbstbindung"],
+sol:[["Fall 1","AGL § 60 Abs. 1 i. V. m. § 74 Abs. 1 BauO NW; Antrag + Zuständigkeit (+); genehmigungsbedürftig und -fähig (+); gebunden → Anspruch (+)."],["Fall 2","AGL § 34c Abs. 1 S. 1 Nr. 1 i. V. m. Abs. 2 Nr. 1 GewO. Regelfall (Verurteilung in den letzten 5 Jahren) (–), Tat 11 Jahre her, ohne Gewerbebezug; auch keine allgemeine Unzuverlässigkeit. Gebunden (Gewerbefreiheit, Art. 12 GG) → Anspruch (+)."],["Fall 3","AGL § 18 StrG; Sondernutzung (+); Rechtsfolge Ermessen → nur Anspruch auf ermessensfehlerfreie Entscheidung."],["Fall 4","Ermessensreduzierung auf Null: Selbstbindung (Art. 3 Abs. 1 GG) durch ständige, rechtmäßige Praxis + Vertrauensschutz (Rechtsstaat, Art. 12 GG) → Anspruch auf die Erlaubnis (+)."]],
+erg:"Anspruch in 1, 2 und 4; in 3 nur auf ermessensfehlerfreie Entscheidung."},
+{name:"Kurzbeispiele Aufhebung",src:"Folien VWR (12)",alt:0,cat:"uebung aufhebung",typ:"Rücknahme § 48 / Widerruf GastG",s:2,
+sv:"(1) „Schnuffi“: A muss seinem Hund einen Maulkorb anlegen, weil Nachbar N behauptet hatte, der Hund habe geschnappt – ungeprüft und erfunden. Die Behörde hebt die rechtswidrige Verpflichtung auch für die Vergangenheit auf. (2) Gastwirt G veranstaltet nach Erteilung der Gaststättenerlaubnis jeden Mittwoch und Freitag Flatrate-Partys mit „Koma-Saufen“; die Behörde hebt die Erlaubnis auf.",
+task:"Ist die Aufhebung jeweils materiell rechtmäßig?",
+pts:["Erst: rechtswidrig oder rechtmäßig? belastend oder begünstigend? Spezialgesetz?","Bei belastendem VA keine Jahresfrist","Spezialgesetz meist gebunden"],
+sol:[["Fall 1: EGL","§ 48 Abs. 1 S. 1 VwVfG (rechtswidriger, belastender VA)."],["Fall 1: Tatbestand","Maulkorbverpflichtung = VA, rechtswidrig (+); auch nach Unanfechtbarkeit (+); belastend (+)."],["Fall 1: Rechtsfolge","Ermessen (ob und ab wann) – keine Fehler ersichtlich → Rücknahme rechtmäßig."],["Fall 2: EGL","§ 15 Abs. 2 GastG (Spezialgesetz vor § 49 VwVfG)."],["Fall 2: Tatbestand","Gaststättengewerbe + Erlaubnis (+); nachträglich Tatsachen, die eine Versagung nach § 4 Abs. 1 Nr. 1 GastG rechtfertigen würden: Regelbeispiel „Vorschub leisten von Alkoholmissbrauch“ (+)."],["Fall 2: Rechtsfolge","„ist zu widerrufen“ → gebunden → Widerruf rechtmäßig."]],
+erg:"Beide Aufhebungen sind rechtmäßig."}
+];
+
+const LESSONS=[
+{t:"Die Klausur in 30 Sekunden",b:"<p>120 Minuten. Die Gesetze hast du dabei (E-VSF), die Fachgesetze sind im Aufgabenblatt abgedruckt.</p><ul><li><b>Aufgabe 1:</b> ein großer Fall – „Ist die Maßnahme rechtmäßig?“ oder „Hat X einen Anspruch?“, manchmal als Rücknahme/Widerruf.</li><li><b>Aufgabe 2:</b> oft „Wurde der Widerspruch fristgerecht erhoben?“</li><li>Das Kernproblem war bisher <b>immer die Zuverlässigkeit</b>.</li><li>Bestanden ab 50 von 100 Punkten (4,0).</li></ul>"},
+{t:"Was du NICHT auswendig lernen musst",b:"<p>Den Wortlaut der Paragrafen nicht – das Gesetz liegt vor dir. Fachgesetze (GewO, WaffG, ApoG …) auch nicht, die werden abgedruckt.</p><p>Was du können musst:</p><ul><li>die zwei Prüfungsschemata (Rechtmäßigkeit, Anspruch)</li><li>etwa 10 Definitionen (Zuverlässigkeit, Gewerbe, Tatsachen, Gefahr im Verzug …)</li><li><b>wo</b> welche Regel steht (dafür gibt es den §-Trainer)</li><li>die Fristberechnung</li></ul><p><b>Bewusst weggelassen</b>, weil es in keiner Klausur und keinem Klausurfall vorkam: Rechtsquellen, Verwaltungsorganisation, Handlungsformen, Verfahrensarten, Klagearten, Widerspruchsverfahren-Theorie, digitale Verwaltung. Die Klausur ist ein Fall – kein Wissensabfragen.</p><p><b>★★★</b> = kam in Altklausuren dran oder ist Kern jedes Aufbaus. <b>★★</b> = kommt in den Klausurfällen des Skripts vor; brauchst du, wenn die Klausur z. B. eine „kann“-Vorschrift hat.</p>"},
+{t:"Rechtmäßigkeit oder Anspruch?",b:"<p>Stell dir die Führerscheinstelle vor:</p><div class=\"ex\"><b>Die Behörde nimmt dir den Führerschein weg.</b> Frage: Durfte sie das? → <b>Rechtmäßigkeitsaufbau</b>: EGL – formell – materiell.</div><div class=\"ex\"><b>Du willst einen Führerschein haben.</b> Frage: Muss sie ihn dir geben? → <b>Anspruchsaufbau</b>: Anspruchsgrundlage – Antrag + Zuständigkeit – Voraussetzungen.</div><p>Der Unterschied im Formellen: Beim Anspruch prüfst du nur Antrag und Zuständigkeit. Anhörung, Form, Begründung gibt es noch nicht – der Bescheid existiert ja noch nicht.</p>"},
+{t:"Gutachtenstil – so klingt das",b:"<p>Vier Schritte, immer gleich:</p><div class=\"ex\"><b>Obersatz:</b> H könnte unzuverlässig sein.<br><b>Definition:</b> Unzuverlässig ist, wer nach dem Gesamteindruck seines Verhaltens nicht die Gewähr bietet, die Jagd künftig ordnungsgemäß auszuüben.<br><b>Subsumtion:</b> H ist alkoholsüchtig. Bei der Jagd führt er eine Waffe; Alkohol beeinträchtigt Wahrnehmung und Reaktion …<br><b>Ergebnis:</b> Somit ist H unzuverlässig.</div><p>Was unproblematisch ist, schreibst du in einem Satz („Ein Antrag liegt vor.“). Die Punkte gibt es für die Probleme.</p>"},
+{t:"Zuverlässigkeit – das Dauerthema",b:"<p>Drei Fragen, für jede Tatsache aus dem Sachverhalt einzeln:</p><ol><li><b>Was ist passiert?</b> Beweisbare Tatsache, keine bloße Vermutung.</li><li><b>Hat es mit dem Job zu tun?</b> Drogen + Apotheke: ja. Private Steuerschuld + Türsteher: nein.</li><li><b>Passiert es wieder?</b> Lange her, Bagatelle, Jugend → eher nein. Ankündigung weiterzumachen → ja.</li></ol><p>Der Sachbearbeiter im Sachverhalt nennt dir meist mehrere Gründe. Die Aufgabe sagt dann: „auf alle Aspekte eingehen“ – also jeden einzeln prüfen, auch die, die am Ende nicht reichen.</p>"},
+{t:"Rücknahme oder Widerruf? Der Zeitstrahl",b:"<div class=\"ex\">Grund lag schon VOR der Erlaubnis vor (nur unbekannt) → <b>Rücknahme</b><br>Grund kam erst NACH der Erlaubnis → <b>Widerruf</b></div><p>Reihenfolge in der Klausur:</p><ol><li>Gibt es ein Spezialgesetz (WaffG, ApoG, GastG)? Dann das nehmen – meist „ist zurückzunehmen / zu widerrufen“ = gebunden.</li><li>Sonst § 48 (rechtswidriger VA) oder § 49 (rechtmäßiger VA), jeweils unterschieden nach begünstigend und belastend.</li></ol>"},
+{t:"Ermessen in einer Minute",b:"<p>Lies die Rechtsfolge der Norm:</p><div class=\"ex\">„… <b>ist</b> zu untersagen“ → gebunden: Voraussetzungen da = Behörde musste so handeln. Fertig.<br>„… <b>kann</b> anordnen“ → Ermessen: Hat die Behörde richtig gewählt?</div><p>Bei Ermessen prüfst du drei Fehler: nicht nachgedacht (Nichtgebrauch), aus falschem Grund (Fehlgebrauch), zu weit gegangen (Überschreitung). In der Klausur ist es fast immer die Überschreitung → dort die Verhältnismäßigkeit: geeignet, erforderlich, angemessen.</p>"}
+];
+
+/* ---------- Speicher ---------- */
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return "c"+(h>>>0).toString(36)};
+CARDS.forEach(c=>c.id=hash(c.q));
+const NCARDS=NORMS.map(([q,n,u,s])=>({id:hash("n:"+q),u,s,t:"§-Trainer",q:"Welche Norm? "+q,a:n,norm:1}));
+let known=LS.get("kfv_known",{}),again=LS.get("kfv_again",{});
+const P=Object.assign({deck:"w",unit:"all",star:"2",stat:"all",mix:"0"},LS.get("kfv_prefs",{}));
+if(P.star==="1")P.star="2";
+const save=()=>{LS.set("kfv_known",known);LS.set("kfv_again",again);LS.set("kfv_prefs",P)};
+
+const $=id=>document.getElementById(id);
+const stars=s=>`<span class="st" title="Klausurrelevanz ${s} von 3">${[1,2,3].map(i=>`<i class="${i<=s?"":"off"}">★</i>`).join("")}</span>`;
+
+/* ---------- Karten ---------- */
+let queue=[],idx=0,flipped=false;
+function inUnit(u){if(P.unit==="all")return true;const n=+P.unit.slice(1);return P.unit[0]==="o"?u===n:u<=n}
+function build(){
+  const src=P.deck==="w"?CARDS:NCARDS;
+  let l=src.filter(c=>inUnit(c.u)&&c.s>=+P.star);
+  if(P.stat==="open")l=l.filter(c=>!known[c.id]);
+  if(P.stat==="again")l=l.filter(c=>again[c.id]);
+  if(P.unit!=="all"&&!$("f-unit").querySelector(`option[value="${P.unit}"]`))P.unit="all";
+  if(P.mix==="1"){l=l.slice();for(let i=l.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[l[i],l[j]]=[l[j],l[i]]}}
+  queue=l;idx=0;flipped=false;renderCard();
+}
+function renderCard(anim){
+  const box=$("cardbox");
+  if(!queue.length){
+    box.innerHTML=`<div class="kk"><div class="kk-body empty"><p class="q">Keine Karten für diese Auswahl.</p><p class="mut">Ändere Einheit, Relevanz oder Status.</p><button class="btn" id="resetf">Filter zurücksetzen</button></div></div>`;
+    $("cnt").textContent="0 Karten";
+    $("resetf").onclick=()=>{P.unit="all";P.star="2";P.stat="all";syncFilters();save();build()};
+    return;
+  }
+  if(idx>=queue.length){
+    const k=queue.filter(c=>known[c.id]).length;
+    box.innerHTML=`<div class="kk"><div class="kk-head"><span>Stapel durch</span></div><div class="kk-body empty"><p class="big">${k} von ${queue.length} gewusst</p><p class="mut">Die „Nochmal“-Karten kannst du gezielt wiederholen.</p><div class="row" style="justify-content:center"><button class="btn pri" id="again1">Nur „Nochmal“-Karten</button><button class="btn" id="again2">Stapel neu</button></div></div></div>`;
+    $("cnt").textContent=`${queue.length} Karten`;
+    $("again1").onclick=()=>{P.stat="again";syncFilters();save();build()};
+    $("again2").onclick=()=>build();
+    return;
+  }
+  const c=queue[idx];
+  $("cnt").textContent=`Karte ${idx+1} von ${queue.length}`;
+  const head=`<div class="kk-head"><span>${c.norm?"§-Trainer":"VWR "+c.u+" · "+c.t}</span><span class="sp"></span>${known[c.id]?'<span style="color:var(--okc)">✓ gewusst</span>':""}${stars(c.s)}</div>`;
+  let body;
+  if(!flipped){
+    body=`<div class="kk-body tap" id="tapcard" role="button" tabindex="0" aria-label="Karte umdrehen"><p class="q">${c.q}</p><div class="hint">${c.n?'<span class="chip-n">§ ?</span><span>Norm steht auf der Rückseite</span>':""}<span>Tippen zum Umdrehen</span></div></div>`;
+  }else{
+    body=`<div class="kk-body tap" id="tapcard" role="button" tabindex="0" aria-label="Zur Frage zurück"><p class="qs">${c.q}</p><div class="ans">${c.norm?`<span class="big">${c.a}</span>`:c.a}</div>${c.n?`<div class="box norm"><b class="l">Norm</b>${c.n}</div>`:""}${c.e?`<div class="box easy"><b class="l">Einfach erklärt</b>${c.e}</div>`:""}${c.k?`<div class="box tip"><b class="l">Klausur-Tipp</b>${c.k}</div>`:""}${c.src?`<div class="src">Kommt vor in: ${c.src}</div>`:""}</div>`;
+  }
+  const acts=flipped?`<div class="actions"><button class="btn" id="bad">Nochmal</button><button class="btn ok" id="good">Gewusst</button></div>`:`<div class="actions one"><button class="btn pri" id="flip">Aufdecken</button></div>`;
+  box.innerHTML=`<div class="kk${anim?" turn":""}" id="kk">${head}${body}</div>${acts}<div class="nav"><button class="btn ghost" id="prev" aria-label="Vorherige Karte"${idx===0?" disabled":""}>‹</button><span class="mut small kbd">Pfeiltasten · Leertaste</span><button class="btn ghost" id="next" aria-label="Nächste Karte">›</button></div>`;
+  $("tapcard").onclick=flip;
+  $("tapcard").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();flip()}};
+  if($("flip"))$("flip").onclick=flip;
+  if($("good"))$("good").onclick=()=>mark(true);
+  if($("bad"))$("bad").onclick=()=>mark(false);
+  $("prev").onclick=()=>{if(idx>0){idx--;flipped=false;renderCard()}};
+  $("next").onclick=()=>{idx++;flipped=false;renderCard()};
+}
+function flip(){flipped=!flipped;renderCard(true)}
+function mark(ok){
+  const c=queue[idx];
+  if(ok){known[c.id]=1;delete again[c.id];idx++}
+  else{again[c.id]=1;delete known[c.id];queue.splice(idx,1);queue.splice(Math.min(queue.length,idx+4),0,c)}
+  flipped=false;save();renderCard();updProgress();
+}
+function sumFilters(){
+  const u=P.unit==="all"?"Alle Einheiten":(P.unit[0]==="o"?"nur VWR ":"bis VWR ")+P.unit.slice(1);
+  const st={"3":"nur ★★★","2":"★★ + ★★★"}[P.star];
+  const ss={all:"",open:" · offen",again:" · Nochmal"}[P.stat];
+  $("fsum").textContent=`${u} · ${st}${ss}${P.mix==="1"?" · gemischt":""}`;
+}
+function syncFilters(){
+  sumFilters();
+  $("f-unit").value=P.unit;$("f-star").value=P.star;$("f-stat").value=P.stat;$("f-mix").value=P.mix;
+  $("dk-w").className=P.deck==="w"?"on":"";$("dk-n").className=P.deck==="n"?"on":"";
+}
+function initFilters(){
+  let o='<option value="all">Alle Einheiten</option><optgroup label="Nur eine Einheit">';
+  const us=[...new Set(CARDS.concat(NCARDS).map(c=>c.u))].sort((x,y)=>x-y);
+  us.forEach(i=>{o+=`<option value="o${i}">nur VWR ${i} – ${U[i]}</option>`});
+  o+='</optgroup><optgroup label="Bis einschließlich">';
+  us.slice(1).forEach(i=>{o+=`<option value="b${i}">bis VWR ${i}</option>`});
+  $("f-unit").innerHTML=o+"</optgroup>";
+  [["f-unit","unit"],["f-star","star"],["f-stat","stat"],["f-mix","mix"]].forEach(([id,k])=>$(id).onchange=e=>{P[k]=e.target.value;sumFilters();save();build()});
+  document.querySelectorAll("[data-deck]").forEach(b=>b.onclick=()=>{P.deck=b.dataset.deck;syncFilters();save();build()});
+  $("restart").onclick=()=>build();
+  syncFilters();
+}
+
+/* ---------- Start ---------- */
+function updProgress(){
+  const all=CARDS.concat(NCARDS);
+  const rows=[3,2].map(s=>{const l=all.filter(c=>c.s===s),k=l.filter(c=>known[c.id]).length;return{s,n:l.length,k}});
+  $("prog").innerHTML=rows.map(r=>`<div class="prow">${stars(r.s)}<div class="ptrack"><span style="width:${r.n?Math.round(r.k/r.n*100):0}%"></span></div><b>${r.k}/${r.n}</b></div>`).join("")+`<p class="small mut" style="margin:4px 0 0">Gespeichert in diesem Browser. Karten mit „Gewusst“ zählen.</p>`;
+  const r3=rows[0];$("pill").textContent=`★★★ ${r3.n?Math.round(r3.k/r3.n*100):0} %`;
+  $("q3").textContent=`${CARDS.filter(c=>c.s===3).length} Karten`;
+}
+function initStart(){
+  $("lessons").innerHTML=LESSONS.map(l=>`<details class="les"><summary><div class="sumt"><strong>${l.t}</strong></div></summary><div class="cbody">${l.b}</div></details>`).join("");
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{
+    const g=b.dataset.go;
+    if(g==="k3"){P.deck="w";P.star="3";P.unit="all";P.stat="all";syncFilters();save();build();go("karten")}else go(g);
+  });
+  updProgress();
+}
+
+/* ---------- Fälle ---------- */
+const FC=[["alle","Alle"],["alt","Altklausuren"],["anspruch","Anspruch"],["recht","Rechtmäßigkeit"],["aufhebung","Aufhebung"],["frist","Frist"],["uebung","Übungen"]];
+let fcat="alle";
+function renderCases(){
+  $("fchips").innerHTML=FC.map(([k,l])=>`<button class="chip${k===fcat?" on":""}" data-fc="${k}">${l}</button>`).join("");
+  document.querySelectorAll("[data-fc]").forEach(b=>b.onclick=()=>{fcat=b.dataset.fc;renderCases()});
+  const l=CASES.filter(c=>fcat==="alle"||(fcat==="alt"?c.alt:c.cat.split(" ").includes(fcat)));
+  $("cases").innerHTML=l.map(c=>`<details class="case"><summary><div class="sumt"><strong>${c.name}</strong>${stars(c.s)}</div><div class="meta"><span class="${c.alt?"alt":""}">${c.src}</span> · ${c.typ}</div></summary><div class="cbody"><h4>Sachverhalt (kurz)</h4><p>${c.sv}</p><h4>Aufgabe</h4><p>${c.task}</p><h4>Hier liegen die Punkte</h4><ul>${c.pts.map(p=>`<li>${p}</li>`).join("")}</ul><details class="inner"><summary>Erst selbst gliedern – dann Lösungsskizze zeigen</summary><div class="cbody"><ul class="sol">${c.sol.map(([h,t])=>`<li><b>${h}</b>${t}</li>`).join("")}</ul><p class="erg">Ergebnis: ${c.erg}</p></div></details></div></details>`).join("");
+}
+
+/* ---------- Frist ---------- */
+const WD=["So","Mo","Di","Mi","Do","Fr","Sa"],MN=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+const D=(y,m,d)=>new Date(y,m,d);
+const add=(d,n)=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()+n);return x};
+const key=d=>d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmt=d=>WD[d.getDay()]+", "+String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear();
+const dm=d=>String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+".";
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);const n=h+l-7*m+114;return D(y,Math.floor(n/31)-1,n%31+1)}
+const HC={};
+function hols(y){if(HC[y])return HC[y];const e=easter(y),h={},p=(d,n)=>{h[key(d)]=n};p(D(y,0,1),"Neujahr");p(add(e,-2),"Karfreitag");p(add(e,1),"Ostermontag");p(D(y,4,1),"Tag der Arbeit");p(add(e,39),"Christi Himmelfahrt");p(add(e,50),"Pfingstmontag");p(add(e,60),"Fronleichnam");p(D(y,9,3),"Tag der Deutschen Einheit");p(D(y,10,1),"Allerheiligen");p(D(y,11,25),"1. Weihnachtstag");p(D(y,11,26),"2. Weihnachtstag");return HC[y]=h}
+const hol=d=>hols(d.getFullYear())[key(d)]||"";
+const free=d=>d.getDay()===0||d.getDay()===6||!!hol(d);
+const fname=d=>hol(d)?"Feiertag ("+hol(d)+")":(d.getDay()===6?"Samstag":"Sonntag");
+function plusM(d,n){const y=d.getFullYear(),m=d.getMonth()+n,day=d.getDate(),last=new Date(y,m+1,0).getDate();return{d:new Date(y,m,Math.min(day,last)),clip:day>last}}
+
+function calc(t){
+  const s=["Fristauslösendes Ereignis ist die Bekanntgabe des Verwaltungsakts (§ 70 Abs. 1 S. 1 VwGO)."];
+  let bek;
+  if(t.mode==="direkt"||t.mode==="rbb"){bek=t.d1;s.push(`Bekanntgabe laut Sachverhalt: <b>${fmt(bek)}</b>.`)}
+  else if(t.mode==="zust"){bek=t.d1;s.push(`Förmliche Zustellung per Einschreiben mit Rückschein (§ 41 Abs. 5 VwVfG i. V. m. § 4 VwZG): Es zählt der Tag auf dem Rückschein – <b>${fmt(bek)}</b>.`)}
+  else{
+    const fic=add(t.d1,4);
+    const wk=free(fic)?` Dass das ein ${fname(fic)} ist, spielt keine Rolle: Das ist eine Fiktion, keine Frist – § 31 Abs. 3 VwVfG gilt hier nicht.`:"";
+    if(t.mode==="brief"){bek=fic;s.push(`Einfacher Brief im Inland: Er gilt am vierten Tag nach Aufgabe zur Post als bekannt gegeben (§ 41 Abs. 2 S. 1 VwVfG). ${fmt(t.d1)} + 4 Tage = <b>${fmt(bek)}</b>.${wk}`)}
+    else if(t.d2<=fic){bek=fic;s.push(`Aufgabe zur Post ${fmt(t.d1)}. B hat den Brief schon am ${fmt(t.d2)} – ein früherer Zugang ist unbeachtlich, es bleibt bei der Vier-Tages-Fiktion (§ 41 Abs. 2 S. 1 VwVfG): <b>${fmt(bek)}</b>.${wk}`)}
+    else{bek=t.d2;s.push(`Aufgabe zur Post ${fmt(t.d1)}; die Fiktion ergäbe den ${fmt(fic)}. Der Brief ging aber erst am ${fmt(t.d2)} zu. Bei späterem Zugang gilt die Fiktion nicht (§ 41 Abs. 2 S. 3 VwVfG) – Bekanntgabe also <b>${fmt(bek)}</b>.`)}
+  }
+  const start=add(bek,1);
+  s.push(`Der Tag der Bekanntgabe wird nicht mitgerechnet (§§ 79, 31 Abs. 1 VwVfG i. V. m. § 187 Abs. 1 BGB). Fristbeginn: ${fmt(start)}, 0:00 Uhr${free(start)?" – dass das ein "+fname(start)+" ist, ist für den Beginn egal.":"."}`);
+  s.push(t.months===12?"Die Rechtsbehelfsbelehrung fehlt bzw. ist fehlerhaft. Statt eines Monats gilt die Jahresfrist (§ 58 Abs. 2 VwGO).":"Die Widerspruchsfrist beträgt einen Monat (§ 70 Abs. 1 S. 1 VwGO).");
+  const r=plusM(bek,t.months);
+  s.push(`Ende nach § 188 Abs. 2 BGB: mit Ablauf des Tages, der durch seine Zahl dem Bekanntgabetag (${bek.getDate()}.) entspricht → ${fmt(r.d)}${r.clip?` – den ${bek.getDate()}. gibt es in diesem Monat nicht, also letzter Tag des Monats (§ 188 Abs. 3 BGB)`:""}.`);
+  let end=r.d;
+  if(free(end)){while(free(end))end=add(end,1);s.push(`Der ${dm(r.d)} ist ein ${fname(r.d)}. Nach § 31 Abs. 3 S. 1 VwVfG (bzw. § 193 BGB) endet die Frist erst mit Ablauf des nächsten Werktags.`)}
+  else s.push(`Der ${dm(r.d)} ist ein Werktag – keine Verschiebung.`);
+  s.push(`<b>Die Frist endet am ${fmt(end)} um 24:00 Uhr.</b>`);
+  return{t,bek,start,raw:r.d,end,steps:s};
+}
+function holHint(a,b){const o=[];for(let d=add(a,0);d<=b;d=add(d,1)){if(hol(d))o.push(`Der ${dm(d)} ist ein gesetzlicher Feiertag (${hol(d)}).`)}return o.join(" ")}
+function taskText(t,R){
+  const a=fmt(t.d1),b=t.d2?fmt(t.d2):"";
+  const m=({
+    direkt:()=>`Der Bescheid wurde B am ${a} ordnungsgemäß bekannt gegeben. Er enthält eine ordnungsgemäße Rechtsbehelfsbelehrung.`,
+    zust:()=>`Die Behörde stellt B den Bescheid per Einschreiben mit Rückschein zu. Laut Rückschein wurde er am ${a} übergeben.`,
+    brief:()=>`Die Behörde gibt den Bescheid am ${a} mit einfachem Brief zur Post (Inland). Die Rechtsbehelfsbelehrung ist ordnungsgemäß.`,
+    frueh:()=>`Der Bescheid wird am ${a} mit einfachem Brief zur Post gegeben. B findet ihn bereits am ${b} im Briefkasten.`,
+    spaet:()=>`Der Bescheid wird am ${a} mit einfachem Brief zur Post gegeben. Wegen eines Poststreiks erhält B ihn nachweislich erst am ${b}.`,
+    rbb:()=>`Der Bescheid wurde B am ${a} bekannt gegeben. Eine Rechtsbehelfsbelehrung enthält er nicht.`
+  })[t.kind]();
+  const hh=holHint(R.raw,R.end);
+  return `${m} ${hh} <b>Wann endet die Widerspruchsfrist?</b>`;
+}
+function rndDate(){return add(D(2026,0,5),Math.floor(Math.random()*720))}
+function genTask(){
+  const kinds=["direkt","direkt","brief","brief","zust","frueh","spaet","rbb"];
+  const wantShift=Math.random()<.65;let best=null;
+  for(let i=0;i<60;i++){
+    const kind=kinds[Math.floor(Math.random()*kinds.length)];
+    let d1=rndDate(),d2=null;
+    const postal=kind!=="direkt"&&kind!=="rbb";
+    while(hol(d1)||d1.getDay()===0||(postal&&d1.getDay()===6))d1=add(d1,1);
+    const noSun=d=>{while(d.getDay()===0||hol(d))d=add(d,1);return d};
+    if(kind==="frueh")d2=add(d1,1+Math.floor(Math.random()*2));
+    if(kind==="spaet")d2=noSun(add(d1,5+Math.floor(Math.random()*3)));
+    if(kind==="frueh"&&(d2.getDay()===0||hol(d2)))d2=add(d1,1);
+    if(kind==="frueh"&&(d2.getDay()===0||hol(d2)))continue;
+    const t={kind,mode:kind==="frueh"||kind==="spaet"?"brief2":kind,d1,d2,months:kind==="rbb"?12:1};
+    const R=calc(t);best={t,R};
+    if((R.raw.getTime()!==R.end.getTime())===wantShift)break;
+  }
+  return best||genTask();
+}
+let FT=null,revealed=false;
+const fstat=LS.get("kfv_frist",{r:0,n:0});
+function months(R){
+  const ds=[R.t.d1,R.t.d2,R.bek,R.raw,R.end].filter(Boolean);
+  const ms=[];ds.forEach(d=>{const k=d.getFullYear()*12+d.getMonth();if(!ms.includes(k))ms.push(k)});
+  ms.sort((a,b)=>a-b);
+  if(R.t.months===1){const out=[];for(let k=ms[0];k<=ms[ms.length-1];k++)out.push(k);return out.slice(0,3)}
+  return ms;
+}
+function calHTML(R,show){
+  const marks={};
+  const put=(d,c)=>{if(d){const k=key(d);marks[k]=(marks[k]||"")+" "+c}};
+  if(show){if(R.t.mode!=="direkt"&&R.t.mode!=="zust"&&R.t.mode!=="rbb")put(R.t.d1,"post");put(R.bek,"bek");put(R.start,"start");if(R.raw.getTime()!==R.end.getTime())put(R.raw,"raw");put(R.end,"end")}
+  return months(R).map(k=>{
+    const y=Math.floor(k/12),m=k%12,first=D(y,m,1),off=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+    let g=["Mo","Di","Mi","Do","Fr","Sa","So"].map(x=>`<div class="h">${x}</div>`).join("");
+    for(let i=0;i<off;i++)g+="<div></div>";
+    for(let d=1;d<=days;d++){const dt=D(y,m,d),h=hol(dt),we=dt.getDay()===0||dt.getDay()===6;g+=`<div class="d${we||h?" we":""}${h?" hol":""}${marks[key(dt)]||""}"${h?` title="${h}"`:""}>${d}</div>`}
+    return `<div class="mon"><h4>${MN[m]} ${y}</h4><div class="g7">${g}</div></div>`;
+  }).join("");
+}
+function newTask(){
+  FT=genTask();revealed=false;
+  $("ftask").innerHTML=taskText(FT.t,FT.R);
+  $("fcal").innerHTML=calHTML(FT.R,false);
+  $("fmk").hidden=true;$("fres").innerHTML="";$("fsteps").innerHTML="";$("fin").value="";
+  $("fscore").textContent=fstat.n?`richtig: ${fstat.r} von ${fstat.n}`:"";
+}
+function reveal(){
+  revealed=true;
+  $("fcal").innerHTML=calHTML(FT.R,true);$("fmk").hidden=false;
+  $("fsteps").innerHTML=`<h3>Lösung im Gutachtenstil</h3><div class="panel"><ol class="steps">${FT.R.steps.map(x=>`<li>${x}</li>`).join("")}</ol></div>`;
+}
+function check(){
+  const v=$("fin").value;
+  if(!v){$("fres").innerHTML=`<div class="fb bad">Bitte erst ein Datum eintragen.</div>`;return}
+  const R=FT.R,ok=v===iso(R.end);
+  if(!revealed){fstat.n++;if(ok)fstat.r++;LS.set("kfv_frist",fstat)}
+  let msg;
+  if(ok)msg=`<div class="fb good">Richtig: ${fmt(R.end)}, 24:00 Uhr.</div>`;
+  else{
+    let h="";const t=R.t;
+    if(v===iso(R.raw))h=`Fast! Das ist das rechnerische Ende. Der ${dm(R.raw)} ist aber ein ${fname(R.raw)} → § 31 Abs. 3 S. 1 VwVfG.`;
+    else if((t.mode==="brief"||t.mode==="brief2")&&v===iso(plusM(t.d1,t.months).d))h="Du hast ab der Aufgabe zur Post gerechnet. Maßgeblich ist die Bekanntgabe (vierter Tag danach bzw. späterer Zugang).";
+    else if(t.kind==="rbb"&&v===iso(calc({mode:"direkt",d1:t.d1,months:1}).end))h="Die Rechtsbehelfsbelehrung fehlt → ein Jahr statt ein Monat (§ 58 Abs. 2 VwGO).";
+    else if(t.kind==="frueh"&&v===iso(calc({mode:"direkt",d1:t.d2,months:1}).end))h="Ein früherer Zugang zählt nicht – es bleibt bei der Vier-Tages-Fiktion.";
+    else if(t.kind==="spaet"&&v===iso(calc({mode:"brief",d1:t.d1,months:1}).end))h="Bei späterem Zugang gilt die Fiktion nicht – der tatsächliche Zugangstag zählt (§ 41 Abs. 2 S. 3 VwVfG).";
+    else if(v===iso(add(R.raw,-1)))h="Einen Tag zu früh: Ende ist der Tag mit derselben Zahl wie der Bekanntgabetag.";
+    else h="Geh die Schritte der Lösung durch.";
+    msg=`<div class="fb bad">Nicht ganz. Richtig: ${fmt(R.end)}.<br>${h}</div>`;
+  }
+  $("fres").innerHTML=msg;$("fscore").textContent=`richtig: ${fstat.r} von ${fstat.n}`;
+  reveal();
+}
+function parseISO(v){if(!v)return null;const[a,b,c]=v.split("-").map(Number);return D(a,b-1,c)}
+function manual(){
+  const mode=$("m-mode").value,d1=parseISO($("m-d1").value),d2=parseISO($("m-d2").value),mo=+$("m-rbb").value;
+  if(!d1||(mode==="brief2"&&!d2)){$("m-out").innerHTML=`<div class="fb bad">Bitte die Daten eintragen.</div>`;return}
+  const R=calc({mode,kind:mode,d1,d2,months:mo});
+  $("m-out").innerHTML=`<p class="big" style="margin-top:14px">${fmt(R.end)}</p><div class="cal">${calHTML(R,true)}</div><ol class="steps">${R.steps.map(x=>`<li>${x}</li>`).join("")}</ol>`;
+}
+function initFrist(){
+  $("fnew").onclick=newTask;$("fsol").onclick=reveal;$("fcheck").onclick=check;
+  $("m-mode").onchange=e=>{$("m-d2w").hidden=e.target.value!=="brief2"};
+  $("m-go").onclick=manual;
+  $("m-d1").value="2026-08-12";
+  newTask();
+}
+
+/* ---------- Navigation ---------- */
+const VIEWS=["start","karten","faelle","frist"];
+function show(v){
+  if(!VIEWS.includes(v))v="start";
+  VIEWS.forEach(x=>{$("v-"+x).hidden=x!==v});
+  document.querySelectorAll("[data-tab]").forEach(b=>{if(b.dataset.tab===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  $("main").scrollTop=0;
+}
+function go(v){if(location.hash==="#"+v)show(v);else location.hash=v}
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>go(b.dataset.tab));
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+document.addEventListener("keydown",e=>{
+  if($("v-karten").hidden||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName))return;
+  if(e.key===" "){e.preventDefault();if(queue[idx])flip()}
+  else if(e.key==="ArrowRight"){idx=Math.min(idx+1,queue.length);flipped=false;renderCard()}
+  else if(e.key==="ArrowLeft"&&idx>0){idx--;flipped=false;renderCard()}
+});
+
+initFilters();build();initStart();renderCases();initFrist();
+show(location.hash.slice(1)||"start");
+}
+</script>
+</body>
+</html>
